@@ -20,6 +20,12 @@ public class Types {
         SET, LIST, ARRAY, VARCHAR, INTEGER, CURSOR, DATE, DATETIME, NUMERIC, BOOLEAN, OTHER, BIGINT, DECIMAL, DOUBLE, FLOAT, INT, LVARCHAR
     }
 
+    public enum RenderType {
+
+        EXTJS_TREE,
+        EXTJS_MENU
+    }
+
     public enum XLSDataType {
 
         TEXT, NUMERIC, INTEGER,

@@ -16,13 +16,14 @@ package com.codicentro.core.extjs;
 
 import com.codicentro.core.CDCException;
 import com.codicentro.core.TypeCast;
+import com.codicentro.core.Types.RenderType;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
 
 public class Tree implements Serializable {
 
-    private String idField = null;
+    private String[] idField = null;
     private String[] parentField = null;
     private String textField = null;
     private String iconClsField = null;
@@ -31,18 +32,38 @@ public class Tree implements Serializable {
 
     public Tree(List<?> tree, String idField, String parentField, String textField) {
         this.tree = tree;
-        this.idField = idField;
+        this.idField = idField.split("\\.");
         this.parentField = parentField.split("\\.");
         this.textField = textField;
     }
 
- 
+    public String renderTree() throws CDCException {
+        return make(RenderType.EXTJS_TREE);
+    }
+
+    public String renderMenu() throws CDCException {
+        return make(RenderType.EXTJS_MENU);
+    }
+
     /**
      * 
      * @return
      * @throws CDCException
      */
-    public String renderTree() throws CDCException {
+    private String make(RenderType rt) throws CDCException {
+        /** **/
+        String itemName = "";
+        String wrapChild = "";
+        switch (rt) {
+            case EXTJS_TREE:
+                itemName = "children:";
+                wrapChild = ",children:[--WRAP--]";
+                break;
+            case EXTJS_MENU:
+                itemName = "menu:";
+                wrapChild = ",menu:{items:[--WRAP--]}";
+                break;
+        }
 
         StringBuilder sb = new StringBuilder();
         StringBuilder item = null;
@@ -50,7 +71,10 @@ public class Tree implements Serializable {
         int idx = 0;
         int ln = 0;
         int od = 0;
-        String idName = "get" + TypeCast.toFirtUpperCase(idField);
+        String[] idName = new String[idField.length];
+        for (int i = 0; i < idField.length; i++) {
+            idName[i] = "get" + TypeCast.toFirtUpperCase(idField[i]);
+        }
         Object idValue = null;
 
         String[] parentName = new String[parentField.length];
@@ -69,21 +93,50 @@ public class Tree implements Serializable {
         Object entity = null;
         while (iTree.hasNext()) {
             entity = iTree.next();
-            idValue = TypeCast.GN(entity, idName);
+            /*** ***/
+            idValue = TypeCast.GN(entity, idName[0]);
+            for (int i = 1; i < idName.length; i++) {
+                idValue = TypeCast.GN(idValue, idName[i]);
+            }
+            /*** ***/
             parentValue = TypeCast.GN(entity, parentName[0]);
             for (int i = 1; i < parentName.length; i++) {
                 parentValue = TypeCast.GN(parentValue, parentName[i]);
             }
+            /*** ***/
             textValue = TypeCast.GN(entity, textName);
             item = new StringBuilder();
             item.append("{");
             item.append("mid:\"").append(idValue).append("\"");
-            item.append(",children:[]");            
-            item.append(",id:\"").append(idValue).append("\"");          
+            item.append(",id:\"").append(idValue).append("\"");
             item.append(",text:\"").append(textValue).append("\"");
+            switch (rt) {
+                case EXTJS_TREE:
+                    item.append(",children:[]");
+                    break;
+                case EXTJS_MENU:
+                    /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
+                    scriptPath = menu.getStringValue("SCRIPT_PATH", "");
+                    params = menu.getStringValue("PARAMS", "");
+                    script = menu.getStringValue("SCRIPT", "");
+                    script = script.replaceAll("\n", "");
+                    if ((!scriptName.equals("")) || (!scriptPath.equals("")) || (!script.equals(""))) {
+                    item.append(",handler:function(){");
+                    item.append("ctrlWaitingStart();");
+                    item.append(script);
+                    if (!scriptName.equals("")) {
+                    item.append("new File({url:\"").append(scriptPath).append(scriptName).append(".js\",method:\"include\"});");
+                    item.append(TypeCast.toFirtLowerCase(scriptName)).append("=new ").append(scriptName).append("(").append(params).append(");");
+                    }
+                    item.append("}");
+                    } */
+                    break;
+            }
+
             if (iconClsField != null) {
                 item.append(",iconCls:\"").append(TypeCast.GN(entity, iconClsName)).append("\"");
             }
+
             if (checkedField != null) {
                 item.append(",checked:").append(TypeCast.GN(entity, checkedName));
             }
@@ -99,108 +152,36 @@ public class Tree implements Serializable {
                 idx = sb.indexOf("{mid:\"" + parentValue + "\",");
                 ln = ("{mid:\"" + parentValue + "\",").length() - 1;
                 if (idx != -1) {
-                    if (sb.indexOf("{mid:\"" + parentValue + "\",children:") == -1) {                        
-                        sb.insert(idx + ln, ",children:[" + item + "]");
+                    if (sb.indexOf("{mid:\"" + parentValue + "\"," + itemName) == -1) {
+                        sb.insert(idx + ln, wrapChild.replaceFirst("--WRAP--", item.toString()));
                     } else {
                         sb.insert(idx + ln + 11, item);
                     }
                 }
             }
         }
-        return "[" + sb.toString().replaceAll("children:\\[]", "leaf:true") + "]";
-    }
 
-    public String renderMenu() throws CDCException {
-        StringBuilder sb = new StringBuilder();
-        StringBuilder item = null;
-        String cc = "";////Contains childs
-        int idx = 0;
-        int ln = 0;
-        int od = 0;
-        String idName = "get" + TypeCast.toFirtUpperCase(idField);
-        Object idValue = null;
-
-        String[] parentName = new String[parentField.length];
-        for (int i = 0; i < parentField.length; i++) {
-            parentName[i] = "get" + TypeCast.toFirtUpperCase(parentField[i]);
+        switch (rt) {
+            case EXTJS_TREE:
+                return "[" + sb.toString().replaceAll("children:\\[]", "leaf:true") + "]";
+            case EXTJS_MENU:
+                return "[" + sb.toString() + "]";
+            default:
+                return null;
         }
-
-        Object parentValue = null;
-        String textName = "get" + TypeCast.toFirtUpperCase(textField);
-        Object textValue = null;
-        /** OPTIONAL **/
-        String iconClsName = (iconClsField == null) ? null : "get" + TypeCast.toFirtUpperCase(iconClsField);
-        String checkedName = (checkedField == null) ? null : "get" + TypeCast.toFirtUpperCase(checkedField);
-
-        Iterator<?> iTree = tree.iterator();
-        Object entity = null;
-        while (iTree.hasNext()) {
-            entity = iTree.next();
-            idValue = TypeCast.GN(entity, idName);
-            parentValue = TypeCast.GN(entity, parentName[0]);
-            for (int i = 1; i < parentName.length; i++) {
-                parentValue = TypeCast.GN(parentValue, parentName[i]);
-            }
-            textValue = TypeCast.GN(entity, textName);
-            item = new StringBuilder();
-            item.append("{");
-            item.append("mid:\"").append(idValue).append("\"");
-            item.append(",id:\"").append(idValue).append("\"");
-            item.append(",text:\"").append(textValue).append("\"");
-            if (iconClsField != null) {
-                item.append(",iconCls:\"").append(TypeCast.GN(entity, iconClsName)).append("\"");
-            }
-            if (checkedField != null) {
-                item.append(",checked:").append(TypeCast.GN(entity, checkedName));
-            }
-            /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
-            scriptPath = menu.getStringValue("SCRIPT_PATH", "");
-            params = menu.getStringValue("PARAMS", "");
-            script = menu.getStringValue("SCRIPT", "");
-            script = script.replaceAll("\n", "");
-            if ((!scriptName.equals("")) || (!scriptPath.equals("")) || (!script.equals(""))) {
-            item.append(",handler:function(){");
-            item.append("ctrlWaitingStart();");
-            item.append(script);
-            if (!scriptName.equals("")) {
-            item.append("new File({url:\"").append(scriptPath).append(scriptName).append(".js\",method:\"include\"});");
-            item.append(TypeCast.toFirtLowerCase(scriptName)).append("=new ").append(scriptName).append("(").append(params).append(");");
-            }
-            item.append("}");
-            } */
-            item.append("}");
-            if (idValue.equals(parentValue)) {
-                if (sb.toString().equals("")) {
-                    sb.append(item);
-                } else {
-                    sb.append(",").append(item);
-                }
-            } else {
-                idx = sb.indexOf("{mid:\"" + parentValue + "\",");
-                ln = ("{mid:\"" + parentValue + "\",").length() - 1;
-                if (idx != -1) {
-                    if (sb.indexOf("{mid:\"" + parentValue + "\",menu:") == -1) {
-                        sb.insert(idx + ln, ",menu:{items:[" + item + "]}");
-                    } else {
-                        sb.insert(idx + ln + 11, item + ",");
-                    }
-                }
-            }
-        }
-        return "[" + sb.toString() + "]";
     }
 
     /**
      * @return the idField
      */
-    public String getIdField() {
+    public String[] getIdField() {
         return idField;
     }
 
     /**
      * @param idField the idField to set
      */
-    public void setIdField(String idField) {
+    public void setIdField(String[] idField) {
         this.idField = idField;
     }
 
