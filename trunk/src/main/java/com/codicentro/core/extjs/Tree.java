@@ -28,6 +28,9 @@ public class Tree implements Serializable {
     private String textField = null;
     private String iconClsField = null;
     private String checkedField = null;
+    private String scriptField = null;
+    private String scriptPathField = null;
+    private String handlerField = null;
     private List<?> tree = null;
 
     public Tree(List<?> tree, String idField, String parentField, String textField) {
@@ -88,6 +91,7 @@ public class Tree implements Serializable {
         /** OPTIONAL **/
         String iconClsName = (iconClsField == null) ? null : "get" + TypeCast.toFirtUpperCase(iconClsField);
         String checkedName = (checkedField == null) ? null : "get" + TypeCast.toFirtUpperCase(checkedField);
+        String handlerName = (handlerField == null) ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
 
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
@@ -115,6 +119,11 @@ public class Tree implements Serializable {
                     item.append(",children:[]");
                     break;
                 case EXTJS_MENU:
+                    if (handlerField != null) {
+                        item.append(",handler:function(){");
+                        item.append(TypeCast.GN(entity, handlerName));
+                        item.append("}");
+                    }
                     /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
                     scriptPath = menu.getStringValue("SCRIPT_PATH", "");
                     params = menu.getStringValue("PARAMS", "");
@@ -253,5 +262,47 @@ public class Tree implements Serializable {
      */
     public void setTree(List tree) {
         this.tree = tree;
+    }
+
+    /**
+     * @return the scriptField
+     */
+    public String getScriptField() {
+        return scriptField;
+    }
+
+    /**
+     * @param scriptField the scriptField to set
+     */
+    public void setScriptField(String scriptField) {
+        this.scriptField = scriptField;
+    }
+
+    /**
+     * @return the scriptPathField
+     */
+    public String getScriptPathField() {
+        return scriptPathField;
+    }
+
+    /**
+     * @param scriptPathField the scriptPathField to set
+     */
+    public void setScriptPathField(String scriptPathField) {
+        this.scriptPathField = scriptPathField;
+    }
+
+    /**
+     * @return the handlerField
+     */
+    public String getHandlerField() {
+        return handlerField;
+    }
+
+    /**
+     * @param handlerField the handlerField to set
+     */
+    public void setHandlerField(String handlerField) {
+        this.handlerField = handlerField;
     }
 }
