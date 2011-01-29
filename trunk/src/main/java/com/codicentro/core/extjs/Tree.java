@@ -112,9 +112,7 @@ public class Tree implements Serializable {
             item = new StringBuilder();
             item.append("{");
             item.append("mid:\"").append(idValue).append("\"");
-            item.append(",id:\"").append(idValue).append("\"");
-            item.append(",text:\"").append(textValue).append("\"");
-            switch (rt) {
+             switch (rt) {
                 case EXTJS_TREE:
                     item.append(",children:[]");
                     break;
@@ -141,6 +139,9 @@ public class Tree implements Serializable {
                     } */
                     break;
             }
+            item.append(",id:\"").append(idValue).append("\"");
+            item.append(",text:\"").append(textValue).append("\"");
+           
 
             if (iconClsField != null) {
                 item.append(",iconCls:\"").append(TypeCast.GN(entity, iconClsName)).append("\"");
@@ -178,6 +179,8 @@ public class Tree implements Serializable {
             default:
                 return null;
         }
+
+       
     }
 
     /**
