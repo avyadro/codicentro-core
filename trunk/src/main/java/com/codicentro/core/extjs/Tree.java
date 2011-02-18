@@ -89,7 +89,7 @@ public class Tree implements Serializable {
                 break;
             case EXTJS_MENU:
                 childEmpty = "menu:{items:[]}";
-                itemName = "menu:";
+                itemName = "menu:{items:";
                 break;
         }
         /*** INIT SERIALIZER ***/
@@ -104,6 +104,7 @@ public class Tree implements Serializable {
         Object parentValue = null;
         String textName = "get" + TypeCast.toFirtUpperCase(textField);
         Object textValue = null;
+        Object value = null;
         /** OPTIONAL **/
         String iconClsName = (iconClsField == null) ? null : "get" + TypeCast.toFirtUpperCase(iconClsField);
         String checkedName = (checkedField == null) ? null : "get" + TypeCast.toFirtUpperCase(checkedField);
@@ -113,6 +114,7 @@ public class Tree implements Serializable {
         Object entity = null;
 
         while (iTree.hasNext()) {
+            value = null;
             entity = iTree.next();
             /*** ***/
             idValue = TypeCast.GN(entity, idName[0]);
@@ -135,9 +137,12 @@ public class Tree implements Serializable {
             switch (rt) {
                 case EXTJS_MENU:
                     if (handlerField != null) {
-                        item.append(",handler:function(){");
-                        item.append(TypeCast.GN(entity, handlerName));
-                        item.append("}");
+                        value = TypeCast.GN(entity, handlerName);
+                        if (value != null) {
+                            item.append(",handler:function(){");
+                            item.append(value);
+                            item.append("}");
+                        }
                     }
                     /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
                     scriptPath = menu.getStringValue("SCRIPT_PATH", "");
@@ -190,7 +195,7 @@ public class Tree implements Serializable {
             case EXTJS_TREE:
                 return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "leaf:true") + "]";
             case EXTJS_MENU:
-                return "[" + sb.toString() + "]";
+                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
             default:
                 return null;
         }
