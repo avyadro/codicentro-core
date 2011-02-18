@@ -124,7 +124,7 @@ public class JSONObject {
         }
 
         int len = string.length();
-        StringBuffer sb = new StringBuffer(len + 4);
+        StringBuilder sb = new StringBuilder(len + 4);
         sb.append('"');
         for (int i = 0; i < len; ++i) {
             char c = string.charAt(i);
@@ -153,7 +153,7 @@ public class JSONObject {
                 default:
                     if ((c < ' ') || (c >= 128)) {
                         String t = "000" + Integer.toHexString(c);
-                        sb.append("\\u" + t.substring(t.length() - 4));
+                        sb.append("\\u").append(t.substring(t.length() - 4));
                     } else {
                         sb.append(c);
                     }

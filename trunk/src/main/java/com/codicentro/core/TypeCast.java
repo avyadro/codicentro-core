@@ -35,7 +35,7 @@ public class TypeCast {
      * @param s
      * @return
      */
-    public static boolean isNullOrEmpy(String s) {
+    public static boolean isNullOrEmpty(String s) {
         return ((s == null) || (s.trim().equals("")));
     }
 
@@ -46,7 +46,7 @@ public class TypeCast {
      * @return
      */
     public static String rplNullOrEmpty(String s, String r) {
-        if (isNullOrEmpy(s)) {
+        if (isNullOrEmpty(s)) {
             return r;
         } else {
             return s;
@@ -67,7 +67,7 @@ public class TypeCast {
 
     public static boolean isNullOrEmpy(String s, String v) {
         s = (s != null) ? s.replaceAll(v, "") : s;
-        return isNullOrEmpy(s);
+        return isNullOrEmpty(s);
     }
 
     /**
@@ -487,7 +487,6 @@ public class TypeCast {
 //        }
 //        return nt;
 //    }
-
     /**
      *
      * @param c
@@ -571,11 +570,14 @@ public class TypeCast {
      * @return
      */
     public static Object GN(Object o, String n) throws CDCException, CDCException, CDCException {
+        if (o == null) {
+            throw new CDCException("core.typecast.gn.msg.error.objectisnull");
+        }
         Method m = getMethod(o.getClass(), n);
         if (m != null) {
             return invoke(m, o, null);
         } else {
-            throw new CDCException("cliser.msg.error.remove.jointable.methodcannotbefound");
+            throw new CDCException("core.typecast.gn.msg.error.methodnotfound(\"" + n + "\n)");
         }
     }
 
@@ -649,7 +651,7 @@ public class TypeCast {
     }
 
     public static char toChar(String s) {
-        s = (isNullOrEmpy(s)) ? " " : s;
+        s = (isNullOrEmpty(s)) ? " " : s;
         return s.charAt(0);
     }
 
@@ -683,7 +685,7 @@ public class TypeCast {
      */
     public static String toString(BigDecimal n, String f, String r) {
         String rs = toString(n, f);
-        if (isNullOrEmpy(rs)) {
+        if (isNullOrEmpty(rs)) {
             return r;
         } else {
             return rs;

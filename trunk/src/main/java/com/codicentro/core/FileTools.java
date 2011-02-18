@@ -117,7 +117,7 @@ public class FileTools {
         HSSFCell cell = row.createCell(idxCell);
         /*** ALIGMENT ***/
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
-        if (!TypeCast.isNullOrEmpy(alignment)) {
+        if (!TypeCast.isNullOrEmpty(alignment)) {
             if (alignment.equals("alLeft")) {
                 style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
             } else if (alignment.equals("alCenter")) {

@@ -17,14 +17,16 @@ package com.codicentro.core.extjs;
 import com.codicentro.core.CDCException;
 import com.codicentro.core.TypeCast;
 import com.codicentro.core.Types.RenderType;
+import com.codicentro.core.json.JSONSerializer;
 import java.io.Serializable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 
 public class Tree implements Serializable {
 
-    private String[] idField = null;
-    private String[] parentField = null;
+    private String[] idName = null;
+    private String[] parentIdName = null;
     private String textField = null;
     private String iconClsField = null;
     private String checkedField = null;
@@ -32,12 +34,35 @@ public class Tree implements Serializable {
     private String scriptPathField = null;
     private String handlerField = null;
     private List<?> tree = null;
+    private JSONSerializer json = null;
 
-    public Tree(List<?> tree, String idField, String parentField, String textField) {
+    public Tree(List<?> tree, String id, String parentId, String textField) {
         this.tree = tree;
-        this.idField = idField.split("\\.");
-        this.parentField = parentField.split("\\.");
+        /*** ID ***/
+        String[] idField = id.split("\\.");
+        idName = new String[idField.length];
+        for (int i = 0; i < idField.length; i++) {
+            idName[i] = "get" + TypeCast.toFirtUpperCase(idField[i]);
+        }
+        /*** PARENT ID ***/
+        String[] parentIdField = parentId.split("\\.");
+        parentIdName = new String[parentIdField.length];
+        for (int i = 0; i < parentIdField.length; i++) {
+            parentIdName[i] = "get" + TypeCast.toFirtUpperCase(parentIdField[i]);
+        }
+        /*** ***/
         this.textField = textField;
+
+
+        json = new JSONSerializer();
+    }
+
+    public void include(String path) {
+        json.include(path);
+    }
+
+    public void include(String path, String alias) {
+        json.include(path, alias);
     }
 
     public String renderTree() throws CDCException {
@@ -55,36 +80,27 @@ public class Tree implements Serializable {
      */
     private String make(RenderType rt) throws CDCException {
         /** **/
+        String childEmpty = "";
         String itemName = "";
-        String wrapChild = "";
         switch (rt) {
             case EXTJS_TREE:
+                childEmpty = "children:[]";
                 itemName = "children:";
-                wrapChild = ",children:[--WRAP--]";
                 break;
             case EXTJS_MENU:
+                childEmpty = "menu:{items:[]}";
                 itemName = "menu:";
-                wrapChild = ",menu:{items:[--WRAP--]}";
                 break;
         }
-
+        /*** INIT SERIALIZER ***/
         StringBuilder sb = new StringBuilder();
         StringBuilder item = null;
         String cc = "";////Contains childs
         int idx = 0;
         int ln = 0;
         int od = 0;
-        String[] idName = new String[idField.length];
-        for (int i = 0; i < idField.length; i++) {
-            idName[i] = "get" + TypeCast.toFirtUpperCase(idField[i]);
-        }
+
         Object idValue = null;
-
-        String[] parentName = new String[parentField.length];
-        for (int i = 0; i < parentField.length; i++) {
-            parentName[i] = "get" + TypeCast.toFirtUpperCase(parentField[i]);
-        }
-
         Object parentValue = null;
         String textName = "get" + TypeCast.toFirtUpperCase(textField);
         Object textValue = null;
@@ -95,6 +111,7 @@ public class Tree implements Serializable {
 
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
+
         while (iTree.hasNext()) {
             entity = iTree.next();
             /*** ***/
@@ -103,19 +120,19 @@ public class Tree implements Serializable {
                 idValue = TypeCast.GN(idValue, idName[i]);
             }
             /*** ***/
-            parentValue = TypeCast.GN(entity, parentName[0]);
-            for (int i = 1; i < parentName.length; i++) {
-                parentValue = TypeCast.GN(parentValue, parentName[i]);
+            parentValue = TypeCast.GN(entity, parentIdName[0]);
+
+            for (int i = 1; i < parentIdName.length; i++) {
+                parentValue = TypeCast.GN(parentValue, parentIdName[i]);
             }
+
             /*** ***/
             textValue = TypeCast.GN(entity, textName);
             item = new StringBuilder();
             item.append("{");
-            item.append("mid:\"").append(idValue).append("\"");
-             switch (rt) {
-                case EXTJS_TREE:
-                    item.append(",children:[]");
-                    break;
+            item.append("id:\"").append(idValue).append("\"");
+            item.append(",").append(childEmpty);
+            switch (rt) {
                 case EXTJS_MENU:
                     if (handlerField != null) {
                         item.append(",handler:function(){");
@@ -139,18 +156,16 @@ public class Tree implements Serializable {
                     } */
                     break;
             }
-            item.append(",id:\"").append(idValue).append("\"");
             item.append(",text:\"").append(textValue).append("\"");
-           
-
+            /** **/
             if (iconClsField != null) {
                 item.append(",iconCls:\"").append(TypeCast.GN(entity, iconClsName)).append("\"");
             }
-
+            /** **/
             if (checkedField != null) {
                 item.append(",checked:").append(TypeCast.GN(entity, checkedName));
             }
-            //item.append("data:{").append(tree.getJsonValue()).append("}");
+            item.append(",").append(json.toJSON(entity));
             item.append("}");
             if (idValue.equals(parentValue)) {
                 if (sb.toString().equals("")) {
@@ -159,13 +174,13 @@ public class Tree implements Serializable {
                     sb.append(",").append(item);
                 }
             } else {
-                idx = sb.indexOf("{mid:\"" + parentValue + "\",");
-                ln = ("{mid:\"" + parentValue + "\",").length() - 1;
+                idx = sb.indexOf("id:\"" + parentValue + "\",");
+                ln = ("id:\"" + parentValue + "\",").length();
                 if (idx != -1) {
-                    if (sb.indexOf("{mid:\"" + parentValue + "\"," + itemName) == -1) {
-                        sb.insert(idx + ln, wrapChild.replaceFirst("--WRAP--", item.toString()));
+                    if (sb.indexOf("id:\"" + parentValue + "\"," + childEmpty) != -1) {
+                        sb.insert(idx + ln + itemName.length() + 1, item);
                     } else {
-                        sb.insert(idx + ln + 11, item);
+                        sb.insert(idx + ln + itemName.length() + 1, item + ",");
                     }
                 }
             }
@@ -173,42 +188,12 @@ public class Tree implements Serializable {
 
         switch (rt) {
             case EXTJS_TREE:
-                return "[" + sb.toString().replaceAll("children:\\[]", "leaf:true") + "]";
+                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "leaf:true") + "]";
             case EXTJS_MENU:
                 return "[" + sb.toString() + "]";
             default:
                 return null;
         }
-
-       
-    }
-
-    /**
-     * @return the idField
-     */
-    public String[] getIdField() {
-        return idField;
-    }
-
-    /**
-     * @param idField the idField to set
-     */
-    public void setIdField(String[] idField) {
-        this.idField = idField;
-    }
-
-    /**
-     * @return the parentField
-     */
-    public String[] getParentField() {
-        return parentField;
-    }
-
-    /**
-     * @param parentField the parentField to set
-     */
-    public void setParentField(String[] parentField) {
-        this.parentField = parentField;
     }
 
     /**
