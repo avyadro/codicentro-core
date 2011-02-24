@@ -126,7 +126,7 @@ public class ParamsDB {
         try {
         	HashMap<Object, Object> hm = new HashMap<Object, Object>();
             hm.put("TYPE", SQLType.DATE);
-            hm.put("VALUE", TypeCast.toDate(value, f));
+            hm.put("VALUE", TypeCast.toSqlDate(value, f));
             IN.add(hm);
         } catch (Exception ex) {
             throw new CDCException(ex);

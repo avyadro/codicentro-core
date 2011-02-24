@@ -20,7 +20,6 @@ import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.text.DecimalFormat;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -352,23 +351,6 @@ public class TypeCast {
         return (((o == null) || (o.equals(""))) ? r : o);
     }
 
-    /*
-     *
-     */
-    public static java.sql.Date toDate(Object o, String f) throws CDCException {
-        java.sql.Date sqlDate = null;
-        try {
-            java.util.Date utilDate = null;
-            SimpleDateFormat df = new SimpleDateFormat(f.trim());
-            df.setLenient(false); // Force read format date into param f
-            utilDate = df.parse(toString(o));
-            sqlDate = new java.sql.Date(utilDate.getTime());
-        } catch (ParseException ex) {
-            throw new CDCException(ex);
-        }
-        return sqlDate;
-    }
-
     public static String toBlanc(String o) {
         return (((o == null) || (o.equals("-1"))) ? "" : o);
     }
@@ -405,6 +387,11 @@ public class TypeCast {
         return cal;
     }
 
+    /**
+     *
+     * @param cal
+     * @return
+     */
     public static int toDate(Calendar cal) {
         int day = cal.get(5);
         int month = cal.get(2) + 1;
@@ -412,6 +399,53 @@ public class TypeCast {
         return (year * 10000 + month * 100 + day);
     }
 
+    /**
+     *
+     * @param o
+     * @param f
+     * @return
+     */
+    public static Date toDate(Object o, String f) {
+        try {
+            SimpleDateFormat df = new SimpleDateFormat(f.trim());
+            df.setLenient(false); // Force read format date into param f
+            return df.parse(toString(o));
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param o, Date
+     * @param fi, Format Input
+     * @param fo, Format Output
+     * @return
+     */
+    public static Date toDate(Object o, String fi, String fo) {
+        try {
+            return toDate(toDate(o, fi), fo);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    /**
+     * 
+     * @param o
+     * @param f
+     * @return
+     * @throws CDCException
+     */
+    public static java.sql.Date toSqlDate(Object o, String f) throws CDCException {
+        return new java.sql.Date(toDate(o, f).getTime());
+    }
+
+    /**
+     * 
+     * @param s
+     * @return
+     */
     public static Object[] toArray(String s) {
         ArrayList al = new ArrayList();
         StringTokenizer st = new StringTokenizer(s, ",");
@@ -712,16 +746,6 @@ public class TypeCast {
             return true;
         } catch (Exception ex) {
             return false;
-        }
-    }
-
-    public static Date toDate(Date d, String f) {
-        try {
-            SimpleDateFormat df = new SimpleDateFormat(f.trim());
-            df.setLenient(false); // Force read format date into param f
-            return df.parse(toString(d, f));
-        } catch (Exception e) {
-            return null;
         }
     }
 
