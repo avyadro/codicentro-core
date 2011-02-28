@@ -52,7 +52,12 @@ public class JSONSerializer implements Serializable {
                     value = TypeCast.GN(value, "get" + TypeCast.toFirtUpperCase(include.path(i)));
                 }
             }
-            sb.append(comma).append(include.field()).append(":\"").append(value).append("\"");
+            sb.append(comma).append(include.field());
+            if (value == null) {
+                sb.append(":").append(value);
+            } else {
+                sb.append(":\"").append(value).append("\"");
+            }
             comma = ",";
         }
         return sb.toString();
