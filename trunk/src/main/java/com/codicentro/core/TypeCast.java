@@ -605,7 +605,7 @@ public class TypeCast {
      */
     public static Object GN(Object o, String n) throws CDCException, CDCException, CDCException {
         if (o == null) {
-            throw new CDCException("core.typecast.gn.msg.error.objectisnull");
+            throw new CDCException("core.typecast.gn.msg.error.objectisnull(\"" + n + "\")");
         }
         Method m = getMethod(o.getClass(), n);
         if (m != null) {
