@@ -112,6 +112,7 @@ public class Tree implements Serializable {
 
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
+        String entityValue = null;
 
         while (iTree.hasNext()) {
             value = null;
@@ -170,7 +171,13 @@ public class Tree implements Serializable {
             if (checkedField != null) {
                 item.append(",checked:").append(TypeCast.GN(entity, checkedName));
             }
-            item.append(",").append(json.toJSON(entity));
+            entityValue = json.toJSON(entity);
+            if (!TypeCast.isNullOrEmpty(entityValue)) {
+                item.append(",").append(entityValue);
+            }
+            /*
+            
+             */
             item.append("}");
             if (idValue.equals(parentValue)) {
                 if (sb.toString().equals("")) {
