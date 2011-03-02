@@ -27,12 +27,8 @@ public class Tree implements Serializable {
 
     private String[] idName = null;
     private String[] parentIdName = null;
-    private String textField = null;
-    private String iconClsField = null;
-    private String checkedField = null;
-    private String scriptField = null;
-    private String scriptPathField = null;
     private String handlerField = null;
+    private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
 
@@ -51,10 +47,8 @@ public class Tree implements Serializable {
             parentIdName[i] = "get" + TypeCast.toFirtUpperCase(parentIdField[i]);
         }
         /*** ***/
-        this.textField = textField;
-
-
         json = new JSONSerializer();
+        json.include(textField, "text");
     }
 
     public void include(String path) {
@@ -102,14 +96,9 @@ public class Tree implements Serializable {
 
         Object idValue = null;
         Object parentValue = null;
-        String textName = "get" + TypeCast.toFirtUpperCase(textField);
-        Object textValue = null;
         Object value = null;
         /** OPTIONAL **/
-        String iconClsName = (iconClsField == null) ? null : "get" + TypeCast.toFirtUpperCase(iconClsField);
-        String checkedName = (checkedField == null) ? null : "get" + TypeCast.toFirtUpperCase(checkedField);
         String handlerName = (handlerField == null) ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
-
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
         String entityValue = null;
@@ -130,8 +119,13 @@ public class Tree implements Serializable {
             }
 
             /*** ***/
-            textValue = TypeCast.GN(entity, textName);
             item = new StringBuilder();
+            if (getSeparatorField() != null) {
+                value = TypeCast.GN(entity, "get" + TypeCast.toFirtUpperCase(getSeparatorField()));
+                if (value != null) {
+                    item.append("\"").append(value).append("\",");
+                }
+            }
             item.append("{");
             item.append("id:\"").append(idValue).append("\"");
             item.append(",").append(childEmpty);
@@ -145,6 +139,8 @@ public class Tree implements Serializable {
                             item.append("}");
                         }
                     }
+
+
                     /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
                     scriptPath = menu.getStringValue("SCRIPT_PATH", "");
                     params = menu.getStringValue("PARAMS", "");
@@ -162,15 +158,7 @@ public class Tree implements Serializable {
                     } */
                     break;
             }
-            item.append(",text:\"").append(textValue).append("\"");
             /** **/
-            if (iconClsField != null) {
-                item.append(",iconCls:\"").append(TypeCast.GN(entity, iconClsName)).append("\"");
-            }
-            /** **/
-            if (checkedField != null) {
-                item.append(",checked:").append(TypeCast.GN(entity, checkedName));
-            }
             entityValue = json.toJSON(entity);
             if (!TypeCast.isNullOrEmpty(entityValue)) {
                 item.append(",").append(entityValue);
@@ -179,6 +167,7 @@ public class Tree implements Serializable {
             
              */
             item.append("}");
+
             if (idValue.equals(parentValue)) {
                 if (sb.toString().equals("")) {
                     sb.append(item);
@@ -209,45 +198,17 @@ public class Tree implements Serializable {
     }
 
     /**
-     * @return the textField
-     */
-    public String getTextField() {
-        return textField;
-    }
-
-    /**
-     * @param textField the textField to set
-     */
-    public void setTextField(String textField) {
-        this.textField = textField;
-    }
-
-    /**
-     * @return the iconClsField
-     */
-    public String getIconClsField() {
-        return iconClsField;
-    }
-
-    /**
      * @param iconClsField the iconClsField to set
      */
     public void setIconClsField(String iconClsField) {
-        this.iconClsField = iconClsField;
-    }
-
-    /**
-     * @return the checkedField
-     */
-    public String getCheckedField() {
-        return checkedField;
+        include(iconClsField, "iconCls");
     }
 
     /**
      * @param checkedField the checkedField to set
      */
     public void setCheckedField(String checkedField) {
-        this.checkedField = checkedField;
+        include(checkedField, "checked");
     }
 
     /**
@@ -265,34 +226,6 @@ public class Tree implements Serializable {
     }
 
     /**
-     * @return the scriptField
-     */
-    public String getScriptField() {
-        return scriptField;
-    }
-
-    /**
-     * @param scriptField the scriptField to set
-     */
-    public void setScriptField(String scriptField) {
-        this.scriptField = scriptField;
-    }
-
-    /**
-     * @return the scriptPathField
-     */
-    public String getScriptPathField() {
-        return scriptPathField;
-    }
-
-    /**
-     * @param scriptPathField the scriptPathField to set
-     */
-    public void setScriptPathField(String scriptPathField) {
-        this.scriptPathField = scriptPathField;
-    }
-
-    /**
      * @return the handlerField
      */
     public String getHandlerField() {
@@ -304,5 +237,19 @@ public class Tree implements Serializable {
      */
     public void setHandlerField(String handlerField) {
         this.handlerField = handlerField;
+    }
+
+    /**
+     * @return the separatorField
+     */
+    public String getSeparatorField() {
+        return separatorField;
+    }
+
+    /**
+     * @param separatorField the separatorField to set
+     */
+    public void setSeparatorField(String separatorField) {
+        this.separatorField = separatorField;
     }
 }
