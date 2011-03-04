@@ -117,6 +117,7 @@ public class TypeCast {
         return (!s.equals("N")
                 && !s.equals("NO")
                 && !s.equals("FALSE")
+                && !s.equals("F")
                 && !((ifNumber(s)) && (toInt(s) == 0))
                 && !s.equals("OFF"));
     }
