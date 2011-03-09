@@ -20,10 +20,16 @@ public class Cell {
     private String formula = null;
     private String dataFormat = null;
     private boolean summary = false;
+    private boolean render = true;
     private String summaryFormula = null;
 
     public Cell(String name) {
         this.name = name;
+    }
+
+    public Cell(String name, boolean render) {
+        this(name);
+        this.render = render;
     }
 
     /**
@@ -94,5 +100,19 @@ public class Cell {
      */
     public void setSummaryFormula(String summaryFormula) {
         this.summaryFormula = summaryFormula;
+    }
+
+    /**
+     * @return the render
+     */
+    public boolean isRender() {
+        return render;
+    }
+
+    /**
+     * @param render the render to set
+     */
+    public void setRender(boolean render) {
+        this.render = render;
     }
 }

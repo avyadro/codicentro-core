@@ -37,11 +37,16 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class FileTools {
+
+    private static Logger logger = LoggerFactory.getLogger(FileTools.class);
 
     /**
      *
@@ -98,11 +103,10 @@ public class FileTools {
      * @param row
      * @param column
      * @param idCell
-     * @param idxCell
-     * @param isHeader
+     * @param idxCell     
      * @throws CDCException
      */
-    private static void byTemplate(HSSFWorkbook book, HSSFSheet sheet, HSSFRow row, Element column, List<Cell> cells, int idxCell, boolean isHeader) throws CDCException {
+    private static void columnDef(HSSFWorkbook book, HSSFSheet sheet, HSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
         Cell c = new Cell(column.getAttribute("name").getValue());
         /*** VARS ***/
         HSSFCellStyle style = book.createCellStyle();
@@ -112,9 +116,37 @@ public class FileTools {
         style.setBorderRight(TypeCast.toShort(1));
 
         HSSFFont font = book.createFont();
+        HSSFCell cell = null;
+        /*** COL INDEX ***/
+        String cindex = (column.getAttribute("cindex") == null) ? null : column.getAttribute("cindex").getValue();
+        if (TypeCast.toBigInteger(cindex) != null) {
+            idxCell = TypeCast.toInt(cindex);
+        }
+        logger.info("Col index: " + idxCell);
+
+        /*** ROW INDEX ***/
+        String rindex = (column.getAttribute("rindex") == null) ? null : column.getAttribute("rindex").getValue();
+        if (TypeCast.toBigInteger(rindex) != null) {
+            logger.info("Row index: " + rindex);
+            cell = sheet.getRow(TypeCast.toInt(rindex)).createCell(idxCell);
+        } else {
+            logger.info("Row index: " + row.getRowNum());
+            cell = row.createCell(idxCell);
+        }
 
 
-        HSSFCell cell = row.createCell(idxCell);
+        /*** ROW SPAN ***/
+        String rowspan = (column.getAttribute("rowspan") == null) ? null : column.getAttribute("rowspan").getValue();
+        if (TypeCast.toBigInteger(rowspan) != null) {
+            logger.info("Rows a cell should span: " + cell.getRowIndex() + " to " + rowspan);
+            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), TypeCast.toInt(rowspan), idxCell, idxCell));
+        }
+        /*** COL SPAN ***/
+        String colspan = (column.getAttribute("colspan") == null) ? null : column.getAttribute("colspan").getValue();
+        if (TypeCast.toBigInteger(colspan) != null) {
+            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + colspan);
+            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, TypeCast.toInt(colspan)));
+        }
         /*** ALIGMENT ***/
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
         if (!TypeCast.isNullOrEmpty(alignment)) {
@@ -152,6 +184,8 @@ public class FileTools {
         c.setFormula((column.getAttribute("formula") == null) ? null : column.getAttribute("formula").getValue());
         /*** DATA FORMAT ***/
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
+        /*** RENDER DATA ***/
+        c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
         style.setFont(font);
         cell.setCellStyle(style);
         cell.setCellValue(column.getValue());
@@ -197,7 +231,7 @@ public class FileTools {
         int idxCell = -1;
         while (iColumn.hasNext()) {
             idxCell++;
-            byTemplate(book, sheet, row, iColumn.next(), cells, idxCell, true);
+            columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
         }
         HSSFCell cell = null;
         Object oValue = null;
@@ -262,6 +296,15 @@ public class FileTools {
         while ((iHeader.hasNext()) && (iColumn == null)) {
             header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
+                /*** ROW SIZE ***/
+                String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
+                if (!TypeCast.isNullOrEmpty(frdata)) {
+                    logger.info("First row data: " + frdata);
+                    while (idxRow + 1 < TypeCast.toInt(frdata)) {
+                        idxRow++;
+                        sheet.createRow(idxRow);
+                    }
+                }
                 iColumn = header.getChildren("column").iterator();
             }
         }
@@ -270,7 +313,7 @@ public class FileTools {
         int idxCell = -1;
         while (iColumn.hasNext()) {
             idxCell++;
-            byTemplate(book, sheet, row, iColumn.next(), cells, idxCell, true);
+            columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
         }
         HSSFCell cell = null;
         Object oValue = null;
@@ -290,7 +333,7 @@ public class FileTools {
                 if (cells.get(idxCell).getFormula() != null) {
                     cell.setCellFormula(mkFormula(cells.get(idxCell).getFormula(), (idxRow + 1), idxCell));
                 } else {
-                    oValue = TypeCast.GN(value, "get" + cells.get(idxCell).getName());
+                    oValue = (cells.get(idxCell).isRender()) ? TypeCast.GN(value, "get" + cells.get(idxCell).getName()) : null;
                     if (oValue instanceof java.lang.Number) {
                         cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
                     } else {
