@@ -16,6 +16,7 @@ package com.codicentro.core;
 
 //import com.codicentro.model.Column;
 //import com.codicentro.model.Table;
+import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -26,6 +27,8 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.StringTokenizer;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TypeCast {
 
@@ -604,7 +607,7 @@ public class TypeCast {
      * @param n
      * @return
      */
-    public static Object GN(Object o, String n) throws CDCException, CDCException, CDCException {
+    public static Object GN(Object o, String n) throws CDCException {
         if (o == null) {
             throw new CDCException("core.typecast.gn.msg.error.objectisnull(\"" + n + "\")");
         }
@@ -613,6 +616,40 @@ public class TypeCast {
             return invoke(m, o, null);
         } else {
             throw new CDCException("core.typecast.gn.msg.error.methodnotfound(\"" + n + "\n)");
+        }
+    }
+
+    /**
+     * Get Field Value by Name, used reflections for find field
+     * @param o
+     * @param n
+     * @return
+     * @throws CDCException
+     */
+    public static Object GF(Object o, String n) throws CDCException {
+        if (o == null) {
+            throw new CDCException("core.typecast.gf.msg.error.objectisnull(\"" + n + "\")");
+        }
+        try {
+            Field f = o.getClass().getField(n);
+            return f.get(o);
+        } catch (Exception ex) {
+            throw new CDCException("core.typecast.gf.msg.error.fieldnotfound(\"" + n + "\")");
+        }
+    }
+
+    public static Object GF(String className, String n) throws CDCException {
+        if (className == null) {
+            throw new CDCException("core.typecast.gf.msg.error.objectisnull(\"" + n + "\")");
+        }
+        try {
+            return GF(Class.forName(className).newInstance(), n);
+        } catch (ClassNotFoundException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.classnotfound(\"" + className + "\")");
+        } catch (InstantiationException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.instantiation(\"" + className + "\")");
+        } catch (IllegalAccessException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.illegalaccess(\"" + className + "\")");
         }
     }
 
@@ -645,6 +682,21 @@ public class TypeCast {
             } else {
                 return c.getMethod(n, parameterTypes);
             }
+        } catch (Exception ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    /**
+     * Get Field Class
+     * @param c
+     * @param n
+     * @return
+     * @throws CDCException
+     */
+    public static Field getField(Class c, String n) throws CDCException {
+        try {
+            return c.getField(n);
         } catch (Exception ex) {
             throw new CDCException(ex);
         }

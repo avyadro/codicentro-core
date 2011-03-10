@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -37,6 +38,7 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -106,7 +108,7 @@ public class FileTools {
      * @param idxCell     
      * @throws CDCException
      */
-    private static void columnDef(HSSFWorkbook book, HSSFSheet sheet, HSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
+    private static int columnDef(HSSFWorkbook book, HSSFSheet sheet, HSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
         Cell c = new Cell(column.getAttribute("name").getValue());
         /*** VARS ***/
         HSSFCellStyle style = book.createCellStyle();
@@ -117,52 +119,93 @@ public class FileTools {
 
         HSSFFont font = book.createFont();
         HSSFCell cell = null;
+        /*** COL INDEX INCREMENT, DEFAULT 1 ***/
+        String cindexinc = (column.getAttribute("cindexinc") == null) ? null : column.getAttribute("cindexinc").getValue();
+        if (TypeCast.toBigInteger(cindexinc) != null) {
+            idxCell = idxCell + TypeCast.toInt(cindexinc);
+        } else {
+            idxCell++;
+        }
         /*** COL INDEX ***/
         String cindex = (column.getAttribute("cindex") == null) ? null : column.getAttribute("cindex").getValue();
         if (TypeCast.toBigInteger(cindex) != null) {
             idxCell = TypeCast.toInt(cindex);
         }
         logger.info("Col index: " + idxCell);
-
         /*** ROW INDEX ***/
         String rindex = (column.getAttribute("rindex") == null) ? null : column.getAttribute("rindex").getValue();
         if (TypeCast.toBigInteger(rindex) != null) {
-            logger.info("Row index: " + rindex);
             cell = sheet.getRow(TypeCast.toInt(rindex)).createCell(idxCell);
         } else {
-            logger.info("Row index: " + row.getRowNum());
             cell = row.createCell(idxCell);
         }
-
-
         /*** ROW SPAN ***/
         String rowspan = (column.getAttribute("rowspan") == null) ? null : column.getAttribute("rowspan").getValue();
         if (TypeCast.toBigInteger(rowspan) != null) {
-            logger.info("Rows a cell should span: " + cell.getRowIndex() + " to " + rowspan);
+            logger.info("Rows a cell should span: " + idxCell + " to " + rowspan);
             sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), TypeCast.toInt(rowspan), idxCell, idxCell));
         }
+
         /*** COL SPAN ***/
         String colspan = (column.getAttribute("colspan") == null) ? null : column.getAttribute("colspan").getValue();
         if (TypeCast.toBigInteger(colspan) != null) {
-            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + colspan);
-            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, TypeCast.toInt(colspan)));
+            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + TypeCast.toInt(colspan) - 1));
+            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + TypeCast.toInt(colspan) - 1));
         }
+
+
+
         /*** ALIGMENT ***/
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
         if (!TypeCast.isNullOrEmpty(alignment)) {
-            if (alignment.equals("alLeft")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
-            } else if (alignment.equals("alCenter")) {
+            if (alignment.equals("alCenter")) {
                 style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+            } else if (alignment.equals("alCenterSelection")) {
+                style.setAlignment(HSSFCellStyle.ALIGN_CENTER_SELECTION);
+            } else if (alignment.equals("alFill")) {
+                style.setAlignment(HSSFCellStyle.ALIGN_FILL);
+            } else if (alignment.equals("alGeneral")) {
+                style.setAlignment(HSSFCellStyle.ALIGN_GENERAL);
+            } else if (alignment.equals("alJustify")) {
+                style.setAlignment(HSSFCellStyle.ALIGN_JUSTIFY);
+            } else if (alignment.equals("alLeft")) {
+                style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
             } else if (alignment.equals("alRight")) {
                 style.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
             }
         }
+
+        /*** VERTICAL ALIGMENT ***/
+        String valignment = (column.getAttribute("valignment") == null) ? null : column.getAttribute("valignment").getValue();
+        if (!TypeCast.isNullOrEmpty(valignment)) {
+            if (valignment.equals("alBottom")) {
+                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_BOTTOM);
+            } else if (valignment.equals("alCenter")) {
+                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+            } else if (valignment.equals("alJustify")) {
+                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_JUSTIFY);
+            } else if (valignment.equals("alTop")) {
+                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+            }
+        }
+        /*** WRAP TEXT ***/
+        style.setWrapText((column.getAttribute("wrap") == null) ? false : TypeCast.toBoolean(column.getAttribute("wrap").getValue()));
+
+        /*** ROTATION ***/
+        String rotation = (column.getAttribute("rotation") == null) ? null : column.getAttribute("rotation").getValue();
+        if (TypeCast.toBigDecimal(rotation) != null) {
+            style.setRotation(TypeCast.toBigDecimal(rotation).shortValue());
+        }
+
         /*** BACKGROUND ***/
-        Short background = (column.getAttribute("background") == null) ? null : TypeCast.toShortD(column.getAttribute("background").getValue());
-        if (background != null) {
+        String background = (column.getAttribute("background") == null) ? null : column.getAttribute("background").getValue();
+        if (!TypeCast.isNullOrEmpty(background)) {
             style.setFillPattern(HSSFPatternFormatting.SOLID_FOREGROUND);
-            style.setFillForegroundColor(background);
+            if (TypeCast.toShortD(background) != null) {
+                style.setFillForegroundColor(TypeCast.toShortD(background));
+            } else {
+                style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
+            }
         }
         /*** WIDTH ***/
         BigDecimal width = (column.getAttribute("width") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("width").getValue());
@@ -170,6 +213,14 @@ public class FileTools {
             width = TypeCast.toBigDecimal(width.doubleValue() * 1308.90);
             sheet.setColumnWidth(idxCell, width.intValue());
         }
+
+        /*** HEIGHT ***/
+        BigDecimal height = (column.getAttribute("height") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("height").getValue());
+        if (height != null) {
+            height = TypeCast.toBigDecimal(height.doubleValue() * 1308.90);
+            row.setHeight(height.shortValue());
+        }
+
         /*** FONT BOLD ***/
         Boolean bold = (column.getAttribute("bold") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("bold").getValue());
         if (bold) {
@@ -179,7 +230,6 @@ public class FileTools {
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
         /*** SUMMARY FORMULA ***/
         c.setSummaryFormula((column.getAttribute("summaryFormula") == null) ? null : column.getAttribute("summaryFormula").getValue());
-
         /*** FORMULA ***/
         c.setFormula((column.getAttribute("formula") == null) ? null : column.getAttribute("formula").getValue());
         /*** DATA FORMAT ***/
@@ -190,6 +240,7 @@ public class FileTools {
         cell.setCellStyle(style);
         cell.setCellValue(column.getValue());
         cells.add(c);
+        return idxCell;
     }
 
     private static String mkFormula(String formula, int idxRow, int idxCol) {
@@ -312,8 +363,7 @@ public class FileTools {
         /*** HEADERS ***/
         int idxCell = -1;
         while (iColumn.hasNext()) {
-            idxCell++;
-            columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
+            idxCell = columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
         }
         HSSFCell cell = null;
         Object oValue = null;
