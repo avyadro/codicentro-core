@@ -332,6 +332,67 @@ public class FileTools {
         exportXLS(response, book, filename);
     }
 
+    private static <TEntity> int render(HSSFSheet sheet, List<Cell> cells, List<TEntity> values, int idxRow) throws CDCException {
+        HSSFRow row = null;
+        Object oValue = null;
+        HSSFCell cell = null;
+        int idxCell = -1;
+        HSSFCellStyle style = null;
+        for (Object value : values) {
+            idxRow++;
+            row = sheet.createRow(idxRow);
+            idxCell = -1;
+            for (int idx = 0; idx < cells.size(); idx++) {
+                if (cells.get(idx).isRender()) {
+                    idxCell++;
+                    cell = row.createCell(idxCell);
+                    /*** STYLE ***/
+                    style = sheet.getWorkbook().createCellStyle();
+                    if (cells.get(idx).getDataFormat() != null) {
+                        style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idx).getDataFormat()));
+                    }
+                    cell.setCellStyle(style);
+                    /*** ***/
+                    if (cells.get(idx).getFormula() != null) {
+                        cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), (idxRow + 1), idxCell));
+                    } else {
+                        oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
+                        if (oValue instanceof java.lang.Number) {
+                            cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                        } else {
+                            cell.setCellValue(TypeCast.toString(oValue));
+                        }
+                    }
+                }
+            }
+        }
+        return idxRow;
+    }
+
+    private static <TEntity> int summary(HSSFSheet sheet, List<Cell> cells, int idxRow) {
+        /*** SUMMARY ***/
+        idxRow++;
+        HSSFRow row = sheet.createRow(idxRow);
+        HSSFCell cell = null;
+        HSSFCellStyle style = null;
+        for (int idx = 0; idx < cells.size(); idx++) {
+            if (cells.get(idx).isSummary()) {
+                cell = row.createCell(idx);
+                /*** STYLE ***/
+                style = sheet.getWorkbook().createCellStyle();
+                if (cells.get(idx).getDataFormat() != null) {
+                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idx).getDataFormat()));
+                }
+                cell.setCellStyle(style);
+                /*** ***/
+                if (cells.get(idx).getSummaryFormula() != null) {
+                    cell.setCellFormula(mkFormula(cells.get(idx).getSummaryFormula(), idxRow, idx));
+                }
+            }
+        }
+        return idxRow;
+    }
+
     private static <TEntity> void exportXLS(List<TEntity> values, Document doc, String idHeader, HttpServletResponse response, String filename) throws Exception {
         /*** INITIALIZE TEMPLATE ***/
         Element root = doc.getRootElement();
@@ -365,51 +426,9 @@ public class FileTools {
         while (iColumn.hasNext()) {
             idxCell = columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
         }
-        HSSFCell cell = null;
-        Object oValue = null;
-        HSSFCellStyle style = null;
-        for (Object value : values) {
-            idxRow++;
-            row = sheet.createRow(idxRow);
-            for (idxCell = 0; idxCell < cells.size(); idxCell++) {
-                cell = row.createCell(idxCell);
-                /*** STYLE ***/
-                style = book.createCellStyle();
-                if (cells.get(idxCell).getDataFormat() != null) {
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idxCell).getDataFormat()));
-                }
-                cell.setCellStyle(style);
-                /*** ***/
-                if (cells.get(idxCell).getFormula() != null) {
-                    cell.setCellFormula(mkFormula(cells.get(idxCell).getFormula(), (idxRow + 1), idxCell));
-                } else {
-                    oValue = (cells.get(idxCell).isRender()) ? TypeCast.GN(value, "get" + cells.get(idxCell).getName()) : null;
-                    if (oValue instanceof java.lang.Number) {
-                        cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
-                    } else {
-                        cell.setCellValue(TypeCast.toString(oValue));
-                    }
-                }
-            }
-        }
-        /*** SUMMARY ***/
-        idxRow++;
-        row = sheet.createRow(idxRow);
-        for (idxCell = 0; idxCell < cells.size(); idxCell++) {
-            if (cells.get(idxCell).isSummary()) {
-                cell = row.createCell(idxCell);
-                /*** STYLE ***/
-                style = book.createCellStyle();
-                if (cells.get(idxCell).getDataFormat() != null) {
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idxCell).getDataFormat()));
-                }
-                cell.setCellStyle(style);
-                /*** ***/
-                if (cells.get(idxCell).getSummaryFormula() != null) {
-                    cell.setCellFormula(mkFormula(cells.get(idxCell).getSummaryFormula(), idxRow, idxCell));
-                }
-            }
-        }
+
+        idxRow = render(sheet, cells, values, idxRow);
+        idxRow = summary(sheet, cells, idxRow);
         exportXLS(response, book, filename);
     }
 
