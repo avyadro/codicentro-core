@@ -88,11 +88,9 @@ public class Tree implements Serializable {
         }
         /*** INIT SERIALIZER ***/
         StringBuilder sb = new StringBuilder();
-        StringBuilder item = null;
-        String cc = "";////Contains childs
+        StringBuilder item = null;        
         int idx = 0;
-        int ln = 0;
-        int od = 0;
+        int ln = 0;        
 
         Object idValue = null;
         Object parentValue = null;
