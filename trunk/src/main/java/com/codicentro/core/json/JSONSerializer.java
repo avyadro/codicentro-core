@@ -36,9 +36,16 @@ public class JSONSerializer implements Serializable {
         includes.add(new TInclude(propertyName, alias));
     }
 
-    public <TEntity> String toJSON(List<TEntity> entities) {
+    public <TEntity> String toJSON(List<TEntity> entities) throws CDCException {
         StringBuilder sb = new StringBuilder();
-        return sb.toString();
+        for (TEntity entity : entities) {
+            sb.append(",{").append(toJSON(entity)).append("}");
+        }
+        if (TypeCast.isNullOrEmpty(sb.toString())) {
+            return "[]";
+        } else {
+            return "[" + sb.toString().substring(1) + "]";
+        }
     }
 
     public <TEntity> String toJSON(TEntity entity) throws CDCException {
