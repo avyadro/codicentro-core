@@ -111,4 +111,27 @@ public class Utils {
         }
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
+
+    /**
+     * 
+     * @param amount
+     * @return
+     */
+    public static Date amountDay(int amount) {
+        return amountDay(new Date(), amount);
+    }
+
+    /**
+     * 
+     * @param date
+     * @param amount
+     * @return
+     */
+    public static Date amountDay(Date date, int amount) {
+        Calendar c = Calendar.getInstance();
+        c.setLenient(false);
+        c.setTime(new Date());
+        c.add(Calendar.DAY_OF_MONTH, amount);
+        return c.getTime();
+    }
 }
