@@ -31,9 +31,10 @@ public class Tree implements Serializable {
     private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
+    private boolean leaf = true;
 
-    public Tree(List<?> tree, String id, String parentId, String textField) {
-        this.tree = tree;
+    public Tree(String id, String parentId, String textField) {
+
         /*** ID ***/
         String[] idField = id.split("\\.");
         idName = new String[idField.length];
@@ -49,6 +50,11 @@ public class Tree implements Serializable {
         /*** ***/
         json = new JSONSerializer();
         json.include(textField, "text");
+    }
+
+    public Tree(List<?> tree, String id, String parentId, String textField) {
+        this(id, parentId, textField);
+        this.tree = tree;
     }
 
     public void include(String path) {
@@ -88,9 +94,9 @@ public class Tree implements Serializable {
         }
         /*** INIT SERIALIZER ***/
         StringBuilder sb = new StringBuilder();
-        StringBuilder item = null;        
+        StringBuilder item = null;
         int idx = 0;
-        int ln = 0;        
+        int ln = 0;
 
         Object idValue = null;
         Object parentValue = null;
@@ -166,14 +172,15 @@ public class Tree implements Serializable {
              */
             item.append("}");
 
-            if (idValue.equals(parentValue)) {
+            /*** ***/
+            idx = sb.indexOf("id:\"" + parentValue + "\",");
+            if ((idx == -1) || (idValue.equals(parentValue))) {
                 if (sb.toString().equals("")) {
                     sb.append(item);
                 } else {
                     sb.append(",").append(item);
                 }
             } else {
-                idx = sb.indexOf("id:\"" + parentValue + "\",");
                 ln = ("id:\"" + parentValue + "\",").length();
                 if (idx != -1) {
                     if (sb.indexOf("id:\"" + parentValue + "\"," + childEmpty) != -1) {
@@ -187,7 +194,7 @@ public class Tree implements Serializable {
 
         switch (rt) {
             case EXTJS_TREE:
-                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "leaf:true") + "]";
+                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "leaf:" + isLeaf()) + "]";
             case EXTJS_MENU:
                 return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
             default:
@@ -249,5 +256,19 @@ public class Tree implements Serializable {
      */
     public void setSeparatorField(String separatorField) {
         this.separatorField = separatorField;
+    }
+
+    /**
+     * @return the leaf
+     */
+    public boolean isLeaf() {
+        return leaf;
+    }
+
+    /**
+     * @param leaf the leaf to set
+     */
+    public void setLeaf(boolean leaf) {
+        this.leaf = leaf;
     }
 }
