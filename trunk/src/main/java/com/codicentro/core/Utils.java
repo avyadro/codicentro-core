@@ -16,11 +16,19 @@ package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
 import com.codicentro.core.security.Encryption;
+import java.io.StringReader;
+import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Source;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.stream.StreamResult;
+import javax.xml.transform.stream.StreamSource;
 
 public class Utils {
 
@@ -133,5 +141,24 @@ public class Utils {
         c.setTime(new Date());
         c.add(Calendar.DAY_OF_MONTH, amount);
         return c.getTime();
+    }
+
+    public static String xmlPrettyFormat(String xml, int indent) {
+        try {
+            if (TypeCast.isNullOrEmpty(xml)) {
+                return xml;
+            }
+            Source xmlInput = new StreamSource(new StringReader(xml));
+            StringWriter stringWriter = new StringWriter();
+            StreamResult xmlOutput = new StreamResult(stringWriter);
+            TransformerFactory transformerFactory = TransformerFactory.newInstance();
+            transformerFactory.setAttribute("indent-number", indent);
+            Transformer transformer = transformerFactory.newTransformer();
+            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+            transformer.transform(xmlInput, xmlOutput);
+            return xmlOutput.getWriter().toString();
+        } catch (Exception e) {
+            throw new RuntimeException(e); // simple exception handling, please review it
+        }
     }
 }
