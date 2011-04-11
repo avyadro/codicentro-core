@@ -26,7 +26,6 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
-import java.util.logging.Level;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -38,7 +37,6 @@ import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.hssf.util.CellReference;
-import org.apache.poi.hssf.util.HSSFColor;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.jdom.Document;
 import org.jdom.Element;
@@ -115,7 +113,7 @@ public class FileTools {
         style.setBorderBottom(TypeCast.toShort(1));
         style.setBorderTop(TypeCast.toShort(1));
         style.setBorderLeft(TypeCast.toShort(1));
-        style.setBorderRight(TypeCast.toShort(1));
+        style.setBorderRight(TypeCast.toShort(1));       
 
         HSSFFont font = book.createFont();
         HSSFCell cell = null;
@@ -135,10 +133,9 @@ public class FileTools {
         /*** ROW INDEX ***/
         String rindex = (column.getAttribute("rindex") == null) ? null : column.getAttribute("rindex").getValue();
         if (TypeCast.toBigInteger(rindex) != null) {
-            cell = sheet.getRow(TypeCast.toInt(rindex)).createCell(idxCell);
-        } else {
-            cell = row.createCell(idxCell);
+            row = sheet.getRow(TypeCast.toInt(rindex));
         }
+        cell = row.createCell(idxCell);
         /*** ROW SPAN ***/
         String rowspan = (column.getAttribute("rowspan") == null) ? null : column.getAttribute("rowspan").getValue();
         if (TypeCast.toBigInteger(rowspan) != null) {
@@ -393,7 +390,16 @@ public class FileTools {
         return idxRow;
     }
 
-    private static <TEntity> void exportXLS(List<TEntity> values, Document doc, String idHeader, HttpServletResponse response, String filename) throws Exception {
+    /**
+     * 
+     * @param <TEntity>
+     * @param values
+     * @param doc
+     * @param idHeader    
+     * @return
+     * @throws Exception
+     */
+    private static <TEntity> HSSFWorkbook exportXLS(List<TEntity> values, Document doc, String idHeader) throws Exception {
         /*** INITIALIZE TEMPLATE ***/
         Element root = doc.getRootElement();
         /*** INITIALIZED WORKBOOK ***/
@@ -429,7 +435,7 @@ public class FileTools {
 
         idxRow = render(sheet, cells, values, idxRow);
         idxRow = summary(sheet, cells, idxRow);
-        exportXLS(response, book, filename);
+        return book;
     }
 
     /**
@@ -491,9 +497,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, File template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(template);
-        exportXLS(values, doc, idHeader, response, filename);
+        exportXLS(response, exportXLS(values, new SAXBuilder().build(template), idHeader), filename);
     }
 
     /**
@@ -507,9 +511,20 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, URL template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(template);
-        exportXLS(values, doc, idHeader, response, filename);
+        exportXLS(response, exportXLS(values, new SAXBuilder().build(template), idHeader), filename);
+    }
+
+    /**
+     * 
+     * @param <TEntity>
+     * @param values
+     * @param template
+     * @param idHeader
+     * @return
+     * @throws Exception
+     */
+    public static <TEntity> HSSFWorkbook exportXLS(List<TEntity> values, URL template, String idHeader) throws Exception {
+        return exportXLS(values, new SAXBuilder().build(template), idHeader);
     }
 
     /**
@@ -523,9 +538,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, String key, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        SAXBuilder builder = new SAXBuilder();
-        Document doc = builder.build(is(key));
-        exportXLS(values, doc, idHeader, response, filename);
+        exportXLS(response, exportXLS(values, new SAXBuilder().build(is(key)), idHeader), filename);
     }
 
     /**
