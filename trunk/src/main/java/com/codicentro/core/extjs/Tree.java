@@ -27,11 +27,14 @@ public class Tree implements Serializable {
 
     private String[] idName = null;
     private String[] parentIdName = null;
+    private String[] expName = null;
+    private String expCompare = null;
     private String handlerField = null;
     private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
     private boolean leaf = true;
+    private String leafExpression = null;
 
     public Tree(String id, String parentId, String textField) {
 
@@ -79,6 +82,9 @@ public class Tree implements Serializable {
      * @throws CDCException
      */
     private String make(RenderType rt) throws CDCException {
+        if (tree == null) {
+            return "[]";
+        }
         /** **/
         String childEmpty = "";
         String itemName = "";
@@ -167,6 +173,15 @@ public class Tree implements Serializable {
             if (!TypeCast.isNullOrEmpty(entityValue)) {
                 item.append(",").append(entityValue);
             }
+            if (!TypeCast.isNullOrEmpty(leafExpression)) {
+                Object expValue = TypeCast.GN(entity, expName[0]);
+                for (int i = 1; i < expName.length; i++) {
+                    expValue = TypeCast.GN(expValue, expName[i]);
+                }
+                leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
+            }
+            item.append(",leaf:").append(isLeaf());
+
             /*
             
              */
@@ -194,7 +209,7 @@ public class Tree implements Serializable {
 
         switch (rt) {
             case EXTJS_TREE:
-                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "leaf:" + isLeaf()) + "]";
+                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "ondemand:false") + "]";
             case EXTJS_MENU:
                 return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
             default:
@@ -270,5 +285,26 @@ public class Tree implements Serializable {
      */
     public void setLeaf(boolean leaf) {
         this.leaf = leaf;
+    }
+
+    /**
+     * @return the leafExpression
+     */
+    public String getLeafExpression() {
+        return leafExpression;
+    }
+
+    /**
+     * @param leafExpression the leafExpression to set
+     */
+    public void setLeafExpression(String leafExpression) {
+        String[] exp = leafExpression.split("==");
+        expName = exp[0].split("\\.");
+        for (int i = 0; i < expName.length; i++) {
+            expName[i] = "get" + TypeCast.toFirtUpperCase(expName[i]);
+        }
+        expCompare = exp[1];
+        this.leafExpression = leafExpression;
+
     }
 }
