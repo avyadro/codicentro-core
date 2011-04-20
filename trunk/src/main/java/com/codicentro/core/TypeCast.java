@@ -110,19 +110,18 @@ public class TypeCast {
         //  Object newObject = (String)super
     }
 
-    public static boolean toBoolean(Object obj) throws CDCException {
-        String s = toString(obj);
-        if (s != null) {
-            s = s.trim().toUpperCase();
-        } else {
-            s = "N";
+    public static boolean toBoolean(Object obj) {
+        try {
+            String s = toString(obj);
+            if (s != null) {
+                s = s.trim().toUpperCase();
+            } else {
+                s = "N";
+            }
+            return !s.equals("N") && !s.equals("NO") && !s.equals("FALSE") && !s.equals("F") && !((ifNumber(s)) && (toInt(s) == 0)) && !s.equals("OFF");
+        } catch (CDCException ex) {            
+            return false;
         }
-        return (!s.equals("N")
-                && !s.equals("NO")
-                && !s.equals("FALSE")
-                && !s.equals("F")
-                && !((ifNumber(s)) && (toInt(s) == 0))
-                && !s.equals("OFF"));
     }
 
     public static boolean ifNumber(Object o) throws CDCException {

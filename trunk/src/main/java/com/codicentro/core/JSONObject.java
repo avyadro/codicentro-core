@@ -14,49 +14,24 @@
  **/
 package com.codicentro.core;
 
+import java.io.Serializable;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 
-public class JSONObject {
+public class JSONObject implements Serializable {
 
-    private HashMap o = null;
+    private Map<String, Object> json = null;
 
     /**
      *
      */
     public JSONObject() {
-        o = new HashMap();
+        json = new HashMap<String, Object>();
     }
 
     public void clear() {
-        o = new HashMap();
-    }
-
-    /**
-     *
-     * @param key
-     * @param b
-     */
-    public void put(String key, boolean b) {
-        this.o.put(key, Boolean.toString(b));
-    }
-
-    /**
-     *
-     * @param key
-     * @param s
-     */
-    public void put(String key, String s) {
-        this.o.put(key, (s == null) ? "null" : s);
-    }
-
-    /**
-     *
-     * @param key
-     * @param s
-     */
-    public void putqt(String key, String s) {
-        this.o.put(key, (s == null) ? "null" : quote(s));
+        json = new HashMap<String, Object>();
     }
 
     /**
@@ -64,35 +39,14 @@ public class JSONObject {
      * @param key
      * @param i
      */
-    public void put(String key, int i) {
-        this.o.put(key, TypeCast.toInteger(i));
-    }
-
-    /**
-     *
-     * @param key
-     * @param o
-     */
-    public void put(String key, Object o) {
-        this.o.put(key, o);
-    }
-
-    /**
-     *
-     * @return
-     */
-    @Override
-    public String toString() {
-        Iterator keys = this.o.keySet().iterator();
-        StringBuilder sb = new StringBuilder();
-        String key = null;
-        sb.append("{ver:1.0");
-        while (keys.hasNext()) {
-            key = keys.next().toString();
-            sb.append(",").append(key).append(":").append(this.o.get(key));
+    public void put(String key, Object o) throws CDCException {
+        if (o == null) {
+            json.put(key, "null");
+        } else if (TypeCast.ifNumber(o) || (o instanceof Boolean)) {
+            json.put(key, o);
+        } else {
+            json.put(key, quote(TypeCast.toString(o)));
         }
-        sb.append("}");
-        return charSpecial(sb.toString());
     }
 
     private String charSpecial(String r) {
@@ -161,5 +115,49 @@ public class JSONObject {
         }
         sb.append('"');
         return sb.toString();
+    }
+
+    /**
+     *
+     * @return
+     */
+    @Override
+    public String toString() {
+        Iterator<String> keys = json.keySet().iterator();
+        StringBuilder sb = null;
+        String key = null;
+        while (keys.hasNext()) {
+            key = keys.next();
+            if (sb == null) {
+                sb = new StringBuilder("{");
+                sb.append(key).append(":").append(json.get(key));
+            } else {
+                sb.append(",").append(key).append(":").append(json.get(key));
+            }
+        }
+        sb.append("}");
+        return charSpecial(sb.toString());
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final JSONObject other = (JSONObject) obj;
+        if (this.json != other.json && (this.json == null || !this.json.equals(other.json))) {
+            return false;
+        }
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 41 * hash + (this.json != null ? this.json.hashCode() : 0);
+        return hash;
     }
 }

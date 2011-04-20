@@ -63,7 +63,11 @@ public class JSONSerializer implements Serializable {
             if (value == null) {
                 sb.append(":").append(value);
             } else {
-                sb.append(":\"").append(value).append("\"");
+                if ((value instanceof Boolean) || (TypeCast.ifNumber(value))) {
+                    sb.append(":").append(value);
+                } else {
+                    sb.append(":\"").append(value).append("\"");
+                }
             }
             comma = ",";
         }

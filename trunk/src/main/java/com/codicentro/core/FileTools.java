@@ -15,7 +15,9 @@
 package com.codicentro.core;
 
 import com.codicentro.core.model.Cell;
+import java.io.DataInputStream;
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -26,6 +28,8 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
+import javax.servlet.ServletContext;
+import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -113,7 +117,7 @@ public class FileTools {
         style.setBorderBottom(TypeCast.toShort(1));
         style.setBorderTop(TypeCast.toShort(1));
         style.setBorderLeft(TypeCast.toShort(1));
-        style.setBorderRight(TypeCast.toShort(1));       
+        style.setBorderRight(TypeCast.toShort(1));
 
         HSSFFont font = book.createFont();
         HSSFCell cell = null;
@@ -580,5 +584,35 @@ public class FileTools {
         OutputStream out = response.getOutputStream();
         book.write(out);
         out.close();
+    }
+
+    public static void doDownload(
+            HttpServletRequest request,
+            HttpServletResponse response,
+            String filename,
+            String originalFilename) throws IOException {
+        File f = new File(filename);
+        int length = 0;
+        ServletOutputStream op = response.getOutputStream();
+        ServletContext context = request.getSession().getServletContext();
+        String mimetype = context.getMimeType(filename);
+        //
+        //  Set the response and go!
+        //
+        //
+        response.setContentType((mimetype != null) ? mimetype : "application/octet-stream");
+        response.setContentLength((int) f.length());
+        response.setHeader("Content-Disposition", "attachment; filename=\"" + originalFilename + "\"");
+        //
+        //  Stream to the requester.
+        //
+        byte[] bbuf = new byte[1024];
+        DataInputStream in = new DataInputStream(new FileInputStream(f));
+        while ((in != null) && ((length = in.read(bbuf)) != -1)) {
+            op.write(bbuf, 0, length);
+        }
+        in.close();
+        op.flush();
+        op.close();
     }
 }

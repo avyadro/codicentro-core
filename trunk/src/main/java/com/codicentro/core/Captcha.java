@@ -52,7 +52,6 @@ public class Captcha implements Serializable {
 
     public String draw() throws IOException, CDCException {
         BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-
         Graphics g = image.createGraphics();
         g.setColor(background);
         g.fillRect(0, 0, width, height);
