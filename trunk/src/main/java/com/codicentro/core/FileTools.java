@@ -32,16 +32,15 @@ import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import org.apache.poi.hssf.usermodel.HSSFCell;
-import org.apache.poi.hssf.usermodel.HSSFCellStyle;
-import org.apache.poi.hssf.usermodel.HSSFDataFormat;
-import org.apache.poi.hssf.usermodel.HSSFFont;
-import org.apache.poi.hssf.usermodel.HSSFPatternFormatting;
-import org.apache.poi.hssf.usermodel.HSSFRow;
-import org.apache.poi.hssf.usermodel.HSSFSheet;
-import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.hssf.util.CellReference;
+import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.xssf.usermodel.XSSFCell;
+import org.apache.poi.xssf.usermodel.XSSFCellStyle;
+import org.apache.poi.xssf.usermodel.XSSFFont;
+import org.apache.poi.xssf.usermodel.XSSFRow;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdom.Document;
 import org.jdom.Element;
 import org.jdom.input.SAXBuilder;
@@ -110,17 +109,17 @@ public class FileTools {
      * @param idxCell     
      * @throws CDCException
      */
-    private static int columnDef(HSSFWorkbook book, HSSFSheet sheet, HSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
+    private static int columnDef(XSSFWorkbook book, XSSFSheet sheet, XSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
         Cell c = new Cell(column.getAttribute("name").getValue());
         /*** VARS ***/
-        HSSFCellStyle style = book.createCellStyle();
+        XSSFCellStyle style = book.createCellStyle();
         style.setBorderBottom(TypeCast.toShort(1));
         style.setBorderTop(TypeCast.toShort(1));
         style.setBorderLeft(TypeCast.toShort(1));
         style.setBorderRight(TypeCast.toShort(1));
 
-        HSSFFont font = book.createFont();
-        HSSFCell cell = null;
+        XSSFFont font = book.createFont();
+        XSSFCell cell = null;
         /*** COL INDEX INCREMENT, DEFAULT 1 ***/
         String cindexinc = (column.getAttribute("cindexinc") == null) ? null : column.getAttribute("cindexinc").getValue();
         if (TypeCast.toBigInteger(cindexinc) != null) {
@@ -160,19 +159,19 @@ public class FileTools {
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
         if (!TypeCast.isNullOrEmpty(alignment)) {
             if (alignment.equals("alCenter")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_CENTER);
+                style.setAlignment(XSSFCellStyle.ALIGN_CENTER);
             } else if (alignment.equals("alCenterSelection")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_CENTER_SELECTION);
+                style.setAlignment(XSSFCellStyle.ALIGN_CENTER_SELECTION);
             } else if (alignment.equals("alFill")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_FILL);
+                style.setAlignment(XSSFCellStyle.ALIGN_FILL);
             } else if (alignment.equals("alGeneral")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_GENERAL);
+                style.setAlignment(XSSFCellStyle.ALIGN_GENERAL);
             } else if (alignment.equals("alJustify")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_JUSTIFY);
+                style.setAlignment(XSSFCellStyle.ALIGN_JUSTIFY);
             } else if (alignment.equals("alLeft")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_LEFT);
+                style.setAlignment(XSSFCellStyle.ALIGN_LEFT);
             } else if (alignment.equals("alRight")) {
-                style.setAlignment(HSSFCellStyle.ALIGN_RIGHT);
+                style.setAlignment(XSSFCellStyle.ALIGN_RIGHT);
             }
         }
 
@@ -180,13 +179,13 @@ public class FileTools {
         String valignment = (column.getAttribute("valignment") == null) ? null : column.getAttribute("valignment").getValue();
         if (!TypeCast.isNullOrEmpty(valignment)) {
             if (valignment.equals("alBottom")) {
-                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_BOTTOM);
+                style.setVerticalAlignment(XSSFCellStyle.VERTICAL_BOTTOM);
             } else if (valignment.equals("alCenter")) {
-                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_CENTER);
+                style.setVerticalAlignment(XSSFCellStyle.VERTICAL_CENTER);
             } else if (valignment.equals("alJustify")) {
-                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_JUSTIFY);
+                style.setVerticalAlignment(XSSFCellStyle.VERTICAL_JUSTIFY);
             } else if (valignment.equals("alTop")) {
-                style.setVerticalAlignment(HSSFCellStyle.VERTICAL_TOP);
+                style.setVerticalAlignment(XSSFCellStyle.VERTICAL_TOP);
             }
         }
         /*** WRAP TEXT ***/
@@ -201,11 +200,11 @@ public class FileTools {
         /*** BACKGROUND ***/
         String background = (column.getAttribute("background") == null) ? null : column.getAttribute("background").getValue();
         if (!TypeCast.isNullOrEmpty(background)) {
-            style.setFillPattern(HSSFPatternFormatting.SOLID_FOREGROUND);
+            style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
             } else {
-                style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
+                style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.XSSFColor$" + background.toUpperCase(), "index")));
             }
         }
         /*** WIDTH ***/
@@ -225,7 +224,7 @@ public class FileTools {
         /*** FONT BOLD ***/
         Boolean bold = (column.getAttribute("bold") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("bold").getValue());
         if (bold) {
-            font.setBoldweight(HSSFFont.BOLDWEIGHT_BOLD);
+            font.setBoldweight(XSSFFont.BOLDWEIGHT_BOLD);
         }
         /*** SUMMARY ***/
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
@@ -237,6 +236,9 @@ public class FileTools {
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
         /*** RENDER DATA ***/
         c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
+        /*** CALCULATE BY DATA ***/
+        c.setCalculate((column.getAttribute("calculate") == null) ? null : column.getAttribute("calculate").getValue());
+
         style.setFont(font);
         cell.setCellStyle(style);
         cell.setCellValue(column.getValue());
@@ -247,7 +249,34 @@ public class FileTools {
     private static String mkFormula(String formula, int idxRow, int idxCol) {
         formula = formula.replaceAll("\\{row\\}", "" + idxRow);
         formula = formula.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol));
+        formula = formulaCheckCol(formula, idxCol);
         return formula;
+    }
+
+    private static String formulaCheckCol(String fm, int idxCol) {
+        int posCol = fm.indexOf("{col");
+        if (posCol == -1) {
+            return fm;
+        }
+        int posKey = fm.indexOf("}");
+        if (posKey == -1) {
+            return fm;
+        }
+        String str = fm.substring(posCol + 4, posKey);
+        if (TypeCast.isNullOrEmpty(str)) {
+            return fm;
+        }
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '+') {
+                fm = fm.substring(0, posCol + 4) + fm.substring(posCol + 5);
+                count++;
+            } else if (str.charAt(i) == '-') {
+                fm = fm.substring(i);
+                count--;
+            }
+        }
+        return formulaCheckCol(fm.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol + count)), idxCol);
     }
 
     /**
@@ -264,10 +293,10 @@ public class FileTools {
         /*** INITIALIZE TEMPLATE ***/
         Element root = doc.getRootElement();
         /*** INITIALIZED WORKBOOK ***/
-        HSSFWorkbook book = new HSSFWorkbook();
-        HSSFSheet sheet = book.createSheet();
+        XSSFWorkbook book = new XSSFWorkbook();
+        XSSFSheet sheet = book.createSheet();
         int idxRow = 0;
-        HSSFRow row = sheet.createRow(idxRow);
+        XSSFRow row = sheet.createRow(idxRow);
         Element headers = root.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
         Iterator<Element> iColumn = null;
@@ -285,9 +314,9 @@ public class FileTools {
             idxCell++;
             columnDef(book, sheet, row, iColumn.next(), cells, idxCell);
         }
-        HSSFCell cell = null;
+        XSSFCell cell = null;
         Object oValue = null;
-        HSSFCellStyle style = null;
+        XSSFCellStyle style = null;
         for (Map<String, Object> value : values) {
             idxRow++;
             row = sheet.createRow(idxRow);
@@ -296,7 +325,7 @@ public class FileTools {
                 /*** STYLE ***/
                 style = book.createCellStyle();
                 if (cells.get(idxCell).getDataFormat() != null) {
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idxCell).getDataFormat()));
+                    style.setDataFormat(book.createDataFormat().getFormat(cells.get(idxCell).getDataFormat()));
                 }
                 cell.setCellStyle(style);
                 /*** ***/
@@ -321,7 +350,7 @@ public class FileTools {
                 /*** STYLE ***/
                 style = book.createCellStyle();
                 if (cells.get(idxCell).getDataFormat() != null) {
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idxCell).getDataFormat()));
+                    style.setDataFormat(book.createDataFormat().getFormat(cells.get(idxCell).getDataFormat()));
                 }
                 cell.setCellStyle(style);
                 /*** ***/
@@ -333,12 +362,12 @@ public class FileTools {
         exportXLS(response, book, filename);
     }
 
-    private static <TEntity> int render(HSSFSheet sheet, List<Cell> cells, List<TEntity> values, int idxRow) throws CDCException {
-        HSSFRow row = null;
+    private static <TEntity> int render(XSSFSheet sheet, List<Cell> cells, List<TEntity> values, int idxRow) throws CDCException {
+        XSSFRow row = null;
         Object oValue = null;
-        HSSFCell cell = null;
+        XSSFCell cell = null;
         int idxCell = -1;
-        HSSFCellStyle style = null;
+        XSSFCellStyle style = null;
         for (Object value : values) {
             idxRow++;
             row = sheet.createRow(idxRow);
@@ -350,7 +379,7 @@ public class FileTools {
                     /*** STYLE ***/
                     style = sheet.getWorkbook().createCellStyle();
                     if (cells.get(idx).getDataFormat() != null) {
-                        style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idx).getDataFormat()));
+                        style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
                     }
                     cell.setCellStyle(style);
                     /*** ***/
@@ -370,19 +399,19 @@ public class FileTools {
         return idxRow;
     }
 
-    private static <TEntity> int summary(HSSFSheet sheet, List<Cell> cells, int idxRow) {
+    private static <TEntity> int summary(XSSFSheet sheet, List<Cell> cells, int idxRow) {
         /*** SUMMARY ***/
         idxRow++;
-        HSSFRow row = sheet.createRow(idxRow);
-        HSSFCell cell = null;
-        HSSFCellStyle style = null;
+        XSSFRow row = sheet.createRow(idxRow);
+        XSSFCell cell = null;
+        XSSFCellStyle style = null;
         for (int idx = 0; idx < cells.size(); idx++) {
             if (cells.get(idx).isSummary()) {
                 cell = row.createCell(idx);
                 /*** STYLE ***/
                 style = sheet.getWorkbook().createCellStyle();
                 if (cells.get(idx).getDataFormat() != null) {
-                    style.setDataFormat(HSSFDataFormat.getBuiltinFormat(cells.get(idx).getDataFormat()));
+                    style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
                 }
                 cell.setCellStyle(style);
                 /*** ***/
@@ -403,14 +432,14 @@ public class FileTools {
      * @return
      * @throws Exception
      */
-    private static <TEntity> HSSFWorkbook exportXLS(List<TEntity> values, Document doc, String idHeader) throws Exception {
+    private static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, List<TEntity> values, Document doc, String idHeader) throws Exception {
         /*** INITIALIZE TEMPLATE ***/
         Element root = doc.getRootElement();
         /*** INITIALIZED WORKBOOK ***/
-        HSSFWorkbook book = new HSSFWorkbook();
-        HSSFSheet sheet = book.createSheet();
+        XSSFWorkbook book = (workbook == null) ? new XSSFWorkbook() : workbook;
+        XSSFSheet sheet = null;
         int idxRow = 0;
-        HSSFRow row = sheet.createRow(idxRow);
+        XSSFRow row = null;
         Element headers = root.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
         Iterator<Element> iColumn = null;
@@ -418,6 +447,10 @@ public class FileTools {
         while ((iHeader.hasNext()) && (iColumn == null)) {
             header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
+                /*** SHEET NAME ***/
+                String sheetname = (header.getAttribute("sheetname") == null) ? null : header.getAttribute("sheetname").getValue();
+                sheet = (TypeCast.isNullOrEmpty(sheetname)) ? book.createSheet() : book.createSheet(sheetname);
+                row = sheet.createRow(idxRow);
                 /*** ROW SIZE ***/
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
                 if (!TypeCast.isNullOrEmpty(frdata)) {
@@ -501,7 +534,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, File template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(values, new SAXBuilder().build(template), idHeader), filename);
+        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(template), idHeader), filename);
     }
 
     /**
@@ -515,7 +548,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, URL template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(values, new SAXBuilder().build(template), idHeader), filename);
+        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(template), idHeader), filename);
     }
 
     /**
@@ -527,8 +560,12 @@ public class FileTools {
      * @return
      * @throws Exception
      */
-    public static <TEntity> HSSFWorkbook exportXLS(List<TEntity> values, URL template, String idHeader) throws Exception {
-        return exportXLS(values, new SAXBuilder().build(template), idHeader);
+    public static <TEntity> XSSFWorkbook exportXLS(List<TEntity> values, URL template, String idHeader) throws Exception {
+        return exportXLS(null, values, new SAXBuilder().build(template), idHeader);
+    }
+
+    public static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, List<TEntity> values, URL template, String idHeader) throws Exception {
+        return exportXLS(workbook, values, new SAXBuilder().build(template), idHeader);
     }
 
     /**
@@ -542,7 +579,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, String key, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(values, new SAXBuilder().build(is(key)), idHeader), filename);
+        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(is(key)), idHeader), filename);
     }
 
     /**
@@ -575,7 +612,7 @@ public class FileTools {
      * @param filename
      * @throws java.lang.Exception
      */
-    public static void exportXLS(HttpServletResponse response, HSSFWorkbook book, String filename) throws Exception {
+    public static void exportXLS(HttpServletResponse response, XSSFWorkbook book, String filename) throws Exception {
         response.setHeader("Expires", "0");
         response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
         response.setHeader("Content-disposition", "attachment;filename=\"" + filename + ".xls\"");

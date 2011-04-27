@@ -18,6 +18,7 @@ public class Cell {
 
     private String name = null;
     private String formula = null;
+    private String calculate = null;
     private String dataFormat = null;
     private boolean summary = false;
     private boolean render = true;
@@ -114,5 +115,20 @@ public class Cell {
      */
     public void setRender(boolean render) {
         this.render = render;
+    }
+
+    /**
+     * @return the calculate
+     */
+    public String getCalculate() {
+        return calculate;
+    }
+
+    /**
+     * @param calculate the calculate to set
+     */
+    public void setCalculate(String calculate) {
+        
+        this.calculate = calculate;
     }
 }
