@@ -432,18 +432,18 @@ public class FileTools {
      * @return
      * @throws Exception
      */
-    private static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, List<TEntity> values, Document doc, String idHeader) throws Exception {
+    private static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, XSSFSheet sheet, List<TEntity> values, Document doc, String idHeader) throws Exception {
         /*** INITIALIZE TEMPLATE ***/
         Element root = doc.getRootElement();
         /*** INITIALIZED WORKBOOK ***/
         XSSFWorkbook book = (workbook == null) ? new XSSFWorkbook() : workbook;
-        XSSFSheet sheet = null;
         int idxRow = 0;
         XSSFRow row = null;
         Element headers = root.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
         Iterator<Element> iColumn = null;
         Element header = null;
+        
         while ((iHeader.hasNext()) && (iColumn == null)) {
             header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
@@ -453,6 +453,7 @@ public class FileTools {
                 row = sheet.createRow(idxRow);
                 /*** ROW SIZE ***/
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
+
                 if (!TypeCast.isNullOrEmpty(frdata)) {
                     logger.info("First row data: " + frdata);
                     while (idxRow + 1 < TypeCast.toInt(frdata)) {
@@ -534,7 +535,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, File template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(template), idHeader), filename);
+        exportXLS(response, exportXLS(null, null, values, new SAXBuilder().build(template), idHeader), filename);
     }
 
     /**
@@ -548,7 +549,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, URL template, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(template), idHeader), filename);
+        exportXLS(response, exportXLS(null, null, values, new SAXBuilder().build(template), idHeader), filename);
     }
 
     /**
@@ -561,11 +562,15 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> XSSFWorkbook exportXLS(List<TEntity> values, URL template, String idHeader) throws Exception {
-        return exportXLS(null, values, new SAXBuilder().build(template), idHeader);
+        return exportXLS(null, null, values, new SAXBuilder().build(template), idHeader);
     }
 
     public static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, List<TEntity> values, URL template, String idHeader) throws Exception {
-        return exportXLS(workbook, values, new SAXBuilder().build(template), idHeader);
+        return exportXLS(workbook, null, values, new SAXBuilder().build(template), idHeader);
+    }
+
+    public static <TEntity> XSSFWorkbook exportXLS(XSSFWorkbook workbook, XSSFSheet sheet, List<TEntity> values, URL template, String idHeader) throws Exception {
+        return exportXLS(workbook, sheet, values, new SAXBuilder().build(template), idHeader);
     }
 
     /**
@@ -579,7 +584,7 @@ public class FileTools {
      * @throws Exception
      */
     public static <TEntity> void exportXLS(List<TEntity> values, String key, String idHeader, HttpServletResponse response, String filename) throws Exception {
-        exportXLS(response, exportXLS(null, values, new SAXBuilder().build(is(key)), idHeader), filename);
+        exportXLS(response, exportXLS(null, null, values, new SAXBuilder().build(is(key)), idHeader), filename);
     }
 
     /**
