@@ -16,6 +16,10 @@ package com.codicentro.core;
 
 //import com.codicentro.model.Column;
 //import com.codicentro.model.Table;
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -119,7 +123,7 @@ public class TypeCast {
                 s = "N";
             }
             return !s.equals("N") && !s.equals("NO") && !s.equals("FALSE") && !s.equals("F") && !((ifNumber(s)) && (toInt(s) == 0)) && !s.equals("OFF");
-        } catch (CDCException ex) {            
+        } catch (CDCException ex) {
             return false;
         }
     }
@@ -814,5 +818,14 @@ public class TypeCast {
             v += v;
         }
         return v;
+    }
+
+    /**
+     * 
+     * @param os
+     * @return 
+     */
+    public static InputStream toInputStream(OutputStream os) {
+        return new ByteArrayInputStream(((ByteArrayOutputStream) os).toByteArray());
     }
 }
