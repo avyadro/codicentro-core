@@ -52,7 +52,7 @@ public class ImageUtil implements Serializable {
 
     /**
      * 
-     * @param bytes
+     * @param image 
      */
     public ImageUtil(byte[] image) {
         try {
@@ -62,6 +62,11 @@ public class ImageUtil implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param image
+     * @param convertTo 
+     */
     public ImageUtil(byte[] image, Type convertTo) {
         this(image);
         try {
@@ -77,10 +82,23 @@ public class ImageUtil implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param image
+     * @param width
+     * @param height 
+     */
     public ImageUtil(byte[] image, int width, int height) {
         this(image);
     }
 
+    /**
+     * 
+     * @param image
+     * @param convertTo
+     * @param width
+     * @param height 
+     */
     public ImageUtil(byte[] image, Type convertTo, int width, int height) {
         this(image, convertTo);
         try {
@@ -90,6 +108,10 @@ public class ImageUtil implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param image 
+     */
     private void imageRender(byte[] image) {
         try {
             findImageType(image);
@@ -113,19 +135,18 @@ public class ImageUtil implements Serializable {
 
     /**
      * 
-     * @param imgb
+     * @param image
      * @throws IOException 
      */
-    private void findImageType(byte imgb[]) throws IOException {
+    private void findImageType(byte[] image) throws IOException {
         InputStream is = null;
+        imageType = null;
         try {
-            is = new java.io.ByteArrayInputStream(imgb);
+            is = new ByteArrayInputStream(image);
             int c1 = is.read();
             int c2 = is.read();
             int c3 = is.read();
             int c4 = is.read();
-            is.close();
-            is = null;
             if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
                 imageType = Type.GIF;
             } else if (c1 == 0xFF && c2 == 0xD8) {
@@ -143,8 +164,6 @@ public class ImageUtil implements Serializable {
             } else if (c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42 || c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0) {
                 imageType = Type.TIFF;
             } else if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2') {
-                is = new java.io.ByteArrayInputStream(imgb);
-                is.skip(4);
                 int c5 = is.read();
                 int c6 = is.read();
                 int c7 = is.read();
@@ -152,7 +171,8 @@ public class ImageUtil implements Serializable {
                 if (c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
                     imageType = Type.JBIG2S;
                 }
-            } else {
+            }
+            if (imageType == null) {
                 throw new IOException("the.byte.array.is.not.a.recognized.imageType");
             }
         } finally {
@@ -166,7 +186,8 @@ public class ImageUtil implements Serializable {
      * 
      * @param width
      * @param height
-     * @throws CDCException
+     * @return
+     * @throws CDCException 
      */
     public final byte[] scale(int width, int height) throws CDCException {
         checkExistImage();
@@ -193,6 +214,7 @@ public class ImageUtil implements Serializable {
     /**
      * 
      * @return
+     * @throws IOException 
      */
     public String toBASE64Encoder() throws IOException {
         BASE64Encoder e64Encoder = new BASE64Encoder();
@@ -202,6 +224,11 @@ public class ImageUtil implements Serializable {
         return e64Encoder.encode(out.toByteArray());
     }
 
+    /**
+     * 
+     * @return
+     * @throws CDCException 
+     */
     public final byte[] toJpeg() throws CDCException {
         checkExistImage();
         try {
@@ -215,6 +242,11 @@ public class ImageUtil implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @return
+     * @throws CDCException 
+     */
     public int getWidth() throws CDCException {
         checkExistImage();
         try {
@@ -225,6 +257,11 @@ public class ImageUtil implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @return
+     * @throws CDCException 
+     */
     public int getHeight() throws CDCException {
         checkExistImage();
         try {
