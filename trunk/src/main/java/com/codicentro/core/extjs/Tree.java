@@ -15,6 +15,7 @@
 package com.codicentro.core.extjs;
 
 import com.codicentro.core.CDCException;
+import com.codicentro.core.JSONObject;
 import com.codicentro.core.TypeCast;
 import com.codicentro.core.Types.RenderType;
 import com.codicentro.core.json.JSONSerializer;
@@ -35,6 +36,7 @@ public class Tree implements Serializable {
     private JSONSerializer json = null;
     private boolean leaf = true;
     private String leafExpression = null;
+    private StringBuilder properties = null;
 
     public Tree(String id, String parentId, String textField) {
 
@@ -181,6 +183,9 @@ public class Tree implements Serializable {
                 leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
             }
             item.append(",leaf:").append(isLeaf());
+            if (properties != null) {
+                item.append(",").append(properties.toString());
+            }
 
             /*
             
@@ -305,6 +310,23 @@ public class Tree implements Serializable {
         }
         expCompare = exp[1];
         this.leafExpression = leafExpression;
+
+    }
+
+    /**
+     * 
+     * @param key
+     * @param value
+     * @throws CDCException 
+     */
+    public void addProperty(String key, Object value) throws CDCException {
+        if (properties == null) {
+            properties = new StringBuilder();
+        } else {
+            properties.append(",");
+        }
+        properties.append(key).append(":").append(value);
+
 
     }
 }
