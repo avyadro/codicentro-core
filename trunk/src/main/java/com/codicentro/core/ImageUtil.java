@@ -14,18 +14,24 @@
  **/
 package com.codicentro.core;
 
+import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
-import java.awt.Graphics2D;
-import java.awt.geom.AffineTransform;
+import com.sun.media.jai.codec.SeekableStream;
+import java.awt.Graphics;
+import java.awt.Image;
 import java.awt.image.BufferedImage;
+import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import javax.imageio.ImageIO;
+import javax.imageio.stream.ImageOutputStream;
+import javax.media.jai.PlanarImage;
+import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import sun.misc.BASE64Encoder;
@@ -33,22 +39,17 @@ import sun.misc.BASE64Encoder;
 public class ImageUtil implements Serializable {
 
     private static Logger logger = LoggerFactory.getLogger(ImageUtil.class);
+    private Image image = null;
 
     public enum Type {
 
         GIF,
-        JPEG,
-        JPEG2000,
+        JPG,
         PNG,
         IMG,
         BMP,
-        TIFF,
-        JBIG2S
+        TIFF
     };
-    /** Some PNG specific values. */
-    private final int[] PNGID = {137, 80, 78, 71, 13, 10, 26, 10};
-    private Type imageType = null;
-    private RenderedImage renderedImage = null;
 
     /**
      * 
@@ -56,27 +57,7 @@ public class ImageUtil implements Serializable {
      */
     public ImageUtil(byte[] image) {
         try {
-            imageRender(image);
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-        }
-    }
-
-    /**
-     * 
-     * @param image
-     * @param convertTo 
-     */
-    public ImageUtil(byte[] image, Type convertTo) {
-        this(image);
-        try {
-            switch (convertTo) {
-                case JPEG:
-                    imageRender(toJpeg());
-                    break;
-                default:
-                    break;
-            }
+            load(image);
         } catch (Exception ex) {
             logger.error(ex.getLocalizedMessage(), ex);
         }
@@ -90,185 +71,118 @@ public class ImageUtil implements Serializable {
      */
     public ImageUtil(byte[] image, int width, int height) {
         this(image);
+        scale(width, height);
     }
 
     /**
      * 
-     * @param image
-     * @param convertTo
      * @param width
      * @param height 
      */
-    public ImageUtil(byte[] image, Type convertTo, int width, int height) {
-        this(image, convertTo);
-        try {
-            imageRender(scale(width, height));
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-        }
-    }
-
-    /**
-     * 
-     * @param image 
-     */
-    private void imageRender(byte[] image) {
-        try {
-            findImageType(image);
-            InputStream in = new ByteArrayInputStream(image);
-            ImageDecoder dec = ImageCodec.createImageDecoder(imageType.toString(), in, null);
-            renderedImage = dec.decodeAsRenderedImage();
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-        }
-    }
-
-    /**
-     * 
-     * @throws CDCException
-     */
-    private void checkExistImage() throws CDCException {
-        if (renderedImage == null) {
-            throw new CDCException("Image is null.");
-        }
-    }
-
-    /**
-     * 
-     * @param image
-     * @throws IOException 
-     */
-    private void findImageType(byte[] image) throws IOException {
-        InputStream is = null;
-        imageType = null;
-        try {
-            is = new ByteArrayInputStream(image);
-            int c1 = is.read();
-            int c2 = is.read();
-            int c3 = is.read();
-            int c4 = is.read();
-            if (c1 == 'G' && c2 == 'I' && c3 == 'F') {
-                imageType = Type.GIF;
-            } else if (c1 == 0xFF && c2 == 0xD8) {
-                imageType = Type.JPEG;
-            } else if (c1 == 0x00 && c2 == 0x00 && c3 == 0x00 && c4 == 0x0c) {
-                imageType = Type.JPEG2000;
-            } else if (c1 == 0xff && c2 == 0x4f && c3 == 0xff && c4 == 0x51) {
-                imageType = Type.JPEG2000;
-            } else if (c1 == PNGID[0] && c2 == PNGID[1] && c3 == PNGID[2] && c4 == PNGID[3]) {
-                imageType = Type.PNG;
-            } else if (c1 == 0xD7 && c2 == 0xCD) {
-                imageType = Type.IMG;
-            } else if (c1 == 'B' && c2 == 'M') {
-                imageType = Type.BMP;
-            } else if (c1 == 'M' && c2 == 'M' && c3 == 0 && c4 == 42 || c1 == 'I' && c2 == 'I' && c3 == 42 && c4 == 0) {
-                imageType = Type.TIFF;
-            } else if (c1 == 0x97 && c2 == 'J' && c3 == 'B' && c4 == '2') {
-                int c5 = is.read();
-                int c6 = is.read();
-                int c7 = is.read();
-                int c8 = is.read();
-                if (c5 == '\r' && c6 == '\n' && c7 == 0x1a && c8 == '\n') {
-                    imageType = Type.JBIG2S;
-                }
-            }
-            if (imageType == null) {
-                throw new IOException("the.byte.array.is.not.a.recognized.imageType");
-            }
-        } finally {
-            if (is != null) {
-                is.close();
-            }
-        }
+    public final void scale(int width, int height) {
+        scale(width, height, Image.SCALE_SMOOTH);
     }
 
     /**
      * 
      * @param width
      * @param height
-     * @return
-     * @throws CDCException 
+     * @param ascale, Image scaling algorithm
      */
-    public final byte[] scale(int width, int height) throws CDCException {
-        checkExistImage();
-        try {
-            /*** ***/
-            BufferedImage bi = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
-            Graphics2D g = bi.createGraphics();
-            AffineTransform at = AffineTransform.getScaleInstance((double) width / renderedImage.getWidth(), (double) height / renderedImage.getHeight());
-            g.drawRenderedImage(renderedImage, at);
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write(bi, imageType.toString(), out);
-            out.close();
-            if (out.size() > 0) {
-                return out.toByteArray();
-            } else {
-                throw new CDCException("Not transform allowed...");
-            }
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-            throw new CDCException(ex.getLocalizedMessage());
-        }
+    public final void scale(int width, int height, int ascale) {
+        image = image.getScaledInstance(width, height, ascale);
     }
 
     /**
      * 
+     * @param format
+     * @param output
      * @return
      * @throws IOException 
      */
-    public String toBASE64Encoder() throws IOException {
+    public boolean write(Type format, File output) throws IOException {
+        return ImageIO.write(toBufferedImage(), format.toString(), output);
+    }
+
+    /**
+     * 
+     * @param format
+     * @param output
+     * @return
+     * @throws IOException 
+     */
+    public boolean write(Type format, ImageOutputStream output) throws IOException {
+        return ImageIO.write(toBufferedImage(), format.toString(), output);
+    }
+
+    /**
+     * 
+     * @param format
+     * @param output
+     * @return
+     * @throws IOException 
+     */
+    public boolean write(Type format, OutputStream output) throws IOException {
+        return ImageIO.write(toBufferedImage(), format.toString(), output);
+    }
+
+    /**
+     * 
+     * @param type
+     * @return
+     * @throws IOException 
+     */
+    public String toBASE64Encoder(Type type) throws IOException {
         BASE64Encoder e64Encoder = new BASE64Encoder();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        ImageIO.write(renderedImage, imageType.toString(), out);
+        write(type, out);
         out.close();
         return e64Encoder.encode(out.toByteArray());
     }
 
     /**
      * 
-     * @return
-     * @throws CDCException 
+     * @param data
+     * @throws Exception 
      */
-    public final byte[] toJpeg() throws CDCException {
-        checkExistImage();
-        try {
-            ByteArrayOutputStream out = new ByteArrayOutputStream();
-            ImageIO.write(renderedImage, "jpeg", out);
-            out.close();
-            return out.toByteArray();
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-            throw new CDCException(ex.getLocalizedMessage());
-        }
+    private void load(byte[] data) throws Exception {
+        SeekableStream stream = new ByteArraySeekableStream(data);
+        String[] names = ImageCodec.getDecoderNames(stream);
+        ImageDecoder dec = ImageCodec.createImageDecoder(names[0], stream, null);
+        RenderedImage im = dec.decodeAsRenderedImage();
+        image = PlanarImage.wrapRenderedImage(im).getAsBufferedImage();
     }
 
     /**
      * 
-     * @return
-     * @throws CDCException 
      */
-    public int getWidth() throws CDCException {
-        checkExistImage();
-        try {
-            return renderedImage.getWidth();
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-            throw new CDCException(ex.getLocalizedMessage());
+    private BufferedImage toBufferedImage() {
+        if (image instanceof BufferedImage) {
+            // Return image unchanged if it is already a BufferedImage.
+            return (BufferedImage) image;
         }
+        // Ensure image is loaded.
+        image = new ImageIcon(image).getImage();
+        int type = hasAlpha() ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
+        BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
+        Graphics g = bufferedImage.createGraphics();
+        g.drawImage(image, 0, 0, null);
+        g.dispose();
+        return bufferedImage;
     }
 
     /**
+     * Determines if an image has an alpha channel.
      * 
-     * @return
-     * @throws CDCException 
+     * @param image the <code>Image</code>
+     * @return true if the image has an alpha channel
      */
-    public int getHeight() throws CDCException {
-        checkExistImage();
+    private boolean hasAlpha() {
+        PixelGrabber pg = new PixelGrabber(image, 0, 0, 1, 1, false);
         try {
-            return renderedImage.getHeight();
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-            throw new CDCException(ex.getLocalizedMessage());
+            pg.grabPixels();
+        } catch (InterruptedException ex) {
         }
+        return pg.getColorModel().hasAlpha();
     }
 }
