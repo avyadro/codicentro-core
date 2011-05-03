@@ -18,12 +18,16 @@ package com.codicentro.core;
 //import com.codicentro.model.Table;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -825,5 +829,14 @@ public class TypeCast {
      */
     public static InputStream toInputStream(OutputStream os) {
         return new ByteArrayInputStream(((ByteArrayOutputStream) os).toByteArray());
+    }
+
+    /**
+     * 
+     * @param file
+     * @return 
+     */
+    public static InputStream toInputStream(File file) throws FileNotFoundException {        
+        return new FileInputStream(file);
     }
 }
