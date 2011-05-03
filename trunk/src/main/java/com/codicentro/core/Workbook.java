@@ -24,6 +24,7 @@ import java.util.Iterator;
 import java.util.List;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.util.CellRangeAddress;
+import org.apache.poi.ss.util.CellReference;
 import org.apache.poi.xssf.usermodel.XSSFCell;
 import org.apache.poi.xssf.usermodel.XSSFCellStyle;
 import org.apache.poi.xssf.usermodel.XSSFFont;
@@ -43,8 +44,10 @@ public class Workbook implements Serializable {
     private XSSFSheet sheet = null;
     private Element template = null;
     private String idHeader = null;
+    private XSSFRow row = null;
     private int idxRow = 0;
     private int idxCell = -1;
+    private List<Cell> cells = null;
 
     public Workbook() {
         workbook = new XSSFWorkbook();
@@ -95,7 +98,7 @@ public class Workbook implements Serializable {
      */
     private void createHeader() throws CDCException {
         idxRow = 0;
-        XSSFRow row = null;
+        row = null;
         Element headers = template.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
         Iterator<Element> iColumn = null;
@@ -124,15 +127,15 @@ public class Workbook implements Serializable {
             throw new CDCException("Header " + idHeader + " not found.");
         }
 
-        List<Cell> cells = new ArrayList<Cell>();
+        cells = new ArrayList<Cell>();
         /*** HEADERS ***/
         idxCell = -1;
         while (iColumn.hasNext()) {
-            columnDef(row, iColumn.next(), cells);
+            columnDef(row, iColumn.next());
         }
     }
 
-    private void columnDef(XSSFRow row, Element column, List<Cell> cells) throws CDCException {
+    private void columnDef(XSSFRow row, Element column) throws CDCException {
         Cell c = new Cell(column.getAttribute("name").getValue());
         /*** VARS ***/
         XSSFCellStyle style = workbook.createCellStyle();
@@ -155,7 +158,7 @@ public class Workbook implements Serializable {
         if (TypeCast.toBigInteger(cindex) != null) {
             idxCell = TypeCast.toInt(cindex);
         }
-        logger.info("Col index: " + idxCell);
+        logger.info("Cell: " + CellReference.convertNumToColString(idxCell) + idxRow);
         /*** ROW INDEX ***/
         String rindex = (column.getAttribute("rindex") == null) ? null : column.getAttribute("rindex").getValue();
         if (TypeCast.toBigInteger(rindex) != null) {
@@ -266,5 +269,74 @@ public class Workbook implements Serializable {
         cell.setCellStyle(style);
         cell.setCellValue(column.getValue());
         cells.add(c);
+    }
+
+    public <TEntity> void render(List<TEntity> values) throws CDCException {
+        XSSFRow localRow = null;
+        Object oValue = null;
+        XSSFCell cell = null;
+        idxCell = -1;
+        XSSFCellStyle style = null;
+        for (Object value : values) {
+            idxRow++;
+            localRow = sheet.createRow(idxRow);
+            idxCell = -1;
+            for (int idx = 0; idx < cells.size(); idx++) {
+                if (cells.get(idx).isRender()) {
+                    idxCell++;
+                    cell = localRow.createCell(idxCell);
+                    /*** STYLE ***/
+                    style = sheet.getWorkbook().createCellStyle();
+                    if (cells.get(idx).getDataFormat() != null) {
+                        style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
+                    }
+                    cell.setCellStyle(style);
+                    /*** ***/
+                    if (cells.get(idx).getFormula() != null) {
+                        cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell));
+                    } else {
+                        oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
+                        if (oValue instanceof java.lang.Number) {
+                            cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                        } else {
+                            cell.setCellValue(TypeCast.toString(oValue));
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    private String mkFormula(String formula, int idxCol) {
+        formula = formula.replaceAll("\\{row\\}", "" + (idxRow + 1));
+        formula = formula.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol));
+        formula = formulaCheckCol(formula, idxCol);
+        return formula;
+    }
+
+    private String formulaCheckCol(String fm, int idxCol) {
+        int posCol = fm.indexOf("{col");
+        if (posCol == -1) {
+            return fm;
+        }
+        int posKey = fm.indexOf("}");
+        if (posKey == -1) {
+            return fm;
+        }
+        String str = fm.substring(posCol + 4, posKey);
+        if (TypeCast.isNullOrEmpty(str)) {
+            return fm;
+        }
+        int count = 0;
+        for (int i = 0; i < str.length(); i++) {
+            if (str.charAt(i) == '+') {
+                fm = fm.substring(0, posCol + 4) + fm.substring(posCol + 5);
+                count++;
+            } else if (str.charAt(i) == '-') {
+                fm = fm.substring(i);
+                count--;
+            }
+        }
+        return formulaCheckCol(fm.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol + count)), idxCol);
     }
 }
