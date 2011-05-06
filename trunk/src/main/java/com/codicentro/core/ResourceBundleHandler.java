@@ -21,11 +21,10 @@ public class ResourceBundleHandler {
     private String source = null;
     private ResourceBundle resourceBundle = null;
 
-    public ResourceBundleHandler(String source)
-            throws CDCException {
+    public ResourceBundleHandler(String source) throws CDCException {
         this.source = source;
         try {
-            this.resourceBundle = ResourceBundle.getBundle(source);
+           resourceBundle = ResourceBundle.getBundle(source);
         } catch (Exception e) {
             throw new CDCException("File " + source + " is not found.");
         }
