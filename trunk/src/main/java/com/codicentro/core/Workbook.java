@@ -333,10 +333,11 @@ public class Workbook implements Serializable {
                 fm = fm.substring(0, posCol + 4) + fm.substring(posCol + 5);
                 count++;
             } else if (str.charAt(i) == '-') {
-                fm = fm.substring(i);
+                fm = fm.substring(0, posCol + 4) + fm.substring(posCol + 5);
                 count--;
             }
         }
-        return formulaCheckCol(fm.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol + count)), idxCol);
+        fm = fm.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol + count));
+        return formulaCheckCol(fm, idxCol);
     }
 }
