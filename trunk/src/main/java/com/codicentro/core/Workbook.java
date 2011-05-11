@@ -262,12 +262,24 @@ public class Workbook implements Serializable {
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
         /*** RENDER DATA ***/
         c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
-        /*** CALCULATE BY DATA ***/
-        c.setCalculate((column.getAttribute("calculate") == null) ? null : column.getAttribute("calculate").getValue());
-
+        /*** CALCULATE CELL VALUE ***/
+        c.setCalculateValue((column.getAttribute("calculateValue") == null) ? false : TypeCast.toBoolean(column.getAttribute("calculateValue").getValue()));
+        /*** BEAN ***/
+        c.setBean((column.getAttribute("bean") == null) ? null : column.getAttribute("bean").getValue());
+        /*** BEAN OPERATION ***/
+        c.setBeanOperation((column.getAttribute("beanOperation") == null) ? null : column.getAttribute("beanOperation").getValue());
+        if (c.getBean() != null) {
+            c.setCell(cell);
+        }
         style.setFont(font);
         cell.setCellStyle(style);
-        cell.setCellValue(column.getValue());
+        if (c.isCalculateValue()) {
+            if (c.getFormula() != null) {
+                cell.setCellFormula(mkFormula(c.getFormula(), idxCell));
+            }
+        } else {
+            cell.setCellValue(column.getValue());
+        }
         cells.add(c);
     }
 
@@ -301,6 +313,19 @@ public class Workbook implements Serializable {
                         } else {
                             cell.setCellValue(TypeCast.toString(oValue));
                         }
+                    }
+                } else if (cells.get(idx).getBean() != null) {
+                    oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());
+                    if (oValue instanceof java.lang.Number) {
+                        if (cells.get(idx).getBeanOperation() != null) {
+                            if (cells.get(idx).getBeanOperation().equals("+")) {
+                                cells.get(idx).getCell().setCellValue(cells.get(idx).getCell().getNumericCellValue() + TypeCast.toBigDecimal(oValue).doubleValue());
+                            }
+                        } else {
+                            cells.get(idx).getCell().setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                        }
+                    } else {
+                        cells.get(idx).getCell().setCellValue(TypeCast.toString(oValue));
                     }
                 }
             }

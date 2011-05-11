@@ -235,9 +235,7 @@ public class FileTools {
         /*** DATA FORMAT ***/
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
         /*** RENDER DATA ***/
-        c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
-        /*** CALCULATE BY DATA ***/
-        c.setCalculate((column.getAttribute("calculate") == null) ? null : column.getAttribute("calculate").getValue());
+        c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));        
 
         style.setFont(font);
         cell.setCellStyle(style);

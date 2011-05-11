@@ -78,6 +78,10 @@ public class TypeCast {
         return isNullOrEmpty(s);
     }
 
+    public static boolean isNullOrEmpy(String s) {
+        return ((s == null) || (s.trim().equals("")));
+    }
+
     /**
      *
      * @param s
@@ -823,6 +827,16 @@ public class TypeCast {
     }
 
     /**
+     * Customized format
+     * @param prefix
+     * @param v
+     * @return
+     */
+    public static String CF(String prefix, String complete, int count, Object v) throws CDCException {
+        return prefix + repeat(complete, (count - toString(v).length())) + v;
+    }
+
+    /**
      * 
      * @param os
      * @return 
@@ -836,7 +850,7 @@ public class TypeCast {
      * @param file
      * @return 
      */
-    public static InputStream toInputStream(File file) throws FileNotFoundException {        
+    public static InputStream toInputStream(File file) throws FileNotFoundException {
         return new FileInputStream(file);
     }
 }
