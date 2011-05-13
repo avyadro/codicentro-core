@@ -15,7 +15,11 @@
 package com.codicentro.core;
 
 import com.codicentro.core.model.Cell;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
 import java.net.URL;
@@ -49,10 +53,82 @@ public class Workbook implements Serializable {
     private int idxCell = -1;
     private List<Cell> cells = null;
 
+    /**
+     * 
+     */
     public Workbook() {
         workbook = new XSSFWorkbook();
     }
 
+    /**
+     *
+     * @param template
+     * @throws CDCException
+     */
+    public Workbook(InputStream template) throws CDCException {
+        this();
+        try {
+            this.template = new SAXBuilder().build(template).getRootElement();
+        } catch (JDOMException ex) {
+            throw new CDCException(ex);
+        } catch (IOException ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    /**
+     * 
+     * @param template
+     * @param idHeader
+     * @throws CDCException
+     */
+    public Workbook(InputStream template, String idHeader) throws CDCException {
+        this(template);
+        this.idHeader = idHeader;
+        try {
+            createHeader();
+        } catch (Exception ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    /**
+     * 
+     * @param template
+     * @throws CDCException
+     */
+    public Workbook(File template) throws CDCException {
+        this();
+        try {
+            this.template = new SAXBuilder().build(template).getRootElement();
+        } catch (JDOMException ex) {
+            throw new CDCException(ex);
+        } catch (IOException ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    /**
+     * 
+     * @param template
+     * @param idHeader
+     * @throws CDCException
+     */
+    public Workbook(File template, String idHeader) throws CDCException {
+        this(template);
+        this.idHeader = idHeader;
+        try {
+            createHeader();
+        } catch (Exception ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    /**
+     * 
+     * @param template
+     * @throws CDCException
+     */
     public Workbook(URL template) throws CDCException {
         this();
         try {
@@ -64,6 +140,12 @@ public class Workbook implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @param template
+     * @param idHeader
+     * @throws CDCException
+     */
     public Workbook(URL template, String idHeader) throws CDCException {
         this(template);
         this.idHeader = idHeader;
@@ -364,5 +446,32 @@ public class Workbook implements Serializable {
         }
         fm = fm.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol + count));
         return formulaCheckCol(fm, idxCol);
+    }
+
+    /**
+     *
+     * @param file
+     */
+    public void save(File file) {
+        try {
+            OutputStream fos = new FileOutputStream(file);
+            workbook.write(fos);
+            fos.close();
+        } catch (Exception ex) {
+            logger.error("Error guarando reporte " + file, ex);
+        }
+    }
+
+    /**
+     * 
+     * @param fos
+     */
+    public void save(OutputStream fos) {
+        try {
+            workbook.write(fos);
+            fos.close();
+        } catch (Exception ex) {
+            logger.error(ex.getLocalizedMessage(), ex);
+        }
     }
 }
