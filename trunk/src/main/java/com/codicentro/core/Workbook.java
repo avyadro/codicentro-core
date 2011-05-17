@@ -26,6 +26,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.regex.Pattern;
 import org.apache.poi.ss.usermodel.FillPatternType;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
@@ -357,7 +358,7 @@ public class Workbook implements Serializable {
         cell.setCellStyle(style);
         if (c.isCalculateValue()) {
             if (c.getFormula() != null) {
-                cell.setCellFormula(mkFormula(c.getFormula(), idxCell));
+                cell.setCellFormula(mkFormula(c.getFormula(), idxCell, null));
             }
         } else {
             cell.setCellValue(column.getValue());
@@ -387,7 +388,7 @@ public class Workbook implements Serializable {
                     cell.setCellStyle(style);
                     /*** ***/
                     if (cells.get(idx).getFormula() != null) {
-                        cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell));
+                        cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell, value));
                     } else {
                         oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
                         if (oValue instanceof java.lang.Number) {
@@ -414,11 +415,32 @@ public class Workbook implements Serializable {
         }
     }
 
-    private String mkFormula(String formula, int idxCol) {
+    private <TEntity> String mkFormula(String formula, int idxCol, TEntity value) throws CDCException {
         formula = formula.replaceAll("\\{row\\}", "" + (idxRow + 1));
         formula = formula.replaceAll("\\{col\\}", CellReference.convertNumToColString(idxCol));
         formula = formulaCheckCol(formula, idxCol);
+        formula = formulaBean(formula, value);
         return formula;
+    }
+
+    private <TEntity> String formulaBean(String fm, TEntity value) throws CDCException {
+        if (value == null) {
+            return fm;
+        }
+        int posOpenBean = fm.indexOf("{bean:");
+        if (posOpenBean == -1) {
+            return fm;
+        }
+        int posCloseBean = fm.indexOf("}", posOpenBean);
+        if (posCloseBean == -1) {
+            return fm;
+        }
+        String tk = fm.substring(posOpenBean, posCloseBean + 1);
+        tk = Pattern.quote(tk);
+        String bean = fm.substring(posOpenBean + 6, posCloseBean);
+        Object oValue = TypeCast.GN(value, "get" + bean);
+        fm = fm.replaceFirst(tk, TypeCast.toString(oValue));
+        return formulaBean(fm, value);
     }
 
     private String formulaCheckCol(String fm, int idxCol) {
