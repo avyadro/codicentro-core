@@ -23,6 +23,8 @@ import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -852,5 +854,16 @@ public class TypeCast {
      */
     public static InputStream toInputStream(File file) throws FileNotFoundException {
         return new FileInputStream(file);
+    }
+
+    /**
+     * Gets the exception stack trace as a string.
+     * @param exception
+     * @return
+     */
+    public static String toString(Exception exception) {
+        StringWriter sw = new StringWriter();
+        exception.printStackTrace(new PrintWriter(sw));
+        return sw.toString();
     }
 }
