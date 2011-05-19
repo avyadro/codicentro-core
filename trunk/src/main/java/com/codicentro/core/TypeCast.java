@@ -820,12 +820,18 @@ public class TypeCast {
         }
         return sf + "\n" + "* " + s + " *\n" + sf + "\n";
     }
-
+/**
+     * 
+     * @param v
+     * @param size
+     * @return 
+     */
     public static String repeat(String v, int size) {
+        String rs = "";
         for (int i = 0; i < size; i++) {
-            v += v;
+            rs += v;
         }
-        return v;
+        return rs;
     }
 
     /**
