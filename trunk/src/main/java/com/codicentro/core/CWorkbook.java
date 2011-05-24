@@ -48,10 +48,11 @@ public class CWorkbook implements Serializable {
 
     public enum XFormat {
 
-        XLS, XLSX
+        XLSX, XLS
     };
     private Logger logger = LoggerFactory.getLogger(CWorkbook.class);
     private Workbook workbook = null;
+    private XFormat xFormat = XFormat.XLSX;
     private Sheet sheet = null;
     private Element template = null;
     private String idHeader = null;
@@ -60,11 +61,9 @@ public class CWorkbook implements Serializable {
     private int idxCell = -1;
     private List<CCell> cells = null;
 
-    /**
-     * 
-     */
     public CWorkbook(XFormat xFormat) {
         workbook = (xFormat == XFormat.XLSX) ? new XSSFWorkbook() : new HSSFWorkbook();
+        this.xFormat = xFormat;
     }
 
     /**
@@ -102,10 +101,20 @@ public class CWorkbook implements Serializable {
     /**
      * 
      * @param template
-     * @throws CDCException
+     * @throws CDCException 
      */
     public CWorkbook(File template) throws CDCException {
-        this(XFormat.XLSX);
+        this(template, XFormat.XLSX);
+    }
+
+    /**
+     * 
+     * @param template
+     * @param xFormat
+     * @throws CDCException 
+     */
+    public CWorkbook(File template, XFormat xFormat) throws CDCException {
+        this(xFormat);
         try {
             this.template = new SAXBuilder().build(template).getRootElement();
         } catch (JDOMException ex) {
@@ -122,7 +131,18 @@ public class CWorkbook implements Serializable {
      * @throws CDCException
      */
     public CWorkbook(File template, String idHeader) throws CDCException {
-        this(template);
+        this(template, idHeader, XFormat.XLSX);
+    }
+
+    /**
+     * 
+     * @param template
+     * @param idHeader
+     * @param xFormat
+     * @throws CDCException 
+     */
+    public CWorkbook(File template, String idHeader, XFormat xFormat) throws CDCException {
+        this(template, xFormat);
         this.idHeader = idHeader;
         try {
             createHeader();
@@ -134,12 +154,18 @@ public class CWorkbook implements Serializable {
     /**
      * 
      * @param template
-     * @throws CDCException
+     * @throws CDCException 
      */
     public CWorkbook(URL template) throws CDCException {
         this(template, XFormat.XLSX);
     }
 
+    /**
+     * 
+     * @param template
+     * @param xFormat
+     * @throws CDCException 
+     */
     public CWorkbook(URL template, XFormat xFormat) throws CDCException {
         this(xFormat);
         try {
@@ -158,7 +184,18 @@ public class CWorkbook implements Serializable {
      * @throws CDCException
      */
     public CWorkbook(URL template, String idHeader) throws CDCException {
-        this(template);
+        this(template, idHeader, XFormat.XLSX);
+    }
+
+    /**
+     * 
+     * @param template
+     * @param idHeader
+     * @param xFormat
+     * @throws CDCException 
+     */
+    public CWorkbook(URL template, String idHeader, XFormat xFormat) throws CDCException {
+        this(template, xFormat);
         this.idHeader = idHeader;
         try {
             createHeader();
@@ -167,10 +204,19 @@ public class CWorkbook implements Serializable {
         }
     }
 
+    /**
+     * 
+     * @return 
+     */
     public Workbook getWorkbook() {
         return workbook;
     }
 
+    /**
+     * 
+     * @param idHeader
+     * @throws CDCException 
+     */
     public void createHeader(String idHeader) throws CDCException {
         this.idHeader = idHeader;
         try {
@@ -323,20 +369,21 @@ public class CWorkbook implements Serializable {
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
             } else {
-                style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.Color$" + background.toUpperCase(), "index")));
+                style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
             }
         }
         /*** WIDTH ***/
         BigDecimal width = (column.getAttribute("width") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("width").getValue());
         if (width != null) {
-            width = TypeCast.toBigDecimal(width.doubleValue() * 1308.90);
+            width = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
             sheet.setColumnWidth(idxCell, width.intValue());
         }
 
         /*** HEIGHT ***/
         BigDecimal height = (column.getAttribute("height") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("height").getValue());
         if (height != null) {
-            height = TypeCast.toBigDecimal(height.doubleValue() * 1308.90);
+            height = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
+
             row.setHeight(height.shortValue());
         }
 
