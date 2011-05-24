@@ -104,7 +104,7 @@ public class CWorkbook implements Serializable {
     }
 
     public CWorkbook(InputStream template, String idHeader, XFormat xFormat) throws CDCException {
-        this(template);
+        this(template, xFormat);
         this.idHeader = idHeader;
         try {
             createHeader();
