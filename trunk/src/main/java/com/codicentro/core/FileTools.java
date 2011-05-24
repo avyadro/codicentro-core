@@ -14,7 +14,7 @@
  **/
 package com.codicentro.core;
 
-import com.codicentro.core.model.Cell;
+import com.codicentro.core.model.CCell;
 import java.io.DataInputStream;
 import java.io.File;
 import java.io.FileInputStream;
@@ -109,8 +109,8 @@ public class FileTools {
      * @param idxCell     
      * @throws CDCException
      */
-    private static int columnDef(XSSFWorkbook book, XSSFSheet sheet, XSSFRow row, Element column, List<Cell> cells, int idxCell) throws CDCException {
-        Cell c = new Cell(column.getAttribute("name").getValue());
+    private static int columnDef(XSSFWorkbook book, XSSFSheet sheet, XSSFRow row, Element column, List<CCell> cells, int idxCell) throws CDCException {
+        CCell c = new CCell(column.getAttribute("name").getValue());
         /*** VARS ***/
         XSSFCellStyle style = book.createCellStyle();
         style.setBorderBottom(TypeCast.toShort(1));
@@ -305,7 +305,7 @@ public class FileTools {
                 iColumn = header.getChildren("column").iterator();
             }
         }
-        List<Cell> cells = new ArrayList<Cell>();
+        List<CCell> cells = new ArrayList<CCell>();
         /*** HEADERS ***/
         int idxCell = -1;
         while (iColumn.hasNext()) {
@@ -360,7 +360,7 @@ public class FileTools {
         exportXLS(response, book, filename);
     }
 
-    private static <TEntity> int render(XSSFSheet sheet, List<Cell> cells, List<TEntity> values, int idxRow) throws CDCException {
+    private static <TEntity> int render(XSSFSheet sheet, List<CCell> cells, List<TEntity> values, int idxRow) throws CDCException {
         XSSFRow row = null;
         Object oValue = null;
         XSSFCell cell = null;
@@ -397,7 +397,7 @@ public class FileTools {
         return idxRow;
     }
 
-    private static <TEntity> int summary(XSSFSheet sheet, List<Cell> cells, int idxRow) {
+    private static <TEntity> int summary(XSSFSheet sheet, List<CCell> cells, int idxRow) {
         /*** SUMMARY ***/
         idxRow++;
         XSSFRow row = sheet.createRow(idxRow);
@@ -462,7 +462,7 @@ public class FileTools {
                 iColumn = header.getChildren("column").iterator();
             }
         }
-        List<Cell> cells = new ArrayList<Cell>();
+        List<CCell> cells = new ArrayList<CCell>();
         /*** HEADERS ***/
         int idxCell = -1;
         while (iColumn.hasNext()) {
