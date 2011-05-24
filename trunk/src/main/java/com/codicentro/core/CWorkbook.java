@@ -72,7 +72,18 @@ public class CWorkbook implements Serializable {
      * @throws CDCException
      */
     public CWorkbook(InputStream template) throws CDCException {
-        this(XFormat.XLSX);
+        this(template, XFormat.XLSX);
+
+    }
+
+    /**
+     * 
+     * @param template
+     * @param xFormat
+     * @throws CDCException 
+     */
+    public CWorkbook(InputStream template, XFormat xFormat) throws CDCException {
+        this(xFormat);
         try {
             this.template = new SAXBuilder().build(template).getRootElement();
         } catch (JDOMException ex) {
@@ -89,6 +100,10 @@ public class CWorkbook implements Serializable {
      * @throws CDCException
      */
     public CWorkbook(InputStream template, String idHeader) throws CDCException {
+        this(template, idHeader, XFormat.XLSX);
+    }
+
+    public CWorkbook(InputStream template, String idHeader, XFormat xFormat) throws CDCException {
         this(template);
         this.idHeader = idHeader;
         try {
