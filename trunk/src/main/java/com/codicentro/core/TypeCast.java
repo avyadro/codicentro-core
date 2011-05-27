@@ -16,15 +16,20 @@ package com.codicentro.core;
 
 //import com.codicentro.model.Column;
 //import com.codicentro.model.Table;
+import java.io.BufferedReader;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.io.StringWriter;
+import java.io.Writer;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -820,7 +825,8 @@ public class TypeCast {
         }
         return sf + "\n" + "* " + s + " *\n" + sf + "\n";
     }
-/**
+
+    /**
      * 
      * @param v
      * @param size
@@ -871,5 +877,37 @@ public class TypeCast {
         StringWriter sw = new StringWriter();
         exception.printStackTrace(new PrintWriter(sw));
         return sw.toString();
+    }
+
+    /**
+     * 
+     * @param is
+     * @return
+     * @throws IOException 
+     */
+    public static String toString(InputStream is) throws IOException {
+        /*
+         * To convert the InputStream to String we use the
+         * Reader.read(char[] buffer) method. We iterate until the
+         * Reader return -1 which means there's no more data to
+         * read. We use the StringWriter class to produce the string.
+         */
+        if (is != null) {
+            Writer writer = new StringWriter();
+
+            char[] buffer = new char[1024];
+            try {
+                Reader reader = new BufferedReader(new InputStreamReader(is, "UTF-8"));
+                int n;
+                while ((n = reader.read(buffer)) != -1) {
+                    writer.write(buffer, 0, n);
+                }
+            } finally {
+                is.close();
+            }
+            return writer.toString();
+        } else {
+            return "";
+        }
     }
 }

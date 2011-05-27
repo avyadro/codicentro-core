@@ -452,12 +452,13 @@ public class CWorkbook implements Serializable {
                 if (cells.get(idx).isRender()) {
                     idxCell++;
                     cell = localRow.createCell(idxCell);
-                    /*** STYLE ***/
-                    style = sheet.getWorkbook().createCellStyle();
                     if (cells.get(idx).getDataFormat() != null) {
+                        /*** STYLE ***/
+                        style = sheet.getWorkbook().createCellStyle();
                         style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
+                        cell.setCellStyle(style);
                     }
-                    cell.setCellStyle(style);
+                    style = null;
                     /*** ***/
                     if (cells.get(idx).getFormula() != null) {
                         cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell, value));
