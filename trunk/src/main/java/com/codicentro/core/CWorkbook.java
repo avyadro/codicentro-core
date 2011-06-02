@@ -397,8 +397,7 @@ public class CWorkbook implements Serializable {
         /*** HEIGHT ***/
         BigDecimal height = (column.getAttribute("height") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("height").getValue());
         if (height != null) {
-            height = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
-
+            height = TypeCast.toBigDecimal(height.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
             row.setHeight(height.shortValue());
         }
 
