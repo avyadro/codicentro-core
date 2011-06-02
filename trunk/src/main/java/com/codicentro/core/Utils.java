@@ -16,19 +16,16 @@ package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
 import com.codicentro.core.security.Encryption;
-import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
-import javax.xml.transform.OutputKeys;
-import javax.xml.transform.Source;
-import javax.xml.transform.Transformer;
-import javax.xml.transform.TransformerFactory;
-import javax.xml.transform.stream.StreamResult;
-import javax.xml.transform.stream.StreamSource;
+import org.dom4j.Document;
+import org.dom4j.DocumentHelper;
+import org.dom4j.io.OutputFormat;
+import org.dom4j.io.XMLWriter;
 
 public class Utils {
 
@@ -143,20 +140,17 @@ public class Utils {
         return c.getTime();
     }
 
-    public static String xmlPrettyFormat(String xml, int indent) {
+    public static String xmlPrettyFormat(String xml) {
         try {
             if (TypeCast.isNullOrEmpty(xml)) {
                 return xml;
             }
-            Source xmlInput = new StreamSource(new StringReader(xml));
-            StringWriter stringWriter = new StringWriter();
-            StreamResult xmlOutput = new StreamResult(stringWriter);
-            TransformerFactory transformerFactory = TransformerFactory.newInstance();
-            transformerFactory.setAttribute("indent-number", indent);
-            Transformer transformer = transformerFactory.newTransformer();
-            transformer.setOutputProperty(OutputKeys.INDENT, "yes");
-            transformer.transform(xmlInput, xmlOutput);
-            return xmlOutput.getWriter().toString();
+            Document doc = DocumentHelper.parseText(xml);
+            StringWriter sw = new StringWriter();
+            OutputFormat format = OutputFormat.createPrettyPrint();
+            XMLWriter xw = new XMLWriter(sw, format);
+            xw.write(doc);
+            return sw.toString();
         } catch (Exception e) {
             throw new RuntimeException(e); // simple exception handling, please review it
         }
