@@ -15,7 +15,6 @@
 package com.codicentro.core.extjs;
 
 import com.codicentro.core.CDCException;
-import com.codicentro.core.JSONObject;
 import com.codicentro.core.TypeCast;
 import com.codicentro.core.Types.RenderType;
 import com.codicentro.core.json.JSONSerializer;
@@ -87,19 +86,10 @@ public class Tree implements Serializable {
         if (tree == null) {
             return "[]";
         }
+        String result = null;
         /** **/
         String childEmpty = "";
         String itemName = "";
-        switch (rt) {
-            case EXTJS_TREE:
-                childEmpty = "children:[]";
-                itemName = "children:";
-                break;
-            case EXTJS_MENU:
-                childEmpty = "menu:{items:[]}";
-                itemName = "menu:{items:";
-                break;
-        }
         /*** INIT SERIALIZER ***/
         StringBuilder sb = new StringBuilder();
         StringBuilder item = null;
@@ -114,10 +104,30 @@ public class Tree implements Serializable {
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
         String entityValue = null;
-
         while (iTree.hasNext()) {
             value = null;
             entity = iTree.next();
+            switch (rt) {
+                case EXTJS_TREE:
+                    if (!TypeCast.isNullOrEmpty(leafExpression)) {
+                        Object expValue = TypeCast.GN(entity, expName[0]);
+                        for (int i = 1; i < expName.length; i++) {
+                            expValue = TypeCast.GN(expValue, expName[i]);
+                        }
+                        leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
+                        childEmpty = "children:[],leaf:" + leaf;
+                    } else {
+                        childEmpty = "children:[],leaf:false";
+                    }
+                    itemName = "children:";
+                    break;
+                case EXTJS_MENU:
+                    childEmpty = "menu:{items:[]}";
+                    itemName = "menu:{items:";
+                    break;
+            }
+
+
             /*** ***/
             idValue = TypeCast.GN(entity, idName[0]);
             for (int i = 1; i < idName.length; i++) {
@@ -175,14 +185,6 @@ public class Tree implements Serializable {
             if (!TypeCast.isNullOrEmpty(entityValue)) {
                 item.append(",").append(entityValue);
             }
-            if (!TypeCast.isNullOrEmpty(leafExpression)) {
-                Object expValue = TypeCast.GN(entity, expName[0]);
-                for (int i = 1; i < expName.length; i++) {
-                    expValue = TypeCast.GN(expValue, expName[i]);
-                }
-                leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
-            }
-            item.append(",leaf:").append(isLeaf());
             if (properties != null) {
                 item.append(",").append(properties.toString());
             }
@@ -214,7 +216,12 @@ public class Tree implements Serializable {
 
         switch (rt) {
             case EXTJS_TREE:
-                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "ondemand:false") + "]";
+                /**
+                 * 
+                 */
+                childEmpty = "children:\\[],leaf:(false|true)";
+                result = "[" + sb.toString().replaceAll(childEmpty, "leaf:true") + "]";                
+                return result;
             case EXTJS_MENU:
                 return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
             default:
