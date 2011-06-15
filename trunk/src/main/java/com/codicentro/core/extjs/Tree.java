@@ -34,6 +34,7 @@ public class Tree implements Serializable {
     private List<?> tree = null;
     private JSONSerializer json = null;
     private boolean leaf = true;
+    private boolean onDemand = false;
     private String leafExpression = null;
     private StringBuilder properties = null;
 
@@ -219,8 +220,11 @@ public class Tree implements Serializable {
                 /**
                  * 
                  */
-                childEmpty = "children:\\[],leaf:(false|true)";
-                result = "[" + sb.toString().replaceAll(childEmpty, "leaf:true") + "]";                
+                // childEmpty = "children:\\[],leaf:(false|true)";
+                childEmpty = "children:\\[],leaf:true";                
+                result = sb.toString().replaceAll(childEmpty, "leaf:true");
+                childEmpty = "children:\\[],leaf:false";
+                result = "[" + sb.toString().replaceAll(childEmpty, "leaf:false") + "]";
                 return result;
             case EXTJS_MENU:
                 return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
@@ -335,5 +339,19 @@ public class Tree implements Serializable {
         properties.append(key).append(":").append(value);
 
 
+    }
+
+    /**
+     * @return the onDemand
+     */
+    public boolean isOnDemand() {
+        return onDemand;
+    }
+
+    /**
+     * @param onDemand the onDemand to set
+     */
+    public void setOnDemand(boolean onDemand) {
+        this.onDemand = onDemand;
     }
 }
