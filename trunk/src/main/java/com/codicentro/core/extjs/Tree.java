@@ -33,8 +33,7 @@ public class Tree implements Serializable {
     private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
-    private boolean leaf = true;
-    private boolean onDemand = false;
+    private boolean leaf = true;   
     private String leafExpression = null;
     private StringBuilder properties = null;
 
@@ -337,21 +336,5 @@ public class Tree implements Serializable {
             properties.append(",");
         }
         properties.append(key).append(":").append(value);
-
-
-    }
-
-    /**
-     * @return the onDemand
-     */
-    public boolean isOnDemand() {
-        return onDemand;
-    }
-
-    /**
-     * @param onDemand the onDemand to set
-     */
-    public void setOnDemand(boolean onDemand) {
-        this.onDemand = onDemand;
     }
 }
