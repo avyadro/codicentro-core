@@ -36,6 +36,7 @@ import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.text.DecimalFormat;
+import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -909,5 +910,11 @@ public class TypeCast {
         } else {
             return "";
         }
+    }
+
+    public static Object round(Object value, int places) {
+        NumberFormat nf = NumberFormat.getInstance();
+        nf.setMaximumFractionDigits(places);
+        return nf.format(value);
     }
 }
