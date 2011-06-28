@@ -220,6 +220,17 @@ public class TypeCast {
 
     /**
      * 
+     * @param d, Date
+     * @param f, Format ex. yyyyMMdd
+     * @return
+     * @throws CDCException 
+     */
+    public static BigInteger toBigInteger(Date d, String f) throws CDCException {
+        return toBigInteger(toString(d, f));
+    }    
+    
+    /**
+     * 
      * @param o
      * @return
      */
