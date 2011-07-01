@@ -34,7 +34,6 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.URL;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
@@ -45,6 +44,18 @@ import java.util.HashMap;
 import java.util.StringTokenizer;
 
 public class TypeCast {
+
+    public static Object ifNull(Object o, Object r) {
+        return ((o == null) ? r : o);
+    }
+
+    public static boolean isNull(Object o) {
+        return o == null ? true : false;
+    }
+
+    public static boolean isNotNull(Object o) {
+        return !isNull(o);
+    }
 
     /**
      * 
@@ -69,25 +80,9 @@ public class TypeCast {
         }
     }
 
-    public static Object ifNull(Object o, Object r) {
-        return ((o == null) ? r : o);
-    }
-
-    public static boolean isNull(Object o) {
-        return o == null ? true : false;
-    }
-
-    public static boolean isNotNull(Object o) {
-        return !isNull(o);
-    }
-
-    public static boolean isNullOrEmpy(String s, String v) {
+    public static boolean isNullOrEmpty(String s, String v) {
         s = (s != null) ? s.replaceAll(v, "") : s;
         return isNullOrEmpty(s);
-    }
-
-    public static boolean isNullOrEmpy(String s) {
-        return ((s == null) || (s.trim().equals("")));
     }
 
     /**
@@ -227,8 +222,8 @@ public class TypeCast {
      */
     public static BigInteger toBigInteger(Date d, String f) throws CDCException {
         return toBigInteger(toString(d, f));
-    }    
-    
+    }
+
     /**
      * 
      * @param o
@@ -749,17 +744,42 @@ public class TypeCast {
         }
     }
 
-    public static Object invoke(Object o, String m, Object... args) throws CDCException {
+    /**
+     * @deprecated
+     */
+    public static Object invoke(Object o, String m, Object[] args) throws CDCException {
         try {
             if (args != null) {
-                Class[] parameterTypes = new Class[args.length];
+                Class[] pTypes = new Class[args.length];
                 for (int i = 0; i < args.length; i++) {
-                    parameterTypes[i] = args[i].getClass();
+                    pTypes[i] = args[i].getClass();
                 }
-                return o.getClass().getMethod(m, parameterTypes).invoke(o, args);
+                return o.getClass().getMethod(m, pTypes).invoke(o, args);
             } else {
                 return o.getClass().getMethod(m).invoke(o);
             }
+        } catch (Exception ex) {
+            throw new CDCException(ex);
+        }
+    }
+
+    public static Object invoke(Object o, String m, Class[] types, Object[] args) throws CDCException {
+        try {
+            if ((types == null) && (args == null)) {
+                return o.getClass().getMethod(m).invoke(o);
+            }
+            if (types.length != args.length) {
+                throw new Exception("The number params types not match the arguments.");
+            }
+            /**
+             * Verify types args
+             */
+            for (int idx = 0; idx < types.length; idx++) {
+                if ((args[idx] != null) && (types[idx] != args[idx].getClass())) {
+                    throw new Exception("Params types not match arguments type in position" + idx + ".");
+                }
+            }
+            return o.getClass().getMethod(m, types).invoke(o, args);
         } catch (Exception ex) {
             throw new CDCException(ex);
         }
