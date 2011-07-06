@@ -47,6 +47,10 @@ import org.jdom.input.SAXBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * 
+ * @deprecated 
+ */
 public class FileTools {
 
     private static Logger logger = LoggerFactory.getLogger(FileTools.class);
@@ -203,7 +207,7 @@ public class FileTools {
             style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
-            } else {                
+            } else {
                 style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
             }
         }
@@ -235,7 +239,7 @@ public class FileTools {
         /*** DATA FORMAT ***/
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
         /*** RENDER DATA ***/
-        c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));        
+        c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
 
         style.setFont(font);
         cell.setCellStyle(style);
@@ -440,7 +444,7 @@ public class FileTools {
         Element headers = root.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
         Iterator<Element> iColumn = null;
-        Element header = null;        
+        Element header = null;
         while ((iHeader.hasNext()) && (iColumn == null)) {
             header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {

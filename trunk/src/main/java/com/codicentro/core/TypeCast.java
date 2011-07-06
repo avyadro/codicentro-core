@@ -41,6 +41,7 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.StringTokenizer;
 
 public class TypeCast {
@@ -473,15 +474,21 @@ public class TypeCast {
      * @param s
      * @return
      */
-    public static Object[] toArray(String s) {
-        ArrayList al = new ArrayList();
-        StringTokenizer st = new StringTokenizer(s, ",");
-        ArrayList o = new ArrayList();
-        while (st.hasMoreTokens()) {
-            o.add(st.nextToken());
+    public static String[] toArray(String s) {
+        return toArray(s, true);
+    }
+
+    public static String[] toArray(String s, boolean allowNull) {
+        List<String> data = new ArrayList<String>();
+        String[] split = s.split(",");
+        for (String value : split) {
+            if (allowNull || (!allowNull && !isNullOrEmpty(value))) {
+                data.add(value);
+            }
         }
-        al.add(o.toArray());
-        return al.toArray();
+        String[] rs = new String[data.size()];
+        data.toArray(rs);
+        return rs;
     }
 
     /**
