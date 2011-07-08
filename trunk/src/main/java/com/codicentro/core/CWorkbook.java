@@ -568,4 +568,11 @@ public class CWorkbook implements Serializable {
             logger.error(ex.getLocalizedMessage(), ex);
         }
     }
+
+    /**
+     * @param logger the logger to set
+     */
+    public void setLogger(Logger logger) {
+        this.logger = logger;
+    }
 }
