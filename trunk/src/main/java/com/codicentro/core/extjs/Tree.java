@@ -33,7 +33,7 @@ public class Tree implements Serializable {
     private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
-    private boolean leaf = true;   
+    private boolean leaf = true;
     private String leafExpression = null;
     private StringBuilder properties = null;
 
@@ -117,7 +117,7 @@ public class Tree implements Serializable {
                         leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
                         childEmpty = "children:[],leaf:" + leaf;
                     } else {
-                        childEmpty = "children:[],leaf:false";
+                        childEmpty = "children:[],leaf:default";
                     }
                     itemName = "children:";
                     break;
@@ -213,20 +213,24 @@ public class Tree implements Serializable {
                 }
             }
         }
-
+        result = sb.toString();
         switch (rt) {
             case EXTJS_TREE:
                 /**
                  * 
                  */
-                // childEmpty = "children:\\[],leaf:(false|true)";
-                childEmpty = "children:\\[],leaf:true";                
-                result = sb.toString().replaceAll(childEmpty, "leaf:true");
+                childEmpty = "children:\\[],leaf:true";
+                result = result.replaceAll(childEmpty, "leaf:true");
+                childEmpty = "children:\\[],leaf:default";
+                result = result.replaceAll(childEmpty, "leaf:true");
+                childEmpty = "leaf:default";
+                result = result.replaceAll(childEmpty, "leaf:false");
                 childEmpty = "children:\\[],leaf:false";
-                result = "[" + sb.toString().replaceAll(childEmpty, "leaf:false") + "]";
-                return result;
+                result = result.replaceAll(childEmpty, "leaf:false");
+                return "[" + result + "]";
             case EXTJS_MENU:
-                return "[" + sb.toString().replaceAll(Pattern.quote(childEmpty), "submenu:false") + "]";
+                result = result.replaceAll(Pattern.quote(childEmpty), "submenu:false");
+                return "[" + result + "]";
             default:
                 return null;
         }
