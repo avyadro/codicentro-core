@@ -22,6 +22,7 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -401,10 +402,14 @@ public class CWorkbook implements Serializable {
             row.setHeight(height.shortValue());
         }
 
-        /*** FONT BOLD ***/
+        /*** FONT STYLE ***/
         Boolean bold = (column.getAttribute("bold") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("bold").getValue());
         if (bold) {
-            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
+            font.setBoldweight(Font.BOLDWEIGHT_BOLD);            
+        }
+        BigInteger size = (column.getAttribute("size") == null) ? null : TypeCast.toBigInteger(column.getAttribute("size").getValue());
+        if (size != null) {
+            font.setFontHeightInPoints(size.shortValue());
         }
         /*** SUMMARY ***/
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
