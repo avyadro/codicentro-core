@@ -384,7 +384,7 @@ public class CWorkbook implements Serializable {
             style.setFillPattern(TypeCast.toShort(FillPatternType.SOLID_FOREGROUND.ordinal()));
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
-            } else {
+            } else {                
                 style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
             }
         }
@@ -410,7 +410,16 @@ public class CWorkbook implements Serializable {
         BigInteger size = (column.getAttribute("size") == null) ? null : TypeCast.toBigInteger(column.getAttribute("size").getValue());
         if (size != null) {
             font.setFontHeightInPoints(size.shortValue());
-        }
+        }        
+        String fcolor = (column.getAttribute("fcolor") == null) ? null : column.getAttribute("fcolor").getValue();
+        if (!TypeCast.isNullOrEmpty(fcolor)) {            
+            if (TypeCast.toShortD(fcolor) != null) {
+                font.setColor(TypeCast.toShortD(fcolor));
+            } else {       
+                // org.apache.poi.hssf.util.HSSFColor.
+                font.setColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + fcolor.toUpperCase(), "index")));
+            }
+        }        
         /*** SUMMARY ***/
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
         /*** SUMMARY FORMULA ***/
