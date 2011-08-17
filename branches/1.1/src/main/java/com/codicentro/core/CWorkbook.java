@@ -302,39 +302,37 @@ public class CWorkbook implements Serializable {
         Font font = workbook.createFont();
         Cell cell = null;
         /*** COL INDEX INCREMENT, DEFAULT 1 ***/
-        String cindexinc = (column.getAttribute("cindexinc") == null) ? null : column.getAttribute("cindexinc").getValue();
-        if (TypeCast.toBigInteger(cindexinc) != null) {
-            idxCell = idxCell + TypeCast.toInt(cindexinc);
+        BigInteger cindexinc = (column.getAttribute("cindexinc") == null) ? null : TypeCast.toBigInteger(column.getAttribute("cindexinc").getValue());
+        if (cindexinc != null) {
+            idxCell += cindexinc.intValue();
         } else {
             idxCell++;
         }
         /*** COL INDEX ***/
-        String cindex = (column.getAttribute("cindex") == null) ? null : column.getAttribute("cindex").getValue();
-        if (TypeCast.toBigInteger(cindex) != null) {
-            idxCell = TypeCast.toInt(cindex);
+        BigInteger cindex = (column.getAttribute("cindex") == null) ? null : TypeCast.toBigInteger(column.getAttribute("cindex").getValue());
+        if (cindex != null) {
+            idxCell = cindex.intValue();
         }
         logger.info("Cell: " + CellReference.convertNumToColString(idxCell) + idxRow);
         /*** ROW INDEX ***/
-        String rindex = (column.getAttribute("rindex") == null) ? null : column.getAttribute("rindex").getValue();
-        if (TypeCast.toBigInteger(rindex) != null) {
-            row = sheet.getRow(TypeCast.toInt(rindex));
+        BigInteger rindex = (column.getAttribute("rindex") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rindex").getValue());
+        if (rindex != null) {
+            row = sheet.getRow(rindex.intValue());
         }
         cell = row.createCell(idxCell);
         /*** ROW SPAN ***/
-        String rowspan = (column.getAttribute("rowspan") == null) ? null : column.getAttribute("rowspan").getValue();
-        if (TypeCast.toBigInteger(rowspan) != null) {
-            logger.info("Rows a cell should span: " + idxCell + " to " + rowspan);
-            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), TypeCast.toInt(rowspan), idxCell, idxCell));
+        BigInteger rowspan = (column.getAttribute("rowspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rowspan").getValue());
+        if (rowspan != null) {
+            logger.info("Rows a cell should span: " + idxCell + " to " + (cell.getRowIndex() + rowspan.intValue() - 1));
+            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex() + rowspan.intValue() - 1, idxCell, idxCell));
         }
 
         /*** COL SPAN ***/
-        String colspan = (column.getAttribute("colspan") == null) ? null : column.getAttribute("colspan").getValue();
-        if (TypeCast.toBigInteger(colspan) != null) {
-            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + TypeCast.toInt(colspan) - 1));
-            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + TypeCast.toInt(colspan) - 1));
+        BigInteger colspan = (column.getAttribute("colspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("colspan").getValue());
+        if (colspan != null) {
+            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + colspan.intValue() - 1));
+            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + colspan.intValue() - 1));
         }
-
-
 
         /*** ALIGMENT ***/
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
@@ -405,21 +403,21 @@ public class CWorkbook implements Serializable {
         /*** FONT STYLE ***/
         Boolean bold = (column.getAttribute("bold") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("bold").getValue());
         if (bold) {
-            font.setBoldweight(Font.BOLDWEIGHT_BOLD);            
+            font.setBoldweight(Font.BOLDWEIGHT_BOLD);
         }
         BigInteger size = (column.getAttribute("size") == null) ? null : TypeCast.toBigInteger(column.getAttribute("size").getValue());
         if (size != null) {
             font.setFontHeightInPoints(size.shortValue());
-        }        
+        }
         String fcolor = (column.getAttribute("fcolor") == null) ? null : column.getAttribute("fcolor").getValue();
-        if (!TypeCast.isNullOrEmpty(fcolor)) {            
+        if (!TypeCast.isNullOrEmpty(fcolor)) {
             if (TypeCast.toShortD(fcolor) != null) {
                 font.setColor(TypeCast.toShortD(fcolor));
-            } else {       
+            } else {
                 // org.apache.poi.hssf.util.HSSFColor.
                 font.setColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + fcolor.toUpperCase(), "index")));
             }
-        }        
+        }
         /*** SUMMARY ***/
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
         /*** SUMMARY FORMULA ***/
@@ -447,6 +445,9 @@ public class CWorkbook implements Serializable {
             }
         } else {
             cell.setCellValue(column.getValue());
+        }
+        if (colspan != null) {
+            idxCell += colspan.intValue() - 1;
         }
         cells.add(c);
     }
