@@ -29,6 +29,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.usermodel.Cell;
 import org.apache.poi.ss.usermodel.CellStyle;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -319,21 +320,29 @@ public class CWorkbook implements Serializable {
         if (rindex != null) {
             row = sheet.getRow(rindex.intValue());
         }
-        cell = row.createCell(idxCell);
-        /*** ROW SPAN ***/
+        cell = row.createCell(idxCell);        
+        /*** ROW SPAN (MERGED ROW) ***/
         BigInteger rowspan = (column.getAttribute("rowspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rowspan").getValue());
         if (rowspan != null) {
             logger.info("Rows a cell should span: " + idxCell + " to " + (cell.getRowIndex() + rowspan.intValue() - 1));
-            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex() + rowspan.intValue() - 1, idxCell, idxCell));
+            CellRangeAddress cra = new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex() + rowspan.intValue() - 1, idxCell, idxCell);
+            RegionUtil.setBorderBottom(1, cra, sheet, workbook);
+            RegionUtil.setBorderTop(1, cra, sheet, workbook);
+            RegionUtil.setBorderLeft(1, cra, sheet, workbook);
+            RegionUtil.setBorderRight(1, cra, sheet, workbook);
+            sheet.addMergedRegion(cra);
         }
-
-        /*** COL SPAN ***/
+        /*** COL SPAN (MERGED CELL) ***/
         BigInteger colspan = (column.getAttribute("colspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("colspan").getValue());
         if (colspan != null) {
             logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + colspan.intValue() - 1));
-            sheet.addMergedRegion(new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + colspan.intValue() - 1));
+            CellRangeAddress cra = new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + colspan.intValue() - 1);
+            RegionUtil.setBorderBottom(1, cra, sheet, workbook);
+            RegionUtil.setBorderTop(1, cra, sheet, workbook);
+            RegionUtil.setBorderLeft(1, cra, sheet, workbook);
+            RegionUtil.setBorderRight(1, cra, sheet, workbook);
+            sheet.addMergedRegion(cra);
         }
-
         /*** ALIGMENT ***/
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
         if (!TypeCast.isNullOrEmpty(alignment)) {
@@ -382,7 +391,7 @@ public class CWorkbook implements Serializable {
             style.setFillPattern(TypeCast.toShort(FillPatternType.SOLID_FOREGROUND.ordinal()));
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
-            } else {                
+            } else {
                 style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
             }
         }
