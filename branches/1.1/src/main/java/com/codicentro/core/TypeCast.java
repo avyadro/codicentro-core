@@ -897,6 +897,7 @@ public class TypeCast {
     public static InputStream toInputStream(OutputStream os) {
         return new ByteArrayInputStream(((ByteArrayOutputStream) os).toByteArray());
     }
+   
 
     /**
      * 

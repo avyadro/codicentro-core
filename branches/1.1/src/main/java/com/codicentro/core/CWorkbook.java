@@ -320,7 +320,7 @@ public class CWorkbook implements Serializable {
         if (rindex != null) {
             row = sheet.getRow(rindex.intValue());
         }
-        cell = row.createCell(idxCell);        
+        cell = row.createCell(idxCell);
         /*** ROW SPAN (MERGED ROW) ***/
         BigInteger rowspan = (column.getAttribute("rowspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rowspan").getValue());
         if (rowspan != null) {
@@ -437,6 +437,8 @@ public class CWorkbook implements Serializable {
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
         /*** RENDER DATA ***/
         c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
+        /*** VALUE CELL ***/
+        c.setRValue((column.getAttribute("rvalue") == null) ? null : column.getAttribute("rvalue").getValue());
         /*** CALCULATE CELL VALUE ***/
         c.setCalculateValue((column.getAttribute("calculateValue") == null) ? false : TypeCast.toBoolean(column.getAttribute("calculateValue").getValue()));
         /*** BEAN ***/
@@ -486,12 +488,17 @@ public class CWorkbook implements Serializable {
                     if (cells.get(idx).getFormula() != null) {
                         cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell, value));
                     } else {
-                        oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
+                        if (cells.get(idx).getRValue() != null) {
+                            oValue = cells.get(idx).getRValue();
+                        } else {
+                            oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
+                        }
                         if (oValue instanceof java.lang.Number) {
                             cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
                         } else {
                             cell.setCellValue(TypeCast.toString(oValue));
                         }
+
                     }
                 } else if (cells.get(idx).getBean() != null) {
                     oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());

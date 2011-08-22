@@ -16,7 +16,6 @@ package com.codicentro.core.model;
 
 import org.apache.poi.ss.usermodel.Cell;
 
-
 public class CCell {
 
     private String name = null;
@@ -24,6 +23,10 @@ public class CCell {
     private String dataFormat = null;
     private boolean summary = false;
     private boolean render = true;
+    /**
+     * rValue, Render value; is fixed value from template.
+     */
+    private Object rValue = false;
     private boolean calculateValue = false;
     private String summaryFormula = null;
     private String bean = null;
@@ -178,4 +181,13 @@ public class CCell {
     public void setBeanOperation(String beanOperation) {
         this.beanOperation = beanOperation;
     }
+
+    public Object getRValue() {
+        return rValue;
+    }
+
+    public void setRValue(Object rValue) {
+        this.rValue = rValue;
+    }
+
 }
