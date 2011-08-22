@@ -498,10 +498,9 @@ public class CWorkbook implements Serializable {
                         } else {
                             cell.setCellValue(TypeCast.toString(oValue));
                         }
-
                     }
                 } else if (cells.get(idx).getBean() != null) {
-                    oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());
+                    oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());                  
                     if (oValue instanceof java.lang.Number) {
                         if (cells.get(idx).getBeanOperation() != null) {
                             if (cells.get(idx).getBeanOperation().equals("+")) {
