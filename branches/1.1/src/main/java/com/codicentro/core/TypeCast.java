@@ -766,7 +766,7 @@ public class TypeCast {
                 return o.getClass().getMethod(m).invoke(o);
             }
         } catch (Exception ex) {
-            throw new CDCException(ex);
+            throw new CDCException("Method: " + m, ex);
         }
     }
 
@@ -897,7 +897,6 @@ public class TypeCast {
     public static InputStream toInputStream(OutputStream os) {
         return new ByteArrayInputStream(((ByteArrayOutputStream) os).toByteArray());
     }
-   
 
     /**
      * 
@@ -955,5 +954,9 @@ public class TypeCast {
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(places);
         return nf.format(value);
+    }
+
+    public static <TEntity> TEntity cast(Object value, Class<TEntity> clazz) {
+        return clazz.cast(value);
     }
 }
