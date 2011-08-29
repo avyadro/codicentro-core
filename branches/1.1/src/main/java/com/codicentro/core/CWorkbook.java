@@ -488,31 +488,39 @@ public class CWorkbook implements Serializable {
                         } else {
                             oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
                         }
-                        if (oValue instanceof java.lang.Number) {
-                            cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
-                        } else {
-                            cell.setCellValue(TypeCast.toString(oValue));
-                        }
                     }
                 } else if (cells.get(idx).getBean() != null) {
                     oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());
                     if (oValue instanceof java.lang.Number) {
                         if (cells.get(idx).getBeanOperation() != null) {
                             if (cells.get(idx).getBeanOperation().equals("+")) {
-                                cell.setCellValue(cell.getNumericCellValue() + TypeCast.toBigDecimal(oValue).doubleValue());
+                                oValue = cell.getNumericCellValue() + TypeCast.toBigDecimal(oValue).doubleValue();
                             }
                         } else {
-                            cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                            oValue = TypeCast.toBigDecimal(oValue).doubleValue();
                         }
+                    }
+                }
+                if (cell != null) {
+                    /**
+                     * 
+                     */
+                    if (cells.get(idx).getDataFormat() != null) {
+                        /*** STYLE ***/
+                        CellStyle style = sheet.getWorkbook().createCellStyle();
+                        style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
+                        cell.setCellStyle(style);
+                    }
+                    /**
+                     * 
+                     */
+                    if (oValue instanceof java.lang.Number) {
+                        cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                    } else if (oValue instanceof java.util.Date) {
+                        cell.setCellValue((java.util.Date) oValue);
                     } else {
                         cell.setCellValue(TypeCast.toString(oValue));
                     }
-                }
-                if ((cell != null) && (cells.get(idx).getDataFormat() != null)) {
-                    /*** STYLE ***/
-                    CellStyle style = sheet.getWorkbook().createCellStyle();
-                    style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
-                    cell.setCellStyle(style);
                 }
             }
         }
