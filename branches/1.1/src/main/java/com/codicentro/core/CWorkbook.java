@@ -449,10 +449,12 @@ public class CWorkbook implements Serializable {
             c.setCell(cell);
         }
         style.setFont(font);
-        cell.setCellStyle(style);
         if (c.isCalculateValue()) {
             if (c.getFormula() != null) {
                 cell.setCellFormula(mkFormula(c.getFormula(), idxCell, null));
+                if (c.getDataFormat() != null) {
+                    style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(c.getDataFormat()));
+                }
             }
         } else {
             cell.setCellValue(column.getValue());
@@ -460,30 +462,23 @@ public class CWorkbook implements Serializable {
         if (colspan != null) {
             idxCell += colspan.intValue() - 1;
         }
+        cell.setCellStyle(style);
         cells.add(c);
     }
 
     public <TEntity> void render(List<TEntity> values) throws CDCException {
         Row localRow = null;
         Object oValue = null;
-        Cell cell = null;
         idxCell = -1;
-        CellStyle style = null;
         for (Object value : values) {
             idxRow++;
             localRow = sheet.createRow(idxRow);
             idxCell = -1;
             for (int idx = 0; idx < cells.size(); idx++) {
+                Cell cell = cells.get(idx).getCell();
                 if (cells.get(idx).isRender()) {
                     idxCell++;
                     cell = localRow.createCell(idxCell);
-                    if (cells.get(idx).getDataFormat() != null) {
-                        /*** STYLE ***/
-                        style = sheet.getWorkbook().createCellStyle();
-                        style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
-                        cell.setCellStyle(style);
-                    }
-                    style = null;
                     /*** ***/
                     if (cells.get(idx).getFormula() != null) {
                         cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell, value));
@@ -500,18 +495,24 @@ public class CWorkbook implements Serializable {
                         }
                     }
                 } else if (cells.get(idx).getBean() != null) {
-                    oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());                  
+                    oValue = TypeCast.GN(value, "get" + cells.get(idx).getBean());
                     if (oValue instanceof java.lang.Number) {
                         if (cells.get(idx).getBeanOperation() != null) {
                             if (cells.get(idx).getBeanOperation().equals("+")) {
-                                cells.get(idx).getCell().setCellValue(cells.get(idx).getCell().getNumericCellValue() + TypeCast.toBigDecimal(oValue).doubleValue());
+                                cell.setCellValue(cell.getNumericCellValue() + TypeCast.toBigDecimal(oValue).doubleValue());
                             }
                         } else {
-                            cells.get(idx).getCell().setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
+                            cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
                         }
                     } else {
-                        cells.get(idx).getCell().setCellValue(TypeCast.toString(oValue));
+                        cell.setCellValue(TypeCast.toString(oValue));
                     }
+                }
+                if ((cell != null) && (cells.get(idx).getDataFormat() != null)) {
+                    /*** STYLE ***/
+                    CellStyle style = sheet.getWorkbook().createCellStyle();
+                    style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
+                    cell.setCellStyle(style);
                 }
             }
         }
