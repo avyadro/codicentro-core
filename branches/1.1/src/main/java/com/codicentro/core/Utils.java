@@ -16,12 +16,17 @@ package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
 import com.codicentro.core.security.Encryption;
+import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
+import javax.xml.bind.JAXBContext;
+import javax.xml.bind.JAXBException;
+import javax.xml.bind.Marshaller;
+import javax.xml.bind.Unmarshaller;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -154,5 +159,49 @@ public class Utils {
         } catch (Exception e) {
             throw new RuntimeException(e); // simple exception handling, please review it
         }
+    }
+
+    /**
+     * 
+     * @param source
+     * @param pf, PrettyFormat
+     * @param rh, Remove <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+     * @param types
+     * @return 
+     */
+    public static <TEntity> String convertToXml(TEntity source, boolean pf, boolean rh, Class... types) {
+        String result;
+        try {
+            JAXBContext context = JAXBContext.newInstance(types);
+            Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, pf);
+            StringWriter sw = new StringWriter();
+            marshaller.marshal(source, sw);
+            result = sw.toString();
+            if (rh) {
+                result = result.substring("<?xml version=\"1.0\" encoding=\"UTF-8\" standalone=\"yes\"?>".length() + ((pf) ? 1 : 0));
+            }
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+        return result;
+    }
+
+    public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
+        try {
+            JAXBContext context = JAXBContext.newInstance(type);
+            Unmarshaller unmarshaller = context.createUnmarshaller();            
+            return type.cast(unmarshaller.unmarshal(new StringReader(xml)));
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static String convertToXml(List<?> source, boolean pf, Class... types) {
+        StringBuilder sb = new StringBuilder();
+        for (Object src : source) {
+            sb.append(convertToXml(src, pf, true, types));
+        }
+        return sb.toString();
     }
 }
