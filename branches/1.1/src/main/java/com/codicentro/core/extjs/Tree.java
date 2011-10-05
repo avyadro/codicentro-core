@@ -19,16 +19,27 @@ import com.codicentro.core.TypeCast;
 import com.codicentro.core.Types.RenderType;
 import com.codicentro.core.json.JSONSerializer;
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.regex.Pattern;
 
 public class Tree implements Serializable {
 
+    private enum TOperator {
+
+        EQ,
+        ISNULL,
+        ISEMPTY,
+        ISNULLOREMPTY,
+        ISTRUE,
+        ISFALSE
+    };
     private String[] idName = null;
     private String[] parentIdName = null;
     private String[] expName = null;
     private String expCompare = null;
+    private TOperator expOperator = null;
     private String handlerField = null;
     private String separatorField = null;
     private List<?> tree = null;
@@ -99,7 +110,7 @@ public class Tree implements Serializable {
         Object idValue = null;
         Object parentValue = null;
         Object value = null;
-        /** OPTIONAL **/
+        /** OPTIONAL **/        
         String handlerName = (handlerField == null) ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
         Iterator<?> iTree = tree.iterator();
         Object entity = null;
@@ -111,10 +122,32 @@ public class Tree implements Serializable {
                 case EXTJS_TREE:
                     if (!TypeCast.isNullOrEmpty(leafExpression)) {
                         Object expValue = TypeCast.GN(entity, expName[0]);
-                        for (int i = 1; i < expName.length; i++) {
-                            expValue = TypeCast.GN(expValue, expName[i]);
+                        if (expValue != null) {
+                            for (int i = 1; i < expName.length; i++) {
+                                expValue = TypeCast.GN(expValue, expName[i]);
+                            }
                         }
-                        leaf = (expValue == null) ? false : TypeCast.toString(expValue).equals(expCompare);
+                        if (expValue == null) {
+                            leaf = false;
+                        } else {
+                            switch (expOperator) {
+                                case ISNULL:
+                                    leaf = (expValue == null);
+                                    break;
+                                case ISNULLOREMPTY:
+                                    leaf = ((expValue == null) || (((Collection) expValue).isEmpty()));
+                                    break;
+                                case ISTRUE:
+                                    leaf = TypeCast.toBoolean(expValue);
+                                    break;
+                                case ISFALSE:
+                                    leaf = !TypeCast.toBoolean(expValue);
+                                    break;
+                                default:
+                                    leaf = TypeCast.toString(expValue).equals(expCompare);
+                                    break;
+                            }
+                        }
                         childEmpty = "children:[],leaf:" + leaf;
                     } else {
                         childEmpty = "children:[],leaf:default";
@@ -135,9 +168,12 @@ public class Tree implements Serializable {
             }
             /*** ***/
             parentValue = TypeCast.GN(entity, parentIdName[0]);
-
-            for (int i = 1; i < parentIdName.length; i++) {
-                parentValue = TypeCast.GN(parentValue, parentIdName[i]);
+            if (parentValue != null) {
+                for (int i = 1; i < parentIdName.length; i++) {
+                    parentValue = TypeCast.GN(parentValue, parentIdName[i]);
+                }
+            } else {
+                parentValue = idValue;
             }
 
             /*** ***/
@@ -317,14 +353,32 @@ public class Tree implements Serializable {
      * @param leafExpression the leafExpression to set
      */
     public void setLeafExpression(String leafExpression) {
-        String[] exp = leafExpression.split("==");
+        String tk = "equal";
+        leafExpression = leafExpression.replaceAll("==", "equal");
+        expOperator = TOperator.EQ;
+        if (leafExpression.indexOf("isNullOrEmpty") != -1) {
+            expOperator = TOperator.ISNULLOREMPTY;
+            tk = "isNullOrEmpty";
+        } else if (leafExpression.indexOf("isNull") != -1) {
+            expOperator = TOperator.ISNULL;
+            tk = "isNull";
+        } else if (leafExpression.indexOf("isEmpty") != -1) {
+            expOperator = TOperator.ISEMPTY;
+            tk = "isEmpty";
+        } else if (leafExpression.indexOf("isTrue") != -1) {
+            expOperator = TOperator.ISTRUE;
+            tk = "isTrue";
+        } else if (leafExpression.indexOf("isFalse") != -1) {
+            expOperator = TOperator.ISFALSE;
+            tk = "isFalse";
+        }
+        String[] exp = leafExpression.split(tk);
         expName = exp[0].split("\\.");
         for (int i = 0; i < expName.length; i++) {
-            expName[i] = "get" + TypeCast.toFirtUpperCase(expName[i]);
+            expName[i] = "get" + TypeCast.toFirtUpperCase(expName[i].trim());
         }
-        expCompare = exp[1];
+        expCompare = ((exp != null) && (exp.length == 2)) ? exp[1] : null;
         this.leafExpression = leafExpression;
-
     }
 
     /**
