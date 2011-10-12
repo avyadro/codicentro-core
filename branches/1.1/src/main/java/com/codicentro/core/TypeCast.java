@@ -585,12 +585,12 @@ public class TypeCast {
         return sb.toString();
     }
 
-    public static String toString(ArrayList a) {
-        String result = "";
-        for (int i = 0; i < a.size(); i++) {
-            result += a.get(i);
+    public static <T> String toString(List<T> list) throws CDCException {
+        String rs = "";
+        for (T o : list) {
+            rs += (TypeCast.isNullOrEmpty(rs)) ? toString(o) : "," + toString(o);
         }
-        return result;
+        return rs;
     }
 
     public static String toString(byte[] b) {
