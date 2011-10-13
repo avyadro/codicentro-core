@@ -174,6 +174,7 @@ public class Utils {
         try {
             JAXBContext context = JAXBContext.newInstance(types);
             Marshaller marshaller = context.createMarshaller();
+            marshaller.setProperty(Marshaller.JAXB_ENCODING, "UTF-8");
             marshaller.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, pf);
             StringWriter sw = new StringWriter();
             marshaller.marshal(source, sw);
@@ -190,7 +191,7 @@ public class Utils {
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
         try {
             JAXBContext context = JAXBContext.newInstance(type);
-            Unmarshaller unmarshaller = context.createUnmarshaller();            
+            Unmarshaller unmarshaller = context.createUnmarshaller();
             return type.cast(unmarshaller.unmarshal(new StringReader(xml)));
         } catch (JAXBException e) {
             throw new RuntimeException(e);
