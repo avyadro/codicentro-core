@@ -20,6 +20,7 @@ import java.io.StringReader;
 import java.io.StringWriter;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 import java.util.Random;
@@ -198,7 +199,7 @@ public class Utils {
         }
     }
 
-    public static String convertToXml(List<?> source, boolean pf, Class... types) {
+    public static <C> String convertToXml(Collection<C> source, boolean pf, Class... types) {
         StringBuilder sb = new StringBuilder();
         for (Object src : source) {
             sb.append(convertToXml(src, pf, true, types));
