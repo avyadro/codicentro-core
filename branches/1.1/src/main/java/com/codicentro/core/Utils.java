@@ -199,6 +199,14 @@ public class Utils {
         }
     }
 
+    /**
+     * 
+     * @param <C>
+     * @param source
+     * @param pf, PrettyFormat
+     * @param types
+     * @return 
+     */
     public static <C> String convertToXml(Collection<C> source, boolean pf, Class... types) {
         StringBuilder sb = new StringBuilder();
         for (Object src : source) {
