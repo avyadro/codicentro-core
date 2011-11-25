@@ -147,10 +147,6 @@ public class TypeCast {
         }
     }
 
-    public static Integer toInteger(int pInt) {
-        return new Integer(pInt);
-    }
-
     public static int toInt(Object obj) throws CDCException {
         return toInt(toString(obj));
     }
@@ -185,16 +181,16 @@ public class TypeCast {
         return r;
     }
 
-    public static Integer toInteger(String str) throws CDCException {
-        Integer result = new Integer(0);
+    public static Integer toInteger(int pInt) {
+        return new Integer(pInt);
+    }
+
+    public static Integer toInteger(String str) {
         try {
-            if ((str != null) && (!str.trim().equals(""))) {
-                result = Integer.valueOf(OnlyNumber(str));
-            }
+            return Integer.valueOf(str);
         } catch (Exception ex) {
-            throw new CDCException(ex);
+            return null;
         }
-        return result;
     }
 
     /**
@@ -202,16 +198,12 @@ public class TypeCast {
      * @param o
      * @return
      */
-    public static BigInteger toBigInteger(Object o) throws CDCException {
-        BigInteger rs = null;
+    public static BigInteger toBigInteger(Object o) {
         try {
-            String value = toString(o);
-            if (value != null) {
-                rs = new BigInteger(value.trim());
-            }
+            return new BigInteger(toString(o));
         } catch (Exception ex) {
+            return null;
         }
-        return rs;
     }
 
     /**
@@ -255,15 +247,12 @@ public class TypeCast {
      * @param o
      * @return
      */
-    public static String toString(Object o) throws CDCException {
-        String result = null;
+    public static String toString(Object o) {
         try {
-            result = String.valueOf(o);
-            result = ((o == null) || result.toLowerCase().equals("null")) ? null : result;
+            return (o == null) ? null : String.valueOf(o);
         } catch (Exception ex) {
-            throw new CDCException(ex);
+            return null;
         }
-        return result;
     }
 
     /**
@@ -885,7 +874,7 @@ public class TypeCast {
      * @param v
      * @return
      */
-    public static String CF(String prefix, String complete, int count, Object v) throws CDCException {
+    public static String CF(String prefix, String complete, int count, Object v) {
         return prefix + repeat(complete, (count - toString(v).length())) + v;
     }
 
