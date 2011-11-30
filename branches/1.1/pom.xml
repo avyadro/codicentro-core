@@ -17,16 +17,16 @@
     </properties>
     <distributionManagement>
         <repository>
-            <id>adea-release</id>
-            <name>Repositorio de release</name>
+            <id>internal</id>
+            <name>Archiva Managed Internal Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://221.211.12.44:8000/archiva/repository/internal</url>
+            <url>http://221.211.12.44/archiva/repository/internal/</url>
         </repository>
         <snapshotRepository>
             <uniqueVersion>true</uniqueVersion>
-            <id>adea-snapshot</id>
-            <name>Repositorio de snapshots</name>
-            <url>http://221.211.12.44:8000/archiva/repository/snapshots</url>
+            <id>snapshots</id>
+            <name>Archiva Managed Snapshot Repository</name>
+            <url>http://221.211.12.44/archiva/repository/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <build>

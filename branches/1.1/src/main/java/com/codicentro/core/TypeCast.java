@@ -325,7 +325,7 @@ public class TypeCast {
      * @return
      * @throws CDCException
      */
-    public static Short toShort(Object o) throws CDCException {
+    public static Short toShort(Object o) {
         try {
             return toBigDecimal(o).shortValue();
         } catch (Exception ex) {
