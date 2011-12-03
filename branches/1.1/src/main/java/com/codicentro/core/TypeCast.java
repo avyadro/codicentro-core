@@ -38,6 +38,7 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -947,5 +948,20 @@ public class TypeCast {
 
     public static <TEntity> TEntity cast(Object value, Class<TEntity> clazz) {
         return clazz.cast(value);
+    }
+
+    public static String[] join(String[] array1, String[] array2) {
+        if (array1 == null && array2 == null) {
+            return null;
+        }
+        if (array1 != null && array2 == null) {
+            return array1;
+        }
+        if (array1 == null && array2 != null) {
+            return array2;
+        }
+        List<String> list = new ArrayList<String>(Arrays.asList(array1));
+        list.addAll(Arrays.asList(array2));
+        return list.toArray(new String[0]);
     }
 }
