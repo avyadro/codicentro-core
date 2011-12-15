@@ -292,7 +292,7 @@ public class TypeCast {
         return (((o.equals("") || (o.equals("NULL")))) ? r : o);
     }
 
-    public static Integer toInteger(Object o) throws CDCException {
+    public static Integer toInteger(Object o) {
         try {
             return Integer.valueOf(toInt(o));
         } catch (Exception ex) {
