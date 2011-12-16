@@ -66,7 +66,7 @@ public class JSONSerializer implements Serializable {
                 if ((value instanceof Boolean) || (value instanceof Number)) {
                     sb.append(":").append(value);
                 } else {
-                    sb.append(":\"").append(value).append("\"");
+                    sb.append(":\"").append(TypeCast.toString(value).replaceAll("\\\"", "\\\\\"")).append("\"");
                 }
             }
             comma = ",";
