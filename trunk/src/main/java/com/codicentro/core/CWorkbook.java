@@ -1,17 +1,12 @@
 /**
- * @author: Alexander Villalobos Yadró
- * @user: avillalobos
- * @email: avyadro@yahoo.com.mx
- * @created: 3/05/2011 at 02:44:11 PM
- * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
- * @className: CWorkbook.java
- * @purpose:
- * Revisions:
- * Ver        Date               Author                                      Description
- * ---------  ---------------  -----------------------------------  ------------------------------------
- **/
+ * @author: Alexander Villalobos Yadró @user: avillalobos @email:
+ * avyadro@yahoo.com.mx @created: 3/05/2011 at 02:44:11 PM @place: Toluca,
+ * Estado de México, México @company: AdeA México S.A. de C.V. @web:
+ * http://www.adea.com.mx @className: CWorkbook.java @purpose: Revisions: Ver
+ * Date Author Description --------- ---------------
+ * ----------------------------------- ------------------------------------
+ *
+ */
 package com.codicentro.core;
 
 import com.codicentro.core.model.CCell;
@@ -27,7 +22,11 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
+import java.util.logging.Level;
 import java.util.regex.Pattern;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.ss.usermodel.Cell;
@@ -79,10 +78,10 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param xFormat
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(InputStream template, XFormat xFormat) throws CDCException {
         this(xFormat);
@@ -96,7 +95,7 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param idHeader
      * @throws CDCException
@@ -116,19 +115,19 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(File template) throws CDCException {
         this(template, XFormat.XLSX);
     }
 
     /**
-     * 
+     *
      * @param template
      * @param xFormat
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(File template, XFormat xFormat) throws CDCException {
         this(xFormat);
@@ -142,7 +141,7 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param idHeader
      * @throws CDCException
@@ -152,11 +151,11 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param idHeader
      * @param xFormat
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(File template, String idHeader, XFormat xFormat) throws CDCException {
         this(template, xFormat);
@@ -169,19 +168,19 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(URL template) throws CDCException {
         this(template, XFormat.XLSX);
     }
 
     /**
-     * 
+     *
      * @param template
      * @param xFormat
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(URL template, XFormat xFormat) throws CDCException {
         this(xFormat);
@@ -195,7 +194,7 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param idHeader
      * @throws CDCException
@@ -205,11 +204,11 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param template
      * @param idHeader
      * @param xFormat
-     * @throws CDCException 
+     * @throws CDCException
      */
     public CWorkbook(URL template, String idHeader, XFormat xFormat) throws CDCException {
         this(template, xFormat);
@@ -222,17 +221,17 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
-     * @return 
+     *
+     * @return
      */
     public Workbook getWorkbook() {
         return workbook;
     }
 
     /**
-     * 
+     *
      * @param idHeader
-     * @throws CDCException 
+     * @throws CDCException
      */
     public void createHeader(String idHeader) throws CDCException {
         this.idHeader = idHeader;
@@ -244,11 +243,11 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param <TEntity>
      * @param values
      * @param doc
-     * @param idHeader    
+     * @param idHeader
      * @return
      * @throws Exception
      */
@@ -262,11 +261,15 @@ public class CWorkbook implements Serializable {
         while ((iHeader.hasNext()) && (iColumn == null)) {
             header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
-                /*** SHEET NAME ***/
+                /**
+                 * * SHEET NAME **
+                 */
                 String sheetname = (header.getAttribute("sheetname") == null) ? null : header.getAttribute("sheetname").getValue();
                 sheet = (TypeCast.isNullOrEmpty(sheetname)) ? workbook.createSheet() : workbook.createSheet(sheetname);
                 row = sheet.createRow(idxRow);
-                /*** ROW SIZE ***/
+                /**
+                 * * ROW SIZE **
+                 */
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
 
                 if (!TypeCast.isNullOrEmpty(frdata)) {
@@ -284,7 +287,9 @@ public class CWorkbook implements Serializable {
         }
 
         cells = new ArrayList<CCell>();
-        /*** HEADERS ***/
+        /**
+         * * HEADERS **
+         */
         idxCell = -1;
         while (iColumn.hasNext()) {
             columnDef(row, iColumn.next());
@@ -293,7 +298,9 @@ public class CWorkbook implements Serializable {
 
     private void columnDef(Row row, Element column) throws CDCException {
         CCell c = new CCell(column.getAttribute("name").getValue());
-        /*** VARS ***/
+        /**
+         * * VARS **
+         */
         CellStyle style = workbook.createCellStyle();
         style.setBorderBottom(TypeCast.toShort(1));
         style.setBorderTop(TypeCast.toShort(1));
@@ -302,26 +309,34 @@ public class CWorkbook implements Serializable {
 
         Font font = workbook.createFont();
         Cell cell = null;
-        /*** COL INDEX INCREMENT, DEFAULT 1 ***/
+        /**
+         * * COL INDEX INCREMENT, DEFAULT 1 **
+         */
         BigInteger cindexinc = (column.getAttribute("cindexinc") == null) ? null : TypeCast.toBigInteger(column.getAttribute("cindexinc").getValue());
         if (cindexinc != null) {
             idxCell += cindexinc.intValue();
         } else {
             idxCell++;
         }
-        /*** COL INDEX ***/
+        /**
+         * * COL INDEX **
+         */
         BigInteger cindex = (column.getAttribute("cindex") == null) ? null : TypeCast.toBigInteger(column.getAttribute("cindex").getValue());
         if (cindex != null) {
             idxCell = cindex.intValue();
         }
         logger.info("Cell: " + CellReference.convertNumToColString(idxCell) + idxRow);
-        /*** ROW INDEX ***/
+        /**
+         * * ROW INDEX **
+         */
         BigInteger rindex = (column.getAttribute("rindex") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rindex").getValue());
         if (rindex != null) {
             row = sheet.getRow(rindex.intValue());
         }
         cell = row.createCell(idxCell);
-        /*** ROW SPAN (MERGED ROW) ***/
+        /**
+         * * ROW SPAN (MERGED ROW) **
+         */
         BigInteger rowspan = (column.getAttribute("rowspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rowspan").getValue());
         if (rowspan != null) {
             logger.info("Rows a cell should span: " + idxCell + " to " + (cell.getRowIndex() + rowspan.intValue() - 1));
@@ -332,7 +347,9 @@ public class CWorkbook implements Serializable {
             RegionUtil.setBorderRight(1, cra, sheet, workbook);
             sheet.addMergedRegion(cra);
         }
-        /*** COL SPAN (MERGED CELL) ***/
+        /**
+         * * COL SPAN (MERGED CELL) **
+         */
         BigInteger colspan = (column.getAttribute("colspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("colspan").getValue());
         if (colspan != null) {
             logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + colspan.intValue() - 1));
@@ -343,7 +360,9 @@ public class CWorkbook implements Serializable {
             RegionUtil.setBorderRight(1, cra, sheet, workbook);
             sheet.addMergedRegion(cra);
         }
-        /*** ALIGMENT ***/
+        /**
+         * * ALIGMENT **
+         */
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
         if (!TypeCast.isNullOrEmpty(alignment)) {
             if (alignment.equals("alCenter")) {
@@ -363,7 +382,9 @@ public class CWorkbook implements Serializable {
             }
         }
 
-        /*** VERTICAL ALIGMENT ***/
+        /**
+         * * VERTICAL ALIGMENT **
+         */
         String valignment = (column.getAttribute("valignment") == null) ? null : column.getAttribute("valignment").getValue();
         if (!TypeCast.isNullOrEmpty(valignment)) {
             if (valignment.equals("alBottom")) {
@@ -376,16 +397,22 @@ public class CWorkbook implements Serializable {
                 style.setVerticalAlignment(CellStyle.VERTICAL_TOP);
             }
         }
-        /*** WRAP TEXT ***/
+        /**
+         * * WRAP TEXT **
+         */
         style.setWrapText((column.getAttribute("wrap") == null) ? false : TypeCast.toBoolean(column.getAttribute("wrap").getValue()));
 
-        /*** ROTATION ***/
+        /**
+         * * ROTATION **
+         */
         String rotation = (column.getAttribute("rotation") == null) ? null : column.getAttribute("rotation").getValue();
         if (TypeCast.toBigDecimal(rotation) != null) {
             style.setRotation(TypeCast.toBigDecimal(rotation).shortValue());
         }
 
-        /*** BACKGROUND ***/
+        /**
+         * * BACKGROUND **
+         */
         String background = (column.getAttribute("background") == null) ? null : column.getAttribute("background").getValue();
         if (!TypeCast.isNullOrEmpty(background)) {
             style.setFillPattern(TypeCast.toShort(FillPatternType.SOLID_FOREGROUND.ordinal()));
@@ -395,21 +422,27 @@ public class CWorkbook implements Serializable {
                 style.setFillForegroundColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + background.toUpperCase(), "index")));
             }
         }
-        /*** WIDTH ***/
+        /**
+         * * WIDTH **
+         */
         BigDecimal width = (column.getAttribute("width") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("width").getValue());
         if (width != null) {
             width = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
             sheet.setColumnWidth(idxCell, width.intValue());
         }
 
-        /*** HEIGHT ***/
+        /**
+         * * HEIGHT **
+         */
         BigDecimal height = (column.getAttribute("height") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("height").getValue());
         if (height != null) {
             height = TypeCast.toBigDecimal(height.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
             row.setHeight(height.shortValue());
         }
 
-        /*** FONT STYLE ***/
+        /**
+         * * FONT STYLE **
+         */
         Boolean bold = (column.getAttribute("bold") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("bold").getValue());
         if (bold) {
             font.setBoldweight(Font.BOLDWEIGHT_BOLD);
@@ -427,27 +460,50 @@ public class CWorkbook implements Serializable {
                 font.setColor(TypeCast.toShort(TypeCast.GF("org.apache.poi.hssf.util.HSSFColor$" + fcolor.toUpperCase(), "index")));
             }
         }
-        /*** SUMMARY ***/
+        /**
+         * * SUMMARY **
+         */
         c.setSummary((column.getAttribute("summary") == null) ? TypeCast.toBoolean("false") : TypeCast.toBoolean(column.getAttribute("summary").getValue()));
-        /*** SUMMARY FORMULA ***/
+        /**
+         * * SUMMARY FORMULA **
+         */
         c.setSummaryFormula((column.getAttribute("summaryFormula") == null) ? null : column.getAttribute("summaryFormula").getValue());
-        /*** FORMULA ***/
+        /**
+         * * FORMULA **
+         */
         c.setFormula((column.getAttribute("formula") == null) ? null : column.getAttribute("formula").getValue());
-        /*** DATA FORMAT ***/
+        /**
+         * * DATA FORMAT **
+         */
         c.setDataFormat((column.getAttribute("format") == null) ? null : column.getAttribute("format").getValue());
-        /*** RENDER DATA ***/
+        /**
+         * * RENDER DATA **
+         */
         c.setRender((column.getAttribute("render") == null) ? true : TypeCast.toBoolean(column.getAttribute("render").getValue()));
-        /*** VALUE CELL ***/
+        /**
+         * * VALUE CELL **
+         */
         c.setRValue((column.getAttribute("rvalue") == null) ? null : column.getAttribute("rvalue").getValue());
-        /*** CALCULATE CELL VALUE ***/
+        /**
+         * * CALCULATE CELL VALUE **
+         */
         c.setCalculateValue((column.getAttribute("calculateValue") == null) ? false : TypeCast.toBoolean(column.getAttribute("calculateValue").getValue()));
-        /*** BEAN ***/
+        /**
+         * * BEAN **
+         */
         c.setBean((column.getAttribute("bean") == null) ? null : column.getAttribute("bean").getValue());
-        /*** BEAN OPERATION ***/
+        /**
+         * * BEAN OPERATION **
+         */
         c.setBeanOperation((column.getAttribute("beanOperation") == null) ? null : column.getAttribute("beanOperation").getValue());
         if (c.getBean() != null) {
             c.setCell(cell);
         }
+        /**
+         * BEAN FORMULA
+         */
+        c.setBeanFormula((column.getAttribute("beanFormula") == null) ? null : column.getAttribute("beanFormula").getValue());
+
         style.setFont(font);
         if (c.isCalculateValue()) {
             if (c.getFormula() != null) {
@@ -479,12 +535,28 @@ public class CWorkbook implements Serializable {
                 if (cells.get(idx).isRender()) {
                     idxCell++;
                     cell = localRow.createCell(idxCell);
-                    /*** ***/
+                    /**
+                     * * **
+                     */
                     if (cells.get(idx).getFormula() != null) {
                         cell.setCellFormula(mkFormula(cells.get(idx).getFormula(), idxCell, value));
                     } else {
                         if (cells.get(idx).getRValue() != null) {
                             oValue = cells.get(idx).getRValue();
+                        } else if (cells.get(idx).getBeanFormula() != null) {
+                            String bFormula = cells.get(idx).getBeanFormula();
+                            for (String key : cells.get(idx).getBeanFormulaNames().keySet()) {
+                                oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + key) : null;
+                                bFormula = bFormula.replaceAll(cells.get(idx).getBeanFormulaNames().get(key), TypeCast.toString(oValue));
+                            }
+                            try {
+                                ScriptEngineManager mgr = new ScriptEngineManager();
+                                ScriptEngine se = mgr.getEngineByName("JavaScript");
+                                logger.info("Bean Formula: " + bFormula);
+                                oValue = se.eval(bFormula);
+                            } catch (ScriptException ex) {
+                                throw new CDCException(ex);
+                            }
                         } else {
                             oValue = (cells.get(idx).isRender()) ? TypeCast.GN(value, "get" + cells.get(idx).getName()) : null;
                         }
@@ -501,18 +573,27 @@ public class CWorkbook implements Serializable {
                         }
                     }
                 }
+                /**
+                 * Tomar en cuenta para futuras versiones:::: Con este agregado
+                 * podemos definir que cuando no sea render se incremente
+                 */
+//                else {
+//                    idxCell++;
+//                }
                 if (cell != null) {
                     /**
-                     * 
+                     *
                      */
                     if (cells.get(idx).getDataFormat() != null) {
-                        /*** STYLE ***/
+                        /**
+                         * * STYLE **
+                         */
                         CellStyle style = sheet.getWorkbook().createCellStyle();
                         style.setDataFormat(sheet.getWorkbook().createDataFormat().getFormat(cells.get(idx).getDataFormat()));
                         cell.setCellStyle(style);
                     }
                     /**
-                     * 
+                     *
                      */
                     if (oValue instanceof java.lang.Number) {
                         cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
@@ -596,7 +677,7 @@ public class CWorkbook implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param fos
      */
     public void save(OutputStream fos) {
