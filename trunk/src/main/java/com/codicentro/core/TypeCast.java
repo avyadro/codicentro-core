@@ -425,6 +425,9 @@ public class TypeCast {
      */
     public static Date toDate(Object o, String f) {
         try {
+            if(isNullOrEmpty(toString(o))){
+                return null;
+            }
             SimpleDateFormat df = new SimpleDateFormat(f.trim());
             df.setLenient(false); // Force read format date into param f
             return df.parse(toString(o));
