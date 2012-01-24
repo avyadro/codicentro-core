@@ -97,26 +97,25 @@ public class Tree implements Serializable {
         if (tree == null) {
             return "[]";
         }
-        String result = null;
+        String result;
         /** **/
         String childEmpty = "";
         String itemName = "";
         /*** INIT SERIALIZER ***/
         StringBuilder sb = new StringBuilder();
-        StringBuilder item = null;
-        int idx = 0;
-        int ln = 0;
+        StringBuilder item;
+        int idx;
+        int ln;
 
-        Object idValue = null;
-        Object parentValue = null;
-        Object value = null;
+        Object idValue;
+        Object parentValue;
+        Object value;
         /** OPTIONAL **/        
         String handlerName = (handlerField == null) ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
         Iterator<?> iTree = tree.iterator();
-        Object entity = null;
-        String entityValue = null;
-        while (iTree.hasNext()) {
-            value = null;
+        Object entity;
+        String entityValue;
+        while (iTree.hasNext()) {            
             entity = iTree.next();
             switch (rt) {
                 case EXTJS_TREE:
