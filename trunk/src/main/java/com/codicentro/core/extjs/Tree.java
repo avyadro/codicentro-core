@@ -26,7 +26,7 @@ import java.util.regex.Pattern;
 
 public class Tree implements Serializable {
 
-    private enum TOperator {
+    public enum TOperator {
 
         EQ,
         ISNULL,
@@ -223,7 +223,6 @@ public class Tree implements Serializable {
             if (properties != null) {
                 item.append(",").append(properties.toString());
             }
-
             /*
             
              */
