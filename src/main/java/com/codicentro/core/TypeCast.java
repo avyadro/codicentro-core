@@ -967,4 +967,19 @@ public class TypeCast {
         list.addAll(Arrays.asList(array2));
         return list.toArray(new String[0]);
     }
+    
+    public static Object[] join(Object[] array1, Object[] array2) {
+        if (array1 == null && array2 == null) {
+            return null;
+        }
+        if (array1 != null && array2 == null) {
+            return array1;
+        }
+        if (array1 == null && array2 != null) {
+            return array2;
+        }
+        List<Object> list = new ArrayList<Object>(Arrays.asList(array1));
+        list.addAll(Arrays.asList(array2));
+        return list.toArray(new Object[0]);
+    }
 }
