@@ -1,29 +1,21 @@
 /**
- * Author: Alexander Villalobos Yadr
- * E-Mail: avyadro@yahoo.com.mx
- * Created on Mar 09, 2009, 03:08:26 AM
- * Place: Monterrey, Nuevo León, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
- * Class Name: FileTools.java
- * Purpose:
- * Revisions:
- * Ver        Date               Author                                      Description
- * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0        Mar 09, 2006           Alexander Villalobos Yadró           1. New class.
- **/
+ * Author: Alexander Villalobos Yadr E-Mail: avyadro@yahoo.com.mx Created on Mar
+ * 09, 2009, 03:08:26 AM Place: Monterrey, Nuevo León, México. Company:
+ * Codicentro Web: http://www.codicentro.com Class Name: FileTools.java Purpose:
+ * Revisions: Ver Date Author Description --------- ---------------
+ * ----------------------------------- ------------------------------------ 1.0
+ * Mar 09, 2006 Alexander Villalobos Yadró 1. New class.
+ *
+ */
 package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
 import com.codicentro.core.security.Encryption;
 import java.io.StringReader;
 import java.io.StringWriter;
+import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
-import java.util.Collection;
-import java.util.Date;
-import java.util.List;
-import java.util.Random;
+import java.util.*;
 import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
@@ -73,7 +65,9 @@ public class Utils {
     }
 
     /**
-     * Get the last business day of the month for a given month / year combination
+     * Get the last business day of the month for a given month / year
+     * combination
+     *
      * @param month The month
      * @param year The year
      * @return The last business day
@@ -124,7 +118,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param amount
      * @return
      */
@@ -133,7 +127,7 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param date
      * @param amount
      * @return
@@ -163,12 +157,12 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param source
      * @param pf, PrettyFormat
      * @param rh, Remove <?xml version="1.0" encoding="UTF-8" standalone="yes"?>
      * @param types
-     * @return 
+     * @return
      */
     public static <TEntity> String convertToXml(TEntity source, boolean pf, boolean rh, Class... types) {
         String result;
@@ -200,12 +194,12 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param <C>
      * @param source
      * @param pf, PrettyFormat
      * @param types
-     * @return 
+     * @return
      */
     public static <C> String convertToXml(Collection<C> source, boolean pf, Class... types) {
         StringBuilder sb = new StringBuilder();
@@ -213,5 +207,51 @@ public class Utils {
             sb.append(convertToXml(src, pf, true, types));
         }
         return sb.toString();
+    }
+
+    /**
+     *
+     * @param c
+     * @return
+     */
+    public static String convertToCliserTemplateExcel(Class c) {
+        StringBuilder out = new StringBuilder();
+        out.append("<header name=\"").append(c.getSimpleName()).append("\" sheetname=\"Hoja 1\">");
+        for (Field field : c.getDeclaredFields()) {
+            if (field.getAnnotation(com.codicentro.core.annotation.CWColumn.class) != null) {
+                com.codicentro.core.annotation.CWColumn obj = field.getAnnotation(com.codicentro.core.annotation.CWColumn.class);
+                out.append("<column");
+                /**
+                 * * ATRIBUTOS DE LA ETIQUETA COLUMN **
+                 */
+                if (!TypeCast.isNullOrEmpty(obj.name())) {
+                    out.append(" name=\"").append(obj.name()).append("\"");
+                } else {
+                    out.append(" name=\"").append(TypeCast.toFirtUpperCase(field.getName())).append("\"");
+                }
+                out.append(" alignment=\"alCenter\"");
+                out.append(" valignment=\"alCenter\"");
+                out.append(" wrap=\"true\"");
+                out.append(" width=\"").append(obj.width()).append("\"");
+                if (!TypeCast.isNullOrEmpty(obj.format())) {
+                    out.append(" format=\"").append(obj.format()).append("\"");
+                }
+                out.append(" background=\"0x16\"");
+                out.append(">");
+                /**
+                 * * VALUE COLUMN **
+                 */
+                if (!TypeCast.isNullOrEmpty(obj.header())) {
+                    out.append("<![CDATA[").append(obj.header()).append("]]>");
+                } else {
+                    out.append(TypeCast.toFirtUpperCase(field.getName()));
+                }
+                out.append("</column>");
+            }
+        }
+        out.append("</header>");
+
+
+        return com.codicentro.core.Utils.xmlPrettyFormat(out.toString());
     }
 }
