@@ -10,34 +10,22 @@
 package com.codicentro.core;
 
 import com.codicentro.core.model.CCell;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
-import org.apache.poi.ss.util.RegionUtil;
-import org.apache.poi.ss.usermodel.Cell;
-import org.apache.poi.ss.usermodel.CellStyle;
-import org.apache.poi.ss.usermodel.FillPatternType;
-import org.apache.poi.ss.usermodel.Font;
-import org.apache.poi.ss.usermodel.Row;
-import org.apache.poi.ss.usermodel.Sheet;
-import org.apache.poi.ss.usermodel.Workbook;
+import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
 import org.apache.poi.ss.util.CellReference;
+import org.apache.poi.ss.util.RegionUtil;
 import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import org.jdom.Element;
 import org.jdom.JDOMException;
@@ -256,10 +244,9 @@ public class CWorkbook implements Serializable {
         row = null;
         Element headers = template.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
-        Iterator<Element> iColumn = null;
-        Element header = null;
+        Iterator<Element> iColumn = null;        
         while ((iHeader.hasNext()) && (iColumn == null)) {
-            header = iHeader.next();
+            Element header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
                 /**
                  * * SHEET NAME **
@@ -273,7 +260,6 @@ public class CWorkbook implements Serializable {
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
 
                 if (!TypeCast.isNullOrEmpty(frdata)) {
-                    logger.info("First row data: " + frdata);
                     while (idxRow + 1 < TypeCast.toInt(frdata)) {
                         idxRow++;
                         sheet.createRow(idxRow);
@@ -325,7 +311,6 @@ public class CWorkbook implements Serializable {
         if (cindex != null) {
             idxCell = cindex.intValue();
         }
-        logger.info("Cell: " + CellReference.convertNumToColString(idxCell) + idxRow);
         /**
          * * ROW INDEX **
          */
@@ -339,7 +324,6 @@ public class CWorkbook implements Serializable {
          */
         BigInteger rowspan = (column.getAttribute("rowspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("rowspan").getValue());
         if (rowspan != null) {
-            logger.info("Rows a cell should span: " + idxCell + " to " + (cell.getRowIndex() + rowspan.intValue() - 1));
             CellRangeAddress cra = new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex() + rowspan.intValue() - 1, idxCell, idxCell);
             RegionUtil.setBorderBottom(1, cra, sheet, workbook);
             RegionUtil.setBorderTop(1, cra, sheet, workbook);
@@ -352,7 +336,6 @@ public class CWorkbook implements Serializable {
          */
         BigInteger colspan = (column.getAttribute("colspan") == null) ? null : TypeCast.toBigInteger(column.getAttribute("colspan").getValue());
         if (colspan != null) {
-            logger.info("Columns a cell should span: " + cell.getColumnIndex() + " to " + (cell.getColumnIndex() + colspan.intValue() - 1));
             CellRangeAddress cra = new CellRangeAddress(cell.getRowIndex(), cell.getRowIndex(), idxCell, cell.getColumnIndex() + colspan.intValue() - 1);
             RegionUtil.setBorderBottom(1, cra, sheet, workbook);
             RegionUtil.setBorderTop(1, cra, sheet, workbook);
@@ -427,7 +410,7 @@ public class CWorkbook implements Serializable {
          */
         BigDecimal width = (column.getAttribute("width") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("width").getValue());
         if (width != null) {
-            width = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
+            width = TypeCast.toBigDecimal(width.doubleValue() * ((xFormat == XFormat.XLSX) ? 2617.8 : 1508.90));
             sheet.setColumnWidth(idxCell, width.intValue());
         }
 
@@ -436,7 +419,7 @@ public class CWorkbook implements Serializable {
          */
         BigDecimal height = (column.getAttribute("height") == null) ? null : TypeCast.toBigDecimal(column.getAttribute("height").getValue());
         if (height != null) {
-            height = TypeCast.toBigDecimal(height.doubleValue() * ((xFormat == XFormat.XLSX) ? 1308.90 : 1508.90));
+            height = TypeCast.toBigDecimal(height.doubleValue() * ((xFormat == XFormat.XLSX) ? 2617.8 : 1508.90));
             row.setHeight(height.shortValue());
         }
 
@@ -522,13 +505,12 @@ public class CWorkbook implements Serializable {
         cells.add(c);
     }
 
-    public <TEntity> void render(List<TEntity> values) throws CDCException {
-        Row localRow = null;
+    public <TEntity> void render(List<TEntity> values) throws CDCException {        
         Object oValue = null;
         idxCell = -1;
         for (Object value : values) {
             idxRow++;
-            localRow = sheet.createRow(idxRow);
+            Row localRow = sheet.createRow(idxRow);
             idxCell = -1;
             for (int idx = 0; idx < cells.size(); idx++) {
                 Cell cell = cells.get(idx).getCell();
@@ -552,7 +534,6 @@ public class CWorkbook implements Serializable {
                             try {
                                 ScriptEngineManager mgr = new ScriptEngineManager();
                                 ScriptEngine se = mgr.getEngineByName("JavaScript");
-                                logger.info("Bean Formula: " + bFormula);
                                 oValue = se.eval(bFormula);
                             } catch (ScriptException ex) {
                                 throw new CDCException(ex);
@@ -595,10 +576,10 @@ public class CWorkbook implements Serializable {
                     /**
                      *
                      */
-                    if (oValue instanceof java.lang.Number) {
-                        cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
-                    } else if (oValue instanceof java.util.Date) {
+                    if (oValue instanceof java.util.Date) {
                         cell.setCellValue((java.util.Date) oValue);
+                    } else if (oValue instanceof java.lang.Number) {
+                        cell.setCellValue(TypeCast.toBigDecimal(oValue).doubleValue());
                     } else {
                         cell.setCellValue(TypeCast.toString(oValue));
                     }
