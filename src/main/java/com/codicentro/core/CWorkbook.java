@@ -21,6 +21,7 @@ import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
+import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -244,7 +245,7 @@ public class CWorkbook implements Serializable {
         row = null;
         Element headers = template.getChild("headers");
         Iterator<Element> iHeader = headers.getChildren("header").iterator();
-        Iterator<Element> iColumn = null;        
+        Iterator<Element> iColumn = null;
         while ((iHeader.hasNext()) && (iColumn == null)) {
             Element header = iHeader.next();
             if ((header.getAttribute("name") != null) && (header.getAttribute("name").getValue().equals(idHeader))) {
@@ -294,7 +295,6 @@ public class CWorkbook implements Serializable {
         style.setBorderRight(TypeCast.toShort(1));
 
         Font font = workbook.createFont();
-        Cell cell = null;
         /**
          * * COL INDEX INCREMENT, DEFAULT 1 **
          */
@@ -318,7 +318,7 @@ public class CWorkbook implements Serializable {
         if (rindex != null) {
             row = sheet.getRow(rindex.intValue());
         }
-        cell = row.createCell(idxCell);
+        Cell cell = row.createCell(idxCell);
         /**
          * * ROW SPAN (MERGED ROW) **
          */
@@ -505,7 +505,7 @@ public class CWorkbook implements Serializable {
         cells.add(c);
     }
 
-    public <TEntity> void render(List<TEntity> values) throws CDCException {        
+    public <TEntity> void render(List<TEntity> values) throws CDCException {
         Object oValue = null;
         idxCell = -1;
         for (Object value : values) {
@@ -675,5 +675,17 @@ public class CWorkbook implements Serializable {
      */
     public void setLogger(Logger logger) {
         this.logger = logger;
+    }
+
+    public void download(HttpServletResponse response, String name) throws IOException {
+        response.setHeader("Expires", "0");
+        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        response.setHeader("Content-disposition", "attachment;filename=\"" + name + "." + xFormat.toString().toLowerCase() + "\"");
+        response.setHeader("Pragma", "public");
+        response.setContentType("application/vnd.ms-excel");
+        OutputStream out = response.getOutputStream();
+        workbook.write(out);
+        out.flush();
+        out.close();
     }
 }
