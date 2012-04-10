@@ -5,7 +5,7 @@
     <groupId>com.codicentro</groupId>
     <artifactId>codicentro-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.1-SNAPSHOT</version>
+    <version>1.0</version>
     <name>codicentro-core</name>
     <url>http://maven.apache.org</url>
     <properties>
@@ -14,21 +14,7 @@
         <org.jdom.version>1.1</org.jdom.version>
         <org.apache.poi.version>3.7</org.apache.poi.version>
         <com.lowagie.itext.version>2.1.7</com.lowagie.itext.version>
-    </properties>
-    <distributionManagement>
-        <repository>
-            <id>internal</id>
-            <name>Archiva Managed Internal Repository</name>
-            <uniqueVersion>false</uniqueVersion>
-            <url>http://221.211.12.44/archiva/repository/internal/</url>
-        </repository>
-        <snapshotRepository>
-            <uniqueVersion>true</uniqueVersion>
-            <id>snapshots</id>
-            <name>Archiva Managed Snapshot Repository</name>
-            <url>http://221.211.12.44/archiva/repository/snapshots/</url>
-        </snapshotRepository>
-    </distributionManagement>
+    </properties>   
     <build>
         <plugins>
             <plugin>
@@ -54,7 +40,7 @@
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
-            <version>4.10</version>
+            <version>3.8.1</version>
             <scope>test</scope>
         </dependency>
         <!-- COMMONS -->

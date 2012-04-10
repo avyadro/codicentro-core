@@ -38,7 +38,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
@@ -148,6 +147,10 @@ public class TypeCast {
         }
     }
 
+    public static Integer toInteger(int pInt) {
+        return new Integer(pInt);
+    }
+
     public static int toInt(Object obj) throws CDCException {
         return toInt(toString(obj));
     }
@@ -182,16 +185,16 @@ public class TypeCast {
         return r;
     }
 
-    public static Integer toInteger(int pInt) {
-        return new Integer(pInt);
-    }
-
-    public static Integer toInteger(String str) {
+    public static Integer toInteger(String str) throws CDCException {
+        Integer result = new Integer(0);
         try {
-            return Integer.valueOf(str);
+            if ((str != null) && (!str.trim().equals(""))) {
+                result = Integer.valueOf(OnlyNumber(str));
+            }
         } catch (Exception ex) {
-            return null;
+            throw new CDCException(ex);
         }
+        return result;
     }
 
     /**
@@ -199,12 +202,16 @@ public class TypeCast {
      * @param o
      * @return
      */
-    public static BigInteger toBigInteger(Object o) {
+    public static BigInteger toBigInteger(Object o) throws CDCException {
+        BigInteger rs = null;
         try {
-            return new BigInteger(toString(o));
+            String value = toString(o);
+            if (value != null) {
+                rs = new BigInteger(value.trim());
+            }
         } catch (Exception ex) {
-            return null;
         }
+        return rs;
     }
 
     /**
@@ -248,12 +255,15 @@ public class TypeCast {
      * @param o
      * @return
      */
-    public static String toString(Object o) {
+    public static String toString(Object o) throws CDCException {
+        String result = null;
         try {
-            return (o == null) ? null : String.valueOf(o);
+            result = String.valueOf(o);
+            result = ((o == null) || result.toLowerCase().equals("null")) ? null : result;
         } catch (Exception ex) {
-            return null;
+            throw new CDCException(ex);
         }
+        return result;
     }
 
     /**
@@ -292,7 +302,7 @@ public class TypeCast {
         return (((o.equals("") || (o.equals("NULL")))) ? r : o);
     }
 
-    public static Integer toInteger(Object o) {
+    public static Integer toInteger(Object o) throws CDCException {
         try {
             return Integer.valueOf(toInt(o));
         } catch (Exception ex) {
@@ -326,7 +336,7 @@ public class TypeCast {
      * @return
      * @throws CDCException
      */
-    public static Short toShort(Object o) {
+    public static Short toShort(Object o) throws CDCException {
         try {
             return toBigDecimal(o).shortValue();
         } catch (Exception ex) {
@@ -425,9 +435,6 @@ public class TypeCast {
      */
     public static Date toDate(Object o, String f) {
         try {
-            if(isNullOrEmpty(toString(o))){
-                return null;
-            }
             SimpleDateFormat df = new SimpleDateFormat(f.trim());
             df.setLenient(false); // Force read format date into param f
             return df.parse(toString(o));
@@ -578,12 +585,12 @@ public class TypeCast {
         return sb.toString();
     }
 
-    public static <T> String toString(List<T> list) throws CDCException {
-        String rs = "";
-        for (T o : list) {
-            rs += (TypeCast.isNullOrEmpty(rs)) ? toString(o) : "," + toString(o);
+    public static String toString(ArrayList a) {
+        String result = "";
+        for (int i = 0; i < a.size(); i++) {
+            result += a.get(i);
         }
-        return rs;
+        return result;
     }
 
     public static String toString(byte[] b) {
@@ -759,7 +766,7 @@ public class TypeCast {
                 return o.getClass().getMethod(m).invoke(o);
             }
         } catch (Exception ex) {
-            throw new CDCException("Method: " + m, ex);
+            throw new CDCException(ex);
         }
     }
 
@@ -878,7 +885,7 @@ public class TypeCast {
      * @param v
      * @return
      */
-    public static String CF(String prefix, String complete, int count, Object v) {
+    public static String CF(String prefix, String complete, int count, Object v) throws CDCException {
         return prefix + repeat(complete, (count - toString(v).length())) + v;
     }
 
@@ -947,39 +954,5 @@ public class TypeCast {
         NumberFormat nf = NumberFormat.getInstance();
         nf.setMaximumFractionDigits(places);
         return nf.format(value);
-    }
-
-    public static <TEntity> TEntity cast(Object value, Class<TEntity> clazz) {
-        return clazz.cast(value);
-    }
-
-    public static String[] join(String[] array1, String[] array2) {
-        if (array1 == null && array2 == null) {
-            return null;
-        }
-        if (array1 != null && array2 == null) {
-            return array1;
-        }
-        if (array1 == null && array2 != null) {
-            return array2;
-        }
-        List<String> list = new ArrayList<String>(Arrays.asList(array1));
-        list.addAll(Arrays.asList(array2));
-        return list.toArray(new String[0]);
-    }
-    
-    public static Object[] join(Object[] array1, Object[] array2) {
-        if (array1 == null && array2 == null) {
-            return null;
-        }
-        if (array1 != null && array2 == null) {
-            return array1;
-        }
-        if (array1 == null && array2 != null) {
-            return array2;
-        }
-        List<Object> list = new ArrayList<Object>(Arrays.asList(array1));
-        list.addAll(Arrays.asList(array2));
-        return list.toArray(new Object[0]);
     }
 }
