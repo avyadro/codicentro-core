@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
@@ -23,9 +23,9 @@ public class FileUtils {
     private static Logger logger = LoggerFactory.getLogger(FileUtils.class);
 
     /**
-     * 
+     *
      * @param directory
-     * @return 
+     * @return
      */
     public static boolean deleteAllFiles(String directory) {
         File f = new File(directory);
@@ -40,5 +40,5 @@ public class FileUtils {
             }
         }
         return true;
-    }    
+    }
 }

@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
@@ -52,8 +52,8 @@ public class ImageUtil implements Serializable {
     };
 
     /**
-     * 
-     * @param image 
+     *
+     * @param image
      */
     public ImageUtil(byte[] image) {
         try {
@@ -64,10 +64,10 @@ public class ImageUtil implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param image
      * @param width
-     * @param height 
+     * @param height
      */
     public ImageUtil(byte[] image, int width, int height) {
         this(image);
@@ -75,16 +75,16 @@ public class ImageUtil implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param width
-     * @param height 
+     * @param height
      */
     public final void scale(int width, int height) {
         scale(width, height, Image.SCALE_SMOOTH);
     }
 
     /**
-     * 
+     *
      * @param width
      * @param height
      * @param ascale, Image scaling algorithm
@@ -94,43 +94,43 @@ public class ImageUtil implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param format
      * @param output
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public boolean write(Type format, File output) throws IOException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
     /**
-     * 
+     *
      * @param format
      * @param output
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public boolean write(Type format, ImageOutputStream output) throws IOException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
     /**
-     * 
+     *
      * @param format
      * @param output
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public boolean write(Type format, OutputStream output) throws IOException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
     /**
-     * 
+     *
      * @param type
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public String toBASE64Encoder(Type type) throws IOException {
         BASE64Encoder e64Encoder = new BASE64Encoder();
@@ -141,9 +141,9 @@ public class ImageUtil implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param data
-     * @throws Exception 
+     * @throws Exception
      */
     private void load(byte[] data) throws Exception {
         SeekableStream stream = new ByteArraySeekableStream(data);
@@ -154,7 +154,7 @@ public class ImageUtil implements Serializable {
     }
 
     /**
-     * 
+     *
      */
     private BufferedImage toBufferedImage() {
         if (image instanceof BufferedImage) {
@@ -173,8 +173,9 @@ public class ImageUtil implements Serializable {
 
     /**
      * Determines if an image has an alpha channel.
-     * 
-     * @param image the <code>Image</code>
+     *
+     * @param image the
+     * <code>Image</code>
      * @return true if the image has an alpha channel
      */
     private boolean hasAlpha() {

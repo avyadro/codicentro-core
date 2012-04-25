@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
@@ -39,9 +39,9 @@ public class ClamavScan {
     }
 
     /**
-     * 
+     *
      * @param is
-     * @return 
+     * @return
      */
     public boolean doScan(InputStream is) {
         toScan = is.toString().getBytes();

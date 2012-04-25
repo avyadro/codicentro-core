@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
@@ -34,7 +34,9 @@ public class Captcha implements Serializable {
     private Color fcolor = null;
 
     public Captcha() {
-        /*** DEFAULTS VALUE ***/
+        /**
+         * * DEFAULTS VALUE **
+         */
         background = new Color(255, 255, 255);
         fcolor = new Color(0, 100, 0);
         font = new Font("SansSerif", 1, 17);

@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Apr 06, 2009, 11:01:56 AM
@@ -24,7 +24,8 @@ public class Messages {
 
     /**
      *
-     * @param str String format <code>[|param1|param2|param3...|paramn]
+     * @param str String format
+     * <code>[|param1|param2|param3...|paramn]
      */
     public Messages(String str) throws CDCException {
         StringTokenizer st = new StringTokenizer(str, "|");

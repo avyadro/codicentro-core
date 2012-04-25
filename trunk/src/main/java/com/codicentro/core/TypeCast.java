@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadr�
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
@@ -60,7 +60,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param s
      * @return
      */
@@ -70,6 +70,7 @@ public class TypeCast {
 
     /**
      * Remplaza el valor s por r en caso de que se cumpla la condicion.
+     *
      * @param s, Valor
      * @param r, Remplazo
      * @return
@@ -195,7 +196,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param o
      * @return
      */
@@ -208,18 +209,18 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param d, Date
      * @param f, Format ex. yyyyMMdd
      * @return
-     * @throws CDCException 
+     * @throws CDCException
      */
     public static BigInteger toBigInteger(Date d, String f) throws CDCException {
         return toBigInteger(toString(d, f));
     }
 
     /**
-     * 
+     *
      * @param o
      * @return
      */
@@ -245,6 +246,7 @@ public class TypeCast {
 
     /**
      * Converts Object Type to String Type
+     *
      * @param o
      * @return
      */
@@ -258,6 +260,7 @@ public class TypeCast {
 
     /**
      * Converts Object Type to String Type and Replace value r if value is null
+     *
      * @param o
      * @return
      */
@@ -271,9 +274,7 @@ public class TypeCast {
         return result;
     }
     /*
-    public static Object NVL(Object o) {
-    return ((o == null) ? "NULL" : o);
-    }
+     * public static Object NVL(Object o) { return ((o == null) ? "NULL" : o); }
      */
 
     public static Object NVL(Object o, Object r) {
@@ -321,7 +322,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param o
      * @return
      * @throws CDCException
@@ -335,7 +336,9 @@ public class TypeCast {
     }
 
     /**
-     * Decodes a String into a Short. Accepts decimal, hexadecimal, and octal numbers.
+     * Decodes a String into a Short. Accepts decimal, hexadecimal, and octal
+     * numbers.
+     *
      * @param o
      * @return
      * @throws CDCException
@@ -425,7 +428,7 @@ public class TypeCast {
      */
     public static Date toDate(Object o, String f) {
         try {
-            if(isNullOrEmpty(toString(o))){
+            if (isNullOrEmpty(toString(o))) {
                 return null;
             }
             SimpleDateFormat df = new SimpleDateFormat(f.trim());
@@ -437,7 +440,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param o, Date
      * @param fi, Format Input
      * @param fo, Format Output
@@ -452,7 +455,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param o
      * @param f
      * @return
@@ -463,7 +466,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param s
      * @return
      */
@@ -562,7 +565,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param s
      * @param separator
      * @return
@@ -626,6 +629,7 @@ public class TypeCast {
 
     /**
      * Get Object by name, used reflections for find method
+     *
      * @param o
      * @param n
      * @return
@@ -644,6 +648,7 @@ public class TypeCast {
 
     /**
      * Get Field Value by Name, used reflections for find field
+     *
      * @param o
      * @param n
      * @return
@@ -678,8 +683,9 @@ public class TypeCast {
 
     /**
      * Set Object by name, used reflections for find method
+     *
      * @param o, Object
-     * @param n, Method name     
+     * @param n, Method name
      * @throws CDCException
      */
     public static void SN(Object o, String n, Object value) throws CDCException {
@@ -692,7 +698,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param c, Class name
      * @param n, Public method name
      * @param parameterTypes,
@@ -712,6 +718,7 @@ public class TypeCast {
 
     /**
      * Get Field Class
+     *
      * @param c
      * @param n
      * @return
@@ -726,7 +733,7 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param m
      * @param o
      * @param p, Parameters, set null for optional param
@@ -859,10 +866,10 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param v
      * @param size
-     * @return 
+     * @return
      */
     public static String repeat(String v, int size) {
         String rs = "";
@@ -874,6 +881,7 @@ public class TypeCast {
 
     /**
      * Customized format
+     *
      * @param prefix
      * @param v
      * @return
@@ -883,18 +891,18 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param os
-     * @return 
+     * @return
      */
     public static InputStream toInputStream(OutputStream os) {
         return new ByteArrayInputStream(((ByteArrayOutputStream) os).toByteArray());
     }
 
     /**
-     * 
+     *
      * @param file
-     * @return 
+     * @return
      */
     public static InputStream toInputStream(File file) throws FileNotFoundException {
         return new FileInputStream(file);
@@ -902,6 +910,7 @@ public class TypeCast {
 
     /**
      * Gets the exception stack trace as a string.
+     *
      * @param exception
      * @return
      */
@@ -912,17 +921,17 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param is
      * @return
-     * @throws IOException 
+     * @throws IOException
      */
     public static String toString(InputStream is) throws IOException {
         /*
-         * To convert the InputStream to String we use the
-         * Reader.read(char[] buffer) method. We iterate until the
-         * Reader return -1 which means there's no more data to
-         * read. We use the StringWriter class to produce the string.
+         * To convert the InputStream to String we use the Reader.read(char[]
+         * buffer) method. We iterate until the Reader return -1 which means
+         * there's no more data to read. We use the StringWriter class to
+         * produce the string.
          */
         if (is != null) {
             Writer writer = new StringWriter();
@@ -967,7 +976,7 @@ public class TypeCast {
         list.addAll(Arrays.asList(array2));
         return list.toArray(new String[0]);
     }
-    
+
     public static Object[] join(Object[] array1, Object[] array2) {
         if (array1 == null && array2 == null) {
             return null;

@@ -1,12 +1,17 @@
-/**
- * @author: Alexander Villalobos Yadró @user: avillalobos @email:
- * avyadro@yahoo.com.mx @created: 3/05/2011 at 02:44:11 PM @place: Toluca,
- * Estado de México, México @company: AdeA México S.A. de C.V. @web:
- * http://www.adea.com.mx @className: CWorkbook.java @purpose: Revisions: Ver
- * Date Author Description --------- ---------------
- * ----------------------------------- ------------------------------------
- *
- */
+/*
+ * @author: Alexander Villalobos Yadró
+ * @user: avillalobos
+ * @email: avyadro@yahoo.com.mx
+ * @created: May 3, 2011 at 02:44:11 PM
+ * @place: Toluca, Estado de México, México
+ * @company: AdeA México S.A. de C.V.
+ * @web: http://www.adea.com.mx
+ * @className: CWorkbook.java
+ * @purpose:
+ * Revisions:
+ * Ver        Date               Author                                      Description
+ * ---------  ---------------  -----------------------------------  ------------------------------------
+ **/
 package com.codicentro.core;
 
 import com.codicentro.core.model.CCell;

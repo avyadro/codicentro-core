@@ -1,5 +1,6 @@
-/**
- * Author: Alexander Villalobos Yadr E-Mail: avyadro@yahoo.com.mx Created on Mar
+/*
+ * Author: Alexander Villalobos Yadro
+ * E-Mail: avyadro@yahoo.com.mx Created on Mar
  * 09, 2009, 03:08:26 AM Place: Monterrey, Nuevo León, México. Company:
  * Codicentro Web: http://www.codicentro.com Class Name: FileTools.java Purpose:
  * Revisions: Ver Date Author Description --------- ---------------

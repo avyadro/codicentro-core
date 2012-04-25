@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadr�
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 22, 2008, 10:27:26 AM
@@ -85,7 +85,7 @@ public class CDCException extends Exception implements Serializable {
     }
 
     /**
-     * 
+     *
      * @return
      */
     public int getErrorCode() {
