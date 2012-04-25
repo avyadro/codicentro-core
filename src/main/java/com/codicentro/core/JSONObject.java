@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadr�
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Mar 25, 2008, 10:58:26 AM
@@ -68,7 +68,7 @@ public class JSONObject implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param string
      * @return
      */

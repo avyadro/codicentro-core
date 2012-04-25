@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadr�
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
@@ -24,7 +24,7 @@ public class ResourceBundleHandler {
     public ResourceBundleHandler(String source) throws CDCException {
         this.source = source;
         try {
-           resourceBundle = ResourceBundle.getBundle(source);
+            resourceBundle = ResourceBundle.getBundle(source);
         } catch (Exception e) {
             throw new CDCException("File " + source + " is not found.");
         }

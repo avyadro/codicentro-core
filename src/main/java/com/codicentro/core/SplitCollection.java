@@ -1,4 +1,4 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
