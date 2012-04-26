@@ -427,6 +427,18 @@ public class TypeCast {
      * @return
      */
     public static Date toDate(Object o, String f) {
+        return toDate(o, f, false);
+    }
+
+    /**
+     *
+     * @param o
+     * @param f
+     * @param e, When e is true and no format convert then throw exception else
+     * return null when is not format convert.
+     * @return
+     */
+    public static Date toDate(Object o, String f, boolean e) {
         try {
             if (isNullOrEmpty(toString(o))) {
                 return null;
@@ -434,8 +446,12 @@ public class TypeCast {
             SimpleDateFormat df = new SimpleDateFormat(f.trim());
             df.setLenient(false); // Force read format date into param f
             return df.parse(toString(o));
-        } catch (Exception e) {
-            return null;
+        } catch (Exception ex) {
+            if (e) {
+                throw new RuntimeException("Invalid convert object to date.");
+            } else {
+                return null;
+            }
         }
     }
 
