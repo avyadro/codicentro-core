@@ -12,8 +12,7 @@ package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
 import com.codicentro.core.security.Encryption;
-import java.io.StringReader;
-import java.io.StringWriter;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -254,5 +253,16 @@ public class Utils {
 
 
         return com.codicentro.core.Utils.xmlPrettyFormat(out.toString());
+    }
+
+    public static Long lineCount(final String fileName) throws FileNotFoundException, IOException {
+        Long count = 0L;
+        FileReader fr = new FileReader(fileName);
+        BufferedReader bf = new BufferedReader(fr);
+        while (!TypeCast.isNullOrEmpty(bf.readLine())) {
+            count++;
+        }
+        bf.close();        
+        return count;
     }
 }
