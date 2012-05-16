@@ -64,6 +64,24 @@ public class Utils {
         return calendar.get(Calendar.DAY_OF_MONTH);
     }
 
+    public static int getLastDayOfMonth(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        return calendar.get(Calendar.DAY_OF_MONTH);
+    }
+
+    public static Date getLastDateOfMonth(final Date date) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(date);
+        calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
+        calendar.set(Calendar.HOUR_OF_DAY, 23);
+        calendar.set(Calendar.MINUTE, 59);
+        calendar.set(Calendar.SECOND, 59);
+        calendar.set(Calendar.MILLISECOND, 999);
+        return calendar.getTime();
+    }
+
     /**
      * Get the last business day of the month for a given month / year
      * combination
@@ -262,7 +280,7 @@ public class Utils {
         while (!TypeCast.isNullOrEmpty(bf.readLine())) {
             count++;
         }
-        bf.close();        
+        bf.close();
         return count;
     }
 }

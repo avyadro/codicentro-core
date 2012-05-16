@@ -16,20 +16,7 @@ package com.codicentro.core;
 
 //import com.codicentro.model.Column;
 //import com.codicentro.model.Table;
-import java.io.BufferedReader;
-import java.io.ByteArrayInputStream;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.io.Reader;
-import java.io.StringWriter;
-import java.io.Writer;
+import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
@@ -37,13 +24,7 @@ import java.math.BigInteger;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
 
 public class TypeCast {
 
@@ -390,8 +371,16 @@ public class TypeCast {
      * @return
      */
     public static String toString(Date d, String f) {
+        return toString(d, f, Locale.getDefault());
+    }
+
+    public static String toString(Date d, String f, String locale) {
+        return toString(d, f, new Locale(locale));
+    }
+
+    public static String toString(Date d, String f, Locale locale) {
         try {
-            SimpleDateFormat df = new SimpleDateFormat(f.trim());
+            SimpleDateFormat df = new SimpleDateFormat(f.trim(), locale);
             df.setLenient(false); // Force read format date into param f
             return df.format(d);
         } catch (Exception e) {
@@ -466,6 +455,19 @@ public class TypeCast {
         try {
             return toDate(toDate(o, fi), fo);
         } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static Date toDate(Object o, String f, Locale locale) {
+        try {
+            if (isNullOrEmpty(toString(o))) {
+                return null;
+            }
+            SimpleDateFormat df = new SimpleDateFormat(f.trim(), locale);
+            df.setLenient(false); // Force read format date into param f
+            return df.parse(toString(o));
+        } catch (Exception ex) {
             return null;
         }
     }
