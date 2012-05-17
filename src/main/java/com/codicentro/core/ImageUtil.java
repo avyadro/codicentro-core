@@ -23,11 +23,7 @@ import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
 import java.awt.image.RenderedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.File;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.Serializable;
+import java.io.*;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import javax.media.jai.PlanarImage;
@@ -55,12 +51,8 @@ public class ImageUtil implements Serializable {
      *
      * @param image
      */
-    public ImageUtil(byte[] image) {
-        try {
-            load(image);
-        } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
-        }
+    public ImageUtil(byte[] image) throws IOException, RuntimeException {
+        load(image);
     }
 
     /**
@@ -69,7 +61,7 @@ public class ImageUtil implements Serializable {
      * @param width
      * @param height
      */
-    public ImageUtil(byte[] image, int width, int height) {
+    public ImageUtil(byte[] image, int width, int height) throws IOException, RuntimeException {
         this(image);
         scale(width, height);
     }
@@ -90,7 +82,9 @@ public class ImageUtil implements Serializable {
      * @param ascale, Image scaling algorithm
      */
     public final void scale(int width, int height, int ascale) {
-        image = image.getScaledInstance(width, height, ascale);
+        if (image != null) {
+            image = image.getScaledInstance(width, height, ascale);
+        }
     }
 
     /**
@@ -100,7 +94,7 @@ public class ImageUtil implements Serializable {
      * @return
      * @throws IOException
      */
-    public boolean write(Type format, File output) throws IOException {
+    public boolean write(Type format, File output) throws IOException, RuntimeException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
@@ -111,7 +105,7 @@ public class ImageUtil implements Serializable {
      * @return
      * @throws IOException
      */
-    public boolean write(Type format, ImageOutputStream output) throws IOException {
+    public boolean write(Type format, ImageOutputStream output) throws IOException, RuntimeException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
@@ -122,7 +116,7 @@ public class ImageUtil implements Serializable {
      * @return
      * @throws IOException
      */
-    public boolean write(Type format, OutputStream output) throws IOException {
+    public boolean write(Type format, OutputStream output) throws IOException, RuntimeException {
         return ImageIO.write(toBufferedImage(), format.toString(), output);
     }
 
@@ -132,7 +126,7 @@ public class ImageUtil implements Serializable {
      * @return
      * @throws IOException
      */
-    public String toBASE64Encoder(Type type) throws IOException {
+    public String toBASE64Encoder(Type type) throws IOException, RuntimeException {
         BASE64Encoder e64Encoder = new BASE64Encoder();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         write(type, out);
@@ -145,7 +139,7 @@ public class ImageUtil implements Serializable {
      * @param data
      * @throws Exception
      */
-    private void load(byte[] data) throws Exception {
+    private void load(byte[] data) throws IOException, RuntimeException {
         SeekableStream stream = new ByteArraySeekableStream(data);
         String[] names = ImageCodec.getDecoderNames(stream);
         ImageDecoder dec = ImageCodec.createImageDecoder(names[0], stream, null);
