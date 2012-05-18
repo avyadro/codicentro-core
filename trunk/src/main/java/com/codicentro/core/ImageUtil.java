@@ -14,10 +14,7 @@
  **/
 package com.codicentro.core;
 
-import com.sun.media.jai.codec.ByteArraySeekableStream;
-import com.sun.media.jai.codec.ImageCodec;
-import com.sun.media.jai.codec.ImageDecoder;
-import com.sun.media.jai.codec.SeekableStream;
+import com.sun.media.jai.codec.*;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
@@ -142,15 +139,28 @@ public class ImageUtil implements Serializable {
      *
      * @param data
      * @throws Exception
-     * @deprecated No cuenta con soporte para encodes biejos, ejemplo. Decoding
-     * of old style JPEG-in-TIFF data is not supported.
      */
     private void load(byte[] data) throws Exception {
+        int TAG_COMPRESSION = 259;
+        int TAG_JPEG_INTERCHANGE_FORMAT = 513;
+        int COMP_JPEG_OLD = 6;
+        // int COMP_JPEG_TTN2 = 7;
+
         SeekableStream stream = new ByteArraySeekableStream(data);
-        String[] names = ImageCodec.getDecoderNames(stream);
-        ImageDecoder dec = ImageCodec.createImageDecoder(names[0], stream, null);
-        RenderedImage im = dec.decodeAsRenderedImage();
-        image = PlanarImage.wrapRenderedImage(im).getAsBufferedImage();
+        TIFFDirectory tdir = new TIFFDirectory(stream, 0);
+        int compression = tdir.getField(TAG_COMPRESSION).getAsInt(0);
+
+        String decoder2use = ImageCodec.getDecoderNames(stream)[0];
+        if (compression == COMP_JPEG_OLD) {
+            // Special handling for old/unsupported JPEG-in-TIFF format:
+            // {@link: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4929147 }
+            stream.seek(tdir.getField(TAG_JPEG_INTERCHANGE_FORMAT).getAsLong(0));
+            decoder2use = "jpeg";
+        }
+
+        ImageDecoder dec = ImageCodec.createImageDecoder(decoder2use, stream, null);
+        RenderedImage img = dec.decodeAsRenderedImage();
+        image = PlanarImage.wrapRenderedImage(img).getAsBufferedImage();
     }
 
     /**
