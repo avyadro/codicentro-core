@@ -14,19 +14,13 @@
  **/
 package com.codicentro.core;
 
-import com.sun.media.jai.codec.ByteArraySeekableStream;
-import com.sun.media.jai.codec.ImageCodec;
-import com.sun.media.jai.codec.ImageDecoder;
-import com.sun.media.jai.codec.SeekableStream;
 import java.awt.Graphics;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
-import java.awt.image.RenderedImage;
 import java.io.*;
 import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
-import javax.media.jai.PlanarImage;
 import javax.swing.ImageIcon;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -35,7 +29,7 @@ import sun.misc.BASE64Encoder;
 public class ImageUtil implements Serializable {
 
     private static Logger logger = LoggerFactory.getLogger(ImageUtil.class);
-    private Image image = null;
+    private Image image;
 
     public enum Type {
 
@@ -52,7 +46,7 @@ public class ImageUtil implements Serializable {
      * @param image
      */
     public ImageUtil(byte[] image) throws IOException, RuntimeException {
-        load(image);
+        this.image = ImageIO.read(new ByteArrayInputStream(image));
     }
 
     /**
@@ -136,26 +130,11 @@ public class ImageUtil implements Serializable {
 
     /**
      *
-     * @param data
-     * @throws Exception
-     */
-    private void load(byte[] data) throws IOException, RuntimeException {
-        SeekableStream stream = new ByteArraySeekableStream(data);
-        String[] names = ImageCodec.getDecoderNames(stream);
-        ImageDecoder dec = ImageCodec.createImageDecoder(names[0], stream, null);
-        RenderedImage im = dec.decodeAsRenderedImage();
-        image = PlanarImage.wrapRenderedImage(im).getAsBufferedImage();
-    }
-
-    /**
-     *
      */
     private BufferedImage toBufferedImage() {
         if (image instanceof BufferedImage) {
-            // Return image unchanged if it is already a BufferedImage.
             return (BufferedImage) image;
         }
-        // Ensure image is loaded.
         image = new ImageIcon(image).getImage();
         int type = hasAlpha() ? BufferedImage.TYPE_INT_RGB : BufferedImage.TYPE_INT_ARGB;
         BufferedImage bufferedImage = new BufferedImage(image.getWidth(null), image.getHeight(null), type);
