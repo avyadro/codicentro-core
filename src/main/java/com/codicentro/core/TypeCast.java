@@ -599,6 +599,17 @@ public class TypeCast {
         return sb.toString();
     }
 
+    public static String toString(String[] s, String separator, String begin, String end) {
+        StringBuilder sb = new StringBuilder();
+        for (int i = 0; i < s.length; i++) {
+            if (i > 0) {
+                sb.append(separator);
+            }
+            sb.append(begin).append(s[i]).append(end);
+        }
+        return sb.toString();
+    }
+
     public static <T> String toString(List<T> list) throws CDCException {
         String rs = "";
         for (T o : list) {
