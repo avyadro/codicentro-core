@@ -26,7 +26,6 @@ import java.util.regex.Pattern;
 import javax.script.ScriptEngine;
 import javax.script.ScriptEngineManager;
 import javax.script.ScriptException;
-import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.apache.poi.ss.usermodel.*;
 import org.apache.poi.ss.util.CellRangeAddress;
@@ -682,15 +681,4 @@ public class CWorkbook implements Serializable {
         this.logger = logger;
     }
 
-    public void download(HttpServletResponse response, String name) throws IOException {
-        response.setHeader("Expires", "0");
-        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        response.setHeader("Content-disposition", "attachment;filename=\"" + name + "." + xFormat.toString().toLowerCase() + "\"");
-        response.setHeader("Pragma", "public");
-        response.setContentType("application/vnd.ms-excel");
-        OutputStream out = response.getOutputStream();
-        workbook.write(out);
-        out.flush();
-        out.close();
-    }
 }
