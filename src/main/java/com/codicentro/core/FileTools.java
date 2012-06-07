@@ -718,4 +718,16 @@ public class FileTools {
         op.flush();
         op.close();
     }
+    
+//    public void download(javax.servlet.http.HttpServletResponse response, String name) throws IOException {
+//        response.setHeader("Expires", "0");
+//        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+//        response.setHeader("Content-disposition", "attachment;filename=\"" + name + "." + xFormat.toString().toLowerCase() + "\"");
+//        response.setHeader("Pragma", "public");
+//        response.setContentType("application/vnd.ms-excel");
+//        OutputStream out = response.getOutputStream();
+//        workbook.write(out);
+//        out.flush();
+//        out.close();
+//    }
 }
