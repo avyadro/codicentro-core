@@ -257,14 +257,14 @@ public class CWorkbook implements Serializable {
                  * * SHEET NAME **
                  */
                 String sheetname = (header.getAttribute("sheetname") == null) ? null : header.getAttribute("sheetname").getValue();
-                sheet = (TypeCast.isNullOrEmpty(sheetname)) ? workbook.createSheet() : workbook.createSheet(sheetname);
+                sheet = (TypeCast.isBlank(sheetname)) ? workbook.createSheet() : workbook.createSheet(sheetname);
                 row = sheet.createRow(idxRow);
                 /**
                  * * ROW SIZE **
                  */
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
 
-                if (!TypeCast.isNullOrEmpty(frdata)) {
+                if (!TypeCast.isBlank(frdata)) {
                     while (idxRow + 1 < TypeCast.toInt(frdata)) {
                         idxRow++;
                         sheet.createRow(idxRow);
@@ -351,7 +351,7 @@ public class CWorkbook implements Serializable {
          * * ALIGMENT **
          */
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
-        if (!TypeCast.isNullOrEmpty(alignment)) {
+        if (!TypeCast.isBlank(alignment)) {
             if (alignment.equals("alCenter")) {
                 style.setAlignment(CellStyle.ALIGN_CENTER);
             } else if (alignment.equals("alCenterSelection")) {
@@ -373,7 +373,7 @@ public class CWorkbook implements Serializable {
          * * VERTICAL ALIGMENT **
          */
         String valignment = (column.getAttribute("valignment") == null) ? null : column.getAttribute("valignment").getValue();
-        if (!TypeCast.isNullOrEmpty(valignment)) {
+        if (!TypeCast.isBlank(valignment)) {
             if (valignment.equals("alBottom")) {
                 style.setVerticalAlignment(CellStyle.VERTICAL_BOTTOM);
             } else if (valignment.equals("alCenter")) {
@@ -401,7 +401,7 @@ public class CWorkbook implements Serializable {
          * * BACKGROUND **
          */
         String background = (column.getAttribute("background") == null) ? null : column.getAttribute("background").getValue();
-        if (!TypeCast.isNullOrEmpty(background)) {
+        if (!TypeCast.isBlank(background)) {
             style.setFillPattern(TypeCast.toShort(FillPatternType.SOLID_FOREGROUND.ordinal()));
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
@@ -439,7 +439,7 @@ public class CWorkbook implements Serializable {
             font.setFontHeightInPoints(size.shortValue());
         }
         String fcolor = (column.getAttribute("fcolor") == null) ? null : column.getAttribute("fcolor").getValue();
-        if (!TypeCast.isNullOrEmpty(fcolor)) {
+        if (!TypeCast.isBlank(fcolor)) {
             if (TypeCast.toShortD(fcolor) != null) {
                 font.setColor(TypeCast.toShortD(fcolor));
             } else {
@@ -630,7 +630,7 @@ public class CWorkbook implements Serializable {
             return fm;
         }
         String str = fm.substring(posCol + 4, posKey);
-        if (TypeCast.isNullOrEmpty(str)) {
+        if (TypeCast.isBlank(str)) {
             return fm;
         }
         int count = 0;
@@ -670,7 +670,7 @@ public class CWorkbook implements Serializable {
             workbook.write(fos);
             fos.close();
         } catch (Exception ex) {
-            logger.error(ex.getLocalizedMessage(), ex);
+            logger.error(ex.getMessage(), ex);
         }
     }
 

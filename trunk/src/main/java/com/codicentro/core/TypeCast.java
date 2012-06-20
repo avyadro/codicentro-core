@@ -44,9 +44,14 @@ public class TypeCast {
      *
      * @param s
      * @return
+     * @deprecated Used isBlank
      */
     public static boolean isNullOrEmpty(String s) {
         return ((s == null) || (s.trim().equals("")));
+    }
+
+    public static boolean isBlank(String s) {
+        return (s == null || s.trim().equals(""));
     }
 
     /**
