@@ -62,16 +62,16 @@ public class TypeCast {
      * @return
      */
     public static String rplNullOrEmpty(String s, String r) {
-        if (isNullOrEmpty(s)) {
+        if (isBlank(s)) {
             return r;
         } else {
             return s;
         }
     }
-
+    
     public static boolean isNullOrEmpty(String s, String v) {
         s = (s != null) ? s.replaceAll(v, "") : s;
-        return isNullOrEmpty(s);
+        return isBlank(s);
     }
 
     /**
@@ -434,7 +434,7 @@ public class TypeCast {
      */
     public static Date toDate(Object o, String f, boolean e) {
         try {
-            if (isNullOrEmpty(toString(o))) {
+            if (isBlank(toString(o))) {
                 return null;
             }
             SimpleDateFormat df = new SimpleDateFormat(f.trim());
@@ -466,7 +466,7 @@ public class TypeCast {
 
     public static Date toDate(Object o, String f, Locale locale) {
         try {
-            if (isNullOrEmpty(toString(o))) {
+            if (isBlank(toString(o))) {
                 return null;
             }
             SimpleDateFormat df = new SimpleDateFormat(f.trim(), locale);
@@ -501,7 +501,7 @@ public class TypeCast {
         List<String> data = new ArrayList<String>();
         String[] split = s.split(",");
         for (String value : split) {
-            if (allowNull || (!allowNull && !isNullOrEmpty(value))) {
+            if (allowNull || (!allowNull && !isBlank(value))) {
                 data.add(value);
             }
         }
@@ -594,6 +594,9 @@ public class TypeCast {
      * @return
      */
     public static String toString(String[] s, String separator) {
+        if (s == null || s.length < 1) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length; i++) {
             if (i > 0) {
@@ -605,6 +608,9 @@ public class TypeCast {
     }
 
     public static String toString(String[] s, String separator, String begin, String end) {
+        if (s == null || s.length < 1) {
+            return "";
+        }
         StringBuilder sb = new StringBuilder();
         for (int i = 0; i < s.length; i++) {
             if (i > 0) {
@@ -618,7 +624,7 @@ public class TypeCast {
     public static <T> String toString(List<T> list) throws CDCException {
         String rs = "";
         for (T o : list) {
-            rs += (TypeCast.isNullOrEmpty(rs)) ? toString(o) : "," + toString(o);
+            rs += (isBlank(rs)) ? toString(o) : "," + toString(o);
         }
         return rs;
     }
@@ -827,7 +833,7 @@ public class TypeCast {
     }
 
     public static char toChar(String s) {
-        s = (isNullOrEmpty(s)) ? " " : s;
+        s = (isBlank(s)) ? " " : s;
         return s.charAt(0);
     }
 
@@ -861,7 +867,7 @@ public class TypeCast {
      */
     public static String toString(BigDecimal n, String f, String r) {
         String rs = toString(n, f);
-        if (isNullOrEmpty(rs)) {
+        if (isBlank(rs)) {
             return r;
         } else {
             return rs;
