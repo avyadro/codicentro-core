@@ -68,7 +68,7 @@ public class TypeCast {
             return s;
         }
     }
-    
+
     public static boolean isNullOrEmpty(String s, String v) {
         s = (s != null) ? s.replaceAll(v, "") : s;
         return isBlank(s);
@@ -949,20 +949,29 @@ public class TypeCast {
     }
 
     public static byte[] toBytes(File file) throws IOException {
-        ByteArrayOutputStream ous = null;
+        ByteArrayOutputStream baos = toByteArrayOutputStream(file);
+        if (baos != null) {
+            return baos.toByteArray();
+        } else {
+            return null;
+        }
+    }
+
+    public static ByteArrayOutputStream toByteArrayOutputStream(File file) throws IOException {
+        ByteArrayOutputStream baos = null;
         InputStream ios = null;
         try {
             byte[] buffer = new byte[4096];
-            ous = new ByteArrayOutputStream();
+            baos = new ByteArrayOutputStream();
             ios = new FileInputStream(file);
             int read = 0;
             while ((read = ios.read(buffer)) != -1) {
-                ous.write(buffer, 0, read);
+                baos.write(buffer, 0, read);
             }
         } finally {
             try {
-                if (ous != null) {
-                    ous.close();
+                if (baos != null) {
+                    baos.close();
                 }
             } catch (IOException e) {
                 // swallow, since not that important
@@ -975,7 +984,7 @@ public class TypeCast {
                 // swallow, since not that important
             }
         }
-        return ous.toByteArray();
+        return baos;
     }
 
     /**
