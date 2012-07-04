@@ -1,13 +1,17 @@
 /*
- * Author: Alexander Villalobos Yadro
- * E-Mail: avyadro@yahoo.com.mx Created on Mar
- * 09, 2009, 03:08:26 AM Place: Monterrey, Nuevo León, México. Company:
- * Codicentro Web: http://www.codicentro.com Class Name: FileTools.java Purpose:
- * Revisions: Ver Date Author Description --------- ---------------
- * ----------------------------------- ------------------------------------ 1.0
- * Mar 09, 2006 Alexander Villalobos Yadró 1. New class.
- *
- */
+ * Author: Alexander Villalobos Yadr
+ * E-Mail: avyadro@yahoo.com.mx
+ * Created on Mar 09, 2009, 03:08:26 AM
+ * Place: Monterrey, Nuevo León, México.
+ * Company: Codicentro
+ * Web: http://www.codicentro.com
+ * Class Name: FileTools.java
+ * Purpose:
+ * Revisions:
+ * Ver        Date               Author                                      Description
+ * ---------  ---------------  -----------------------------------  ------------------------------------
+ * 1.0        Mar 09, 2006           Alexander Villalobos Yadró           1. New class.
+ **/
 package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
@@ -160,7 +164,7 @@ public class Utils {
 
     public static String xmlPrettyFormat(String xml) {
         try {
-            if (TypeCast.isNullOrEmpty(xml)) {
+            if (TypeCast.isBlank(xml)) {
                 return xml;
             }
             Document doc = DocumentHelper.parseText(xml);
@@ -242,7 +246,7 @@ public class Utils {
                 /**
                  * * ATRIBUTOS DE LA ETIQUETA COLUMN **
                  */
-                if (!TypeCast.isNullOrEmpty(obj.name())) {
+                if (!TypeCast.isBlank(obj.name())) {
                     out.append(" name=\"").append(obj.name()).append("\"");
                 } else {
                     out.append(" name=\"").append(TypeCast.toFirtUpperCase(field.getName())).append("\"");
@@ -251,7 +255,7 @@ public class Utils {
                 out.append(" valignment=\"alCenter\"");
                 out.append(" wrap=\"true\"");
                 out.append(" width=\"").append(obj.width()).append("\"");
-                if (!TypeCast.isNullOrEmpty(obj.format())) {
+                if (!TypeCast.isBlank(obj.format())) {
                     out.append(" format=\"").append(obj.format()).append("\"");
                 }
                 out.append(" background=\"0x16\"");
@@ -259,7 +263,7 @@ public class Utils {
                 /**
                  * * VALUE COLUMN **
                  */
-                if (!TypeCast.isNullOrEmpty(obj.header())) {
+                if (!TypeCast.isBlank(obj.header())) {
                     out.append("<![CDATA[").append(obj.header()).append("]]>");
                 } else {
                     out.append(TypeCast.toFirtUpperCase(field.getName()));
@@ -277,10 +281,12 @@ public class Utils {
         Long count = 0L;
         FileReader fr = new FileReader(fileName);
         BufferedReader bf = new BufferedReader(fr);
-        while (!TypeCast.isNullOrEmpty(bf.readLine())) {
+        while (!TypeCast.isBlank(bf.readLine())) {
             count++;
         }
         bf.close();
         return count;
     }
+    
+    
 }
