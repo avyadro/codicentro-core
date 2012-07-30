@@ -498,8 +498,12 @@ public class TypeCast {
     }
 
     public static String[] toArray(String s, boolean allowNull) {
+        return toArray(s, ",", allowNull);
+    }
+
+    public static String[] toArray(String s, String d, boolean allowNull) {
         List<String> data = new ArrayList<String>();
-        String[] split = s.split(",");
+        String[] split = s.split(d);
         for (String value : split) {
             if (allowNull || (!allowNull && !isBlank(value))) {
                 data.add(value);
@@ -778,6 +782,7 @@ public class TypeCast {
      * @param o
      * @param p, Parameters, set null for optional param
      * @return
+     * @deprecated 
      */
     public static Object invoke(Method m, Object o, Object p) throws CDCException {
         try {
