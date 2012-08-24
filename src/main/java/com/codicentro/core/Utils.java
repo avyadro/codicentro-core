@@ -15,6 +15,7 @@
 package com.codicentro.core;
 
 import com.codicentro.core.Types.EncrypType;
+import com.codicentro.core.annotation.CWColumn;
 import com.codicentro.core.security.Encryption;
 import java.io.*;
 import java.lang.reflect.Field;
@@ -205,6 +206,81 @@ public class Utils {
         return result;
     }
 
+    public static <TEntity> String toJasper(Class<TEntity> clazz) {
+
+        StringBuilder xmlField = new StringBuilder();
+
+        StringBuilder xmlColumnHeader = new StringBuilder();
+        xmlColumnHeader.append("<columnHeader>");
+        xmlColumnHeader.append("<band height=\"20\">");
+
+        StringBuilder xmlDetail = new StringBuilder();
+        xmlDetail.append("<detail>");
+        xmlDetail.append("<band height=\"15\">");
+
+        Long x = 0L;
+        for (Field field : clazz.getDeclaredFields()) {
+            /**
+             * FIELDS
+             */
+            xmlField.append("<field name=\"").append(field.getName()).append("\" class=\"").append(field.getType().getName()).append("\"/>");
+
+            CWColumn cwc = field.getAnnotation(CWColumn.class);
+            if (cwc != null) {
+                Long width = TypeCast.toLong(cwc.width() * 100);
+                /**
+                 * HEADERS
+                 */
+                xmlColumnHeader.append("<staticText>");
+                xmlColumnHeader.append("<reportElement mode=\"Opaque\" x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"20\" backcolor=\"").append(cwc.backcolor()).append("\"/>");
+                xmlColumnHeader.append("<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">");
+                xmlColumnHeader.append("<font isBold=\"true\"/>");
+                xmlColumnHeader.append("</textElement>");
+                xmlColumnHeader.append("<text><![CDATA[").append(cwc.header()).append("]]></text>");
+                xmlColumnHeader.append("</staticText>");
+                /**
+                 * DETAILS
+                 */
+                xmlDetail.append("<textField isBlankWhenNull=\"true\">");
+                xmlDetail.append("<reportElement x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"15\"/>");
+                xmlDetail.append("<textElement/>");
+                xmlDetail.append("<textFieldExpression class=\"").append(field.getType().getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}]]></textFieldExpression>");
+                xmlDetail.append("</textField>");
+                x += width;
+            }
+        }
+        xmlColumnHeader.append("</band>");
+        xmlColumnHeader.append("</columnHeader>");
+
+        xmlDetail.append("</band>");
+        xmlDetail.append("</detail>");
+
+        StringBuilder xmlJasper = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?>");
+        xmlJasper.append("<jasperReport ");
+        xmlJasper.append("xmlns=\"http://jasperreports.sourceforge.net/jasperreports\" ");
+        xmlJasper.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
+        xmlJasper.append("xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\" ");
+        xmlJasper.append("name=\"").append(clazz.getSimpleName()).append("\" ");
+        xmlJasper.append("pageWidth=\"").append(x).append("\" ");
+        xmlJasper.append("pageHeight=\"842\" ");
+        xmlJasper.append("orientation=\"Landscape\" ");
+        xmlJasper.append("columnWidth=\"").append(x).append("\" ");
+        xmlJasper.append("leftMargin=\"0\" ");
+        xmlJasper.append("rightMargin=\"0\" ");
+        xmlJasper.append("topMargin=\"0\" ");
+        xmlJasper.append("bottomMargin=\"0\">");
+        xmlJasper.append("<property name=\"ireport.zoom\" value=\"1.0\"/>");
+        xmlJasper.append("<property name=\"ireport.x\" value=\"0\"/>");
+        xmlJasper.append("<property name=\"ireport.y\" value=\"0\"/>");
+
+        xmlJasper.append(xmlField);
+        xmlJasper.append(xmlColumnHeader);
+        xmlJasper.append(xmlDetail);
+
+        xmlJasper.append("</jasperReport>");
+        return xmlJasper.toString();
+    }
+
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
         try {
             JAXBContext context = JAXBContext.newInstance(type);
@@ -287,6 +363,4 @@ public class Utils {
         bf.close();
         return count;
     }
-    
-    
 }
