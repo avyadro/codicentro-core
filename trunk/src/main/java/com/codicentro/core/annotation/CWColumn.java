@@ -30,4 +30,6 @@ public @interface CWColumn {
     public String format() default "";
 
     public String header() default "";
+
+    public String backcolor() default "#CCCCCC";
 }
