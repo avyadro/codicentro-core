@@ -357,10 +357,30 @@ public class Utils {
         Long count = 0L;
         FileReader fr = new FileReader(fileName);
         BufferedReader bf = new BufferedReader(fr);
-        while (!TypeCast.isBlank(bf.readLine())) {
+        while (bf.ready()) {
+            bf.readLine();
             count++;
         }
         bf.close();
         return count;
+    }
+
+    /**
+     * Only file type text.
+     *
+     * @param fileName
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException
+     */
+    public static List<String> toStringList(final String fileName) throws FileNotFoundException, IOException {
+        List<String> rs = new ArrayList<String>();
+        FileReader fr = new FileReader(fileName);
+        BufferedReader bf = new BufferedReader(fr);
+        while (bf.ready()) {
+            rs.add(bf.readLine());
+        }
+        bf.close();
+        return rs;
     }
 }

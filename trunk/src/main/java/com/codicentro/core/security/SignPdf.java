@@ -14,6 +14,7 @@
  **/
 package com.codicentro.core.security;
 
+import com.codicentro.core.TypeCast;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;
@@ -40,8 +41,9 @@ public class SignPdf implements Serializable {
     private KeyStore ks = null;
 
     /**
-     * 
-     * @param ksPassword, the password used to check the integrity of the keystore, the password used to unlock the keystore
+     *
+     * @param ksPassword, the password used to check the integrity of the
+     * keystore, the password used to unlock the keystore
      * @param password, the password for recovering the key
      */
     public SignPdf(
@@ -60,9 +62,9 @@ public class SignPdf implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param pdf
-     * @return 
+     * @return
      */
     public OutputStream sign(InputStream pdf, Map<String, Object> property) {
         try {
@@ -91,7 +93,12 @@ public class SignPdf implements Serializable {
             c.add(Calendar.DAY_OF_MONTH, -1);
             sap.setSignDate(c);
             if (visible) {
-                sap.setVisibleSignature(new Rectangle(0, 0, 20, 20), 1, null);
+                // llx - lower left x lly - lower left y urx - upper right x ury - upper right y
+                float llx = !property.containsKey("LEFT") ? 0 : TypeCast.toFloat(property.get("CONTACT"));
+                float lly = !property.containsKey("TOP") ? 0 : TypeCast.toFloat(property.get("TOP"));
+                float urx = !property.containsKey("WIDTH") ? 0 : TypeCast.toFloat(property.get("WIDTH"));
+                float ury = !property.containsKey("HEIGHT") ? 0 : TypeCast.toFloat(property.get("HEIGHT"));
+                sap.setVisibleSignature(new Rectangle(llx, lly, urx, ury), 1, null);
             }
             stp.close();
             return writer;
