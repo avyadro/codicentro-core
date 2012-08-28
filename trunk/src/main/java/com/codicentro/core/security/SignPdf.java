@@ -94,7 +94,7 @@ public class SignPdf implements Serializable {
             sap.setSignDate(c);
             if (visible) {
                 // llx - lower left x lly - lower left y urx - upper right x ury - upper right y
-                float llx = !property.containsKey("LEFT") ? 0 : TypeCast.toFloat(property.get("CONTACT"));
+                float llx = !property.containsKey("LEFT") ? 0 : TypeCast.toFloat(property.get("LEFT"));
                 float lly = !property.containsKey("TOP") ? 0 : TypeCast.toFloat(property.get("TOP"));
                 float urx = !property.containsKey("WIDTH") ? 0 : TypeCast.toFloat(property.get("WIDTH"));
                 float ury = !property.containsKey("HEIGHT") ? 0 : TypeCast.toFloat(property.get("HEIGHT"));
