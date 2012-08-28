@@ -337,17 +337,12 @@ public class TypeCast {
         }
     }
 
-    public static Float toFloat(Object o) throws CDCException {
-        Float result = null;
+    public static Float toFloat(Object o) {
         try {
-            BigDecimal bd = toNumber(o);
-            if (bd != null) {
-                result = Float.valueOf(bd.floatValue());
-            }
+            return Float.valueOf(toString(o));
         } catch (Exception ex) {
-            throw new CDCException(ex);
+            return null;
         }
-        return result;
     }
 
     public static String toString(int i) {
@@ -782,7 +777,7 @@ public class TypeCast {
      * @param o
      * @param p, Parameters, set null for optional param
      * @return
-     * @deprecated 
+     * @deprecated
      */
     public static Object invoke(Method m, Object o, Object p) throws CDCException {
         try {
