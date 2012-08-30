@@ -20,6 +20,7 @@
  */
 package com.codicentro.core.csv;
 
+import com.codicentro.core.CharsetToolkit;
 import java.io.*;
 import java.nio.charset.Charset;
 import java.text.NumberFormat;
@@ -78,27 +79,19 @@ public class CsvReader {
      * @param charset The {@link java.nio.charset.Charset Charset} to use while
      * parsing the data.
      */
-    public CsvReader(String fileName, char delimiter, Charset charset)
-            throws FileNotFoundException {
+    public CsvReader(String fileName, char delimiter, Charset charset) throws FileNotFoundException {
         if (fileName == null) {
-            throw new IllegalArgumentException(
-                    "Parameter fileName can not be null.");
+            throw new IllegalArgumentException("Parameter fileName can not be null.");
         }
-
         if (charset == null) {
-            throw new IllegalArgumentException(
-                    "Parameter charset can not be null.");
+            throw new IllegalArgumentException("Parameter charset can not be null.");
         }
-
         if (!new File(fileName).exists()) {
-            throw new FileNotFoundException("File " + fileName
-                    + " does not exist.");
+            throw new FileNotFoundException("File " + fileName + " does not exist.");
         }
-
         this.fileName = fileName;
         this.userSettings.Delimiter = delimiter;
         this.charset = charset;
-
         isQualified = new boolean[values.length];
     }
 
@@ -110,9 +103,9 @@ public class CsvReader {
      * @param fileName The path to the file to use as the data source.
      * @param delimiter The character to use as the column delimiter.
      */
-    public CsvReader(String fileName, char delimiter)
-            throws FileNotFoundException {
-        this(fileName, delimiter, Charset.forName("ISO-8859-1"));
+    public CsvReader(String fileName, char delimiter) throws FileNotFoundException, IOException {
+        // this(fileName, delimiter, Charset.forName("ISO-8859-1"));        
+        this(fileName, delimiter, CharsetToolkit.guessEncoding(fileName));
     }
 
     /**
@@ -122,7 +115,7 @@ public class CsvReader {
      *
      * @param fileName The path to the file to use as the data source.
      */
-    public CsvReader(String fileName) throws FileNotFoundException {
+    public CsvReader(String fileName) throws FileNotFoundException, IOException {
         this(fileName, Letters.COMMA);
     }
 
@@ -416,7 +409,7 @@ public class CsvReader {
      * {@link com.csvreader.CsvReader#readHeaders readHeaders()}.
      *
      * @return The count of headers read in by a previous call to
-     *         {@link com.csvreader.CsvReader#readHeaders readHeaders()}.
+     * {@link com.csvreader.CsvReader#readHeaders readHeaders()}.
      */
     public int getHeaderCount() {
         return headersHolder.Length;
@@ -438,8 +431,7 @@ public class CsvReader {
             // setting values on the array directly, which would
             // throw off the index lookup based on header name
             String[] clone = new String[headersHolder.Length];
-            System.arraycopy(headersHolder.Headers, 0, clone, 0,
-                    headersHolder.Length);
+            System.arraycopy(headersHolder.Headers, 0, clone, 0, headersHolder.Length);
             return clone;
         }
     }
@@ -1095,17 +1087,12 @@ public class CsvReader {
     private void checkDataLength() throws IOException {
         if (!initialized) {
             if (fileName != null) {
-                inputStream = new BufferedReader(new InputStreamReader(
-                        new FileInputStream(fileName), charset),
-                        StaticSettings.MAX_FILE_BUFFER_SIZE);
+                inputStream = new BufferedReader(new InputStreamReader(new FileInputStream(fileName), charset), StaticSettings.MAX_FILE_BUFFER_SIZE);
             }
-
             charset = null;
             initialized = true;
         }
-
         updateCurrentValue();
-
         if (userSettings.CaptureRawRecord && dataBuffer.Count > 0) {
             if (rawBuffer.Buffer.length - rawBuffer.Position < dataBuffer.Count
                     - dataBuffer.LineStart) {

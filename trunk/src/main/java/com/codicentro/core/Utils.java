@@ -19,6 +19,7 @@ import com.codicentro.core.annotation.CWColumn;
 import com.codicentro.core.security.Encryption;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.xml.bind.JAXBContext;
