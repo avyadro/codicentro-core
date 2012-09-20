@@ -948,6 +948,10 @@ public class TypeCast {
         return new FileInputStream(file);
     }
 
+    public static InputStream toInputStream(String str) throws FileNotFoundException {
+        return new ByteArrayInputStream(str.getBytes());
+    }
+
     public static byte[] toBytes(File file) throws IOException {
         ByteArrayOutputStream baos = toByteArrayOutputStream(file);
         if (baos != null) {
@@ -1069,5 +1073,35 @@ public class TypeCast {
         List<Object> list = new ArrayList<Object>(Arrays.asList(array1));
         list.addAll(Arrays.asList(array2));
         return list.toArray(new Object[0]);
+    }
+
+    /**
+     * If type is primitive then convert to object else return equal type.
+     *
+     * @param type
+     * @return
+     */
+    public static Class<?> toObject(Class<?> type) {
+        if (type.getName().equals("char")) {
+            return Character.class;
+        } else if (type.getName().equals("byte")) {
+            return Byte.class;
+        } else if (type.getName().equals("short")) {
+            return Short.class;
+        } else if (type.getName().equals("int")) {
+            return Integer.class;
+        } else if (type.getName().equals("long")) {
+            return Long.class;
+        } else if (type.getName().equals("float")) {
+            return Float.class;
+        } else if (type.getName().equals("double")) {
+            return Double.class;
+        } else if (type.getName().equals("boolean")) {
+            return Boolean.class;
+        } else if (type.getName().equals("void")) {
+            return Void.class;
+        } else {
+            return type;
+        }
     }
 }
