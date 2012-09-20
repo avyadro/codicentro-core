@@ -19,7 +19,6 @@ import com.codicentro.core.annotation.CWColumn;
 import com.codicentro.core.security.Encryption;
 import java.io.*;
 import java.lang.reflect.Field;
-import java.nio.charset.Charset;
 import java.text.SimpleDateFormat;
 import java.util.*;
 import javax.xml.bind.JAXBContext;
@@ -208,7 +207,6 @@ public class Utils {
     }
 
     public static <TEntity> String toJasper(Class<TEntity> clazz) {
-
         StringBuilder xmlField = new StringBuilder();
 
         StringBuilder xmlColumnHeader = new StringBuilder();
@@ -223,12 +221,19 @@ public class Utils {
         for (Field field : clazz.getDeclaredFields()) {
             /**
              * FIELDS
-             */
-            xmlField.append("<field name=\"").append(field.getName()).append("\" class=\"").append(field.getType().getName()).append("\"/>");
-
+             */            
             CWColumn cwc = field.getAnnotation(CWColumn.class);
             if (cwc != null) {
+                Class<?> type = field.getType();
+                xmlField.append("<field name=\"").append(field.getName()).append("\" class=\"").append(type.getName()).append("\"/>");
                 Long width = TypeCast.toLong(cwc.width() * 100);
+                String header;
+                if (!TypeCast.isBlank(cwc.header())) {
+                    header = cwc.header();
+                } else {
+                    javax.persistence.Column clmn = field.getAnnotation(javax.persistence.Column.class);
+                    header = (clmn != null) ? clmn.name() : field.getName();
+                }
                 /**
                  * HEADERS
                  */
@@ -237,15 +242,15 @@ public class Utils {
                 xmlColumnHeader.append("<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">");
                 xmlColumnHeader.append("<font isBold=\"true\"/>");
                 xmlColumnHeader.append("</textElement>");
-                xmlColumnHeader.append("<text><![CDATA[").append(cwc.header()).append("]]></text>");
+                xmlColumnHeader.append("<text><![CDATA[").append(header).append("]]></text>");
                 xmlColumnHeader.append("</staticText>");
                 /**
                  * DETAILS
                  */
-                xmlDetail.append("<textField isBlankWhenNull=\"true\">");
+                xmlDetail.append("<textField").append(TypeCast.isBlank(cwc.format()) ? "" : " pattern=\"" + cwc.format() + "\"").append(" isBlankWhenNull=\"true\">");
                 xmlDetail.append("<reportElement x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"15\"/>");
                 xmlDetail.append("<textElement/>");
-                xmlDetail.append("<textFieldExpression class=\"").append(field.getType().getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}]]></textFieldExpression>");
+                xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}]]></textFieldExpression>");
                 xmlDetail.append("</textField>");
                 x += width;
             }
@@ -273,9 +278,36 @@ public class Utils {
         xmlJasper.append("<property name=\"ireport.zoom\" value=\"1.0\"/>");
         xmlJasper.append("<property name=\"ireport.x\" value=\"0\"/>");
         xmlJasper.append("<property name=\"ireport.y\" value=\"0\"/>");
-
+        xmlJasper.append("<property name=\"net.sf.jasperreports.print.keep.full.text\" value=\"true\"/>");
+        /**
+         *
+         */
         xmlJasper.append(xmlField);
+
+        CWColumn cwcTitle = clazz.getAnnotation(CWColumn.class);
+        if (cwcTitle != null) {
+            StringBuilder xmlTitle = new StringBuilder();
+            xmlTitle.append("<title>");
+            xmlTitle.append("<band height=\"20\">");
+            xmlTitle.append("<staticText>");
+            xmlTitle.append("<reportElement mode=\"Opaque\" x=\"0\" y=\"0\" width=\"").append(x).append("\" height=\"20\" backcolor=\"").append(cwcTitle.backcolor()).append("\"/>");
+            xmlTitle.append("<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">");
+            xmlTitle.append("<font isBold=\"true\"/>");
+            xmlTitle.append("</textElement>");
+            xmlTitle.append("<text><![CDATA[").append(cwcTitle.header()).append("]]></text>");
+            xmlTitle.append("</staticText>");
+            xmlTitle.append("</band>");
+            xmlTitle.append("</title>");
+            xmlJasper.append(xmlTitle);
+        }
+
+        /**
+         *
+         */
         xmlJasper.append(xmlColumnHeader);
+        /**
+         *
+         */
         xmlJasper.append(xmlDetail);
 
         xmlJasper.append("</jasperReport>");
