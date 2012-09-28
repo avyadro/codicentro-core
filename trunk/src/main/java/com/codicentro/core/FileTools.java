@@ -689,6 +689,16 @@ public class FileTools {
         out.close();
     }
 
+    /**
+     *
+     * @param request
+     * @param response
+     * @param filename
+     * @param originalFilename
+     * @throws IOException
+     * @deprecated Used equal method into class ServletUtil locate in
+     * codicentro-lib.
+     */
     public static void doDownload(
             HttpServletRequest request,
             HttpServletResponse response,
@@ -717,8 +727,15 @@ public class FileTools {
         in.close();
         op.flush();
         op.close();
+
+//         ServletOutputStream out = response.getOutputStream();
+//            response.setContentType("application/octet-stream");
+//            response.setContentLength(baos.size());
+//            response.setHeader("Content-Disposition", "attachment; filename=\"" + xlsxFileName + "\"");
+//            out.write(baos.toByteArray(), 0, baos.size());
+//            out.close();
+//            out.flush();
     }
-    
 //    public void download(javax.servlet.http.HttpServletResponse response, String name) throws IOException {
 //        response.setHeader("Expires", "0");
 //        response.setHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
