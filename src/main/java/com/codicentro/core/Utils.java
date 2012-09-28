@@ -250,7 +250,7 @@ public class Utils {
                 xmlDetail.append("<textField").append(TypeCast.isBlank(cwc.format()) ? "" : " pattern=\"" + cwc.format() + "\"").append(" isBlankWhenNull=\"true\">");
                 xmlDetail.append("<reportElement x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"15\"/>");
                 xmlDetail.append("<textElement/>");
-                xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}]]></textFieldExpression>");
+                xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}").append(cwc.expression()).append("]]></textFieldExpression>");
                 xmlDetail.append("</textField>");
                 x += width;
             }
@@ -262,19 +262,21 @@ public class Utils {
         xmlDetail.append("</detail>");
 
         StringBuilder xmlJasper = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?>");
-        xmlJasper.append("<jasperReport ");
-        xmlJasper.append("xmlns=\"http://jasperreports.sourceforge.net/jasperreports\" ");
-        xmlJasper.append("xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" ");
-        xmlJasper.append("xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\" ");
-        xmlJasper.append("name=\"").append(clazz.getSimpleName()).append("\" ");
-        xmlJasper.append("pageWidth=\"").append(x).append("\" ");
-        xmlJasper.append("pageHeight=\"842\" ");
-        xmlJasper.append("orientation=\"Landscape\" ");
-        xmlJasper.append("columnWidth=\"").append(x).append("\" ");
-        xmlJasper.append("leftMargin=\"0\" ");
-        xmlJasper.append("rightMargin=\"0\" ");
-        xmlJasper.append("topMargin=\"0\" ");
-        xmlJasper.append("bottomMargin=\"0\">");
+        xmlJasper.append("<jasperReport");
+        xmlJasper.append(" xmlns=\"http://jasperreports.sourceforge.net/jasperreports\"");
+        xmlJasper.append(" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\"");
+        xmlJasper.append(" xsi:schemaLocation=\"http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd\"");
+        xmlJasper.append(" name=\"").append(clazz.getSimpleName()).append("\"");
+        xmlJasper.append(" pageWidth=\"").append(x).append("\"");
+        xmlJasper.append(" pageHeight=\"842\"");
+        xmlJasper.append(" orientation=\"Landscape\"");
+        xmlJasper.append(" columnWidth=\"").append(x).append("\"");
+        xmlJasper.append(" leftMargin=\"0\"");
+        xmlJasper.append(" rightMargin=\"0\"");
+        xmlJasper.append(" topMargin=\"0\" ");
+        xmlJasper.append(" bottomMargin=\"0\"");
+        xmlJasper.append(" isIgnorePagination=\"true\"");
+        xmlJasper.append(">");        
         xmlJasper.append("<property name=\"ireport.zoom\" value=\"1.0\"/>");
         xmlJasper.append("<property name=\"ireport.x\" value=\"0\"/>");
         xmlJasper.append("<property name=\"ireport.y\" value=\"0\"/>");
