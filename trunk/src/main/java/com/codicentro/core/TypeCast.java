@@ -250,14 +250,12 @@ public class TypeCast {
      * @param o
      * @return
      */
-    public static String toString(Object o, String r) throws CDCException {
-        String result = toString(o);
+    public static String toString(Object o, String r) {
         try {
-            result = (result == null) ? r : result;
+            return (toString(o) == null) ? r : toString(o);
         } catch (Exception ex) {
-            throw new CDCException(ex);
+            return r;
         }
-        return result;
     }
     /*
      * public static Object NVL(Object o) { return ((o == null) ? "NULL" : o); }
@@ -1102,6 +1100,18 @@ public class TypeCast {
             return Void.class;
         } else {
             return type;
+        }
+    }
+
+    public static Object cast(Class<?> type, Object value) {
+        if (type.getSimpleName().equals("BigInteger")) {
+            return TypeCast.toBigInteger(value);
+        } else if (type.getSimpleName().equals("BigDecimal")) {
+            return TypeCast.toBigDecimal(value);
+        } else if (type.getSimpleName().equals("Long")) {
+            return TypeCast.toLong(value);
+        } else {
+            return TypeCast.toString(value);
         }
     }
 }
