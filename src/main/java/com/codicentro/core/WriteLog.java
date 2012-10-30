@@ -20,6 +20,11 @@ import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
+/**
+ * 
+ * @author avillalobos
+ * @deprecated Used http://logging.apache.org/log4j
+ */
 public class WriteLog {
 
     private String filePath = null;
