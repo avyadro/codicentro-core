@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.commons.lang.WordUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -388,6 +389,13 @@ public class Utils {
         return com.codicentro.core.Utils.xmlPrettyFormat(out.toString());
     }
 
+    /**
+     * 
+     * @param fileName
+     * @return
+     * @throws FileNotFoundException
+     * @throws IOException 
+     */
     public static Long lineCount(final String fileName) throws FileNotFoundException, IOException {
         Long count = 0L;
         FileReader fr = new FileReader(fileName);
@@ -418,4 +426,7 @@ public class Utils {
         bf.close();
         return rs;
     }
+    
+    
+   
 }

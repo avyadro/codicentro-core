@@ -31,7 +31,17 @@ public @interface CWColumn {
 
     public String header() default "";
 
+    public String headerAlign() default "center";
+
+    public String summaryType() default "";
+
+    public String summaryRenderer() default "";
+
     public String backcolor() default "#CCCCCC";
 
     public String expression() default "";
+
+    public boolean filter() default false;
+
+    public String align() default "left";
 }
