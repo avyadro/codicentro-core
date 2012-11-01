@@ -207,10 +207,6 @@ public class Utils {
     }
 
     public static <TEntity> String toJasper(Class<TEntity> clazz) {
-        return toJasper(clazz, null);
-    }
-
-    public static <TEntity> String toJasper(Class<TEntity> clazz, String mapping) {
 
         StringBuilder xmlField = new StringBuilder();
 
@@ -258,8 +254,6 @@ public class Utils {
                 xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}").append(cwc.expression()).append("]]></textFieldExpression>");
                 xmlDetail.append("</textField>");
                 x += width;
-            } else if (field.getAnnotation(javax.persistence.EmbeddedId.class) != null) {
-                toJasper(field.getType(), field.getName());
             }
         }
         xmlColumnHeader.append("</band>");
