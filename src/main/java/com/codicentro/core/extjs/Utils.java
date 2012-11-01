@@ -43,9 +43,9 @@ public class Utils {
                 } else {
                     javax.persistence.Column clmn = field.getAnnotation(javax.persistence.Column.class);
                     header = (clmn != null) ? clmn.name() : field.getName();
+                    header = WordUtils.capitalizeFully(header).replace("_", " ");
                 }
-                write.get("column").append("this.cm").append(TypeCast.toFirtUpperCase(field.getName())).append("={\n");
-                header = WordUtils.capitalizeFully(header).replace("_", " ");
+                write.get("column").append("this.cm").append(TypeCast.toFirtUpperCase(field.getName())).append("={\n");                
                 write.get("column").append("header:'").append(header).append("',\n");
                 write.get("column").append("headerAlign:'").append(cwc.headerAlign()).append("',\n");
                 write.get("column").append("align:'").append(cwc.align()).append("',\n");
@@ -57,6 +57,11 @@ public class Utils {
                 if (!TypeCast.isBlank(cwc.summaryRenderer())) {
                     write.get("column").append("summaryRenderer:function(){ return '").append(cwc.summaryRenderer()).append("'; },\n");
                 }
+
+                if (!TypeCast.isBlank(cwc.renderer())) {
+                    write.get("column").append("renderer:").append(cwc.renderer()).append(",\n");
+                }
+
                 write.get("column").append("width:").append(width).append("\n");
                 write.get("column").append("};\n\n");
                 if (!TypeCast.isBlank(mapping)) {
