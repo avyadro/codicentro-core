@@ -37,6 +37,8 @@ public @interface CWColumn {
 
     public String summaryRenderer() default "";
 
+    public String renderer() default "";
+
     public String backcolor() default "#CCCCCC";
 
     public String expression() default "";

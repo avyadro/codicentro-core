@@ -25,7 +25,6 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
-import org.apache.commons.lang.WordUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -208,6 +207,11 @@ public class Utils {
     }
 
     public static <TEntity> String toJasper(Class<TEntity> clazz) {
+        return toJasper(clazz, null);
+    }
+
+    public static <TEntity> String toJasper(Class<TEntity> clazz, String mapping) {
+
         StringBuilder xmlField = new StringBuilder();
 
         StringBuilder xmlColumnHeader = new StringBuilder();
@@ -222,7 +226,7 @@ public class Utils {
         for (Field field : clazz.getDeclaredFields()) {
             /**
              * FIELDS
-             */            
+             */
             CWColumn cwc = field.getAnnotation(CWColumn.class);
             if (cwc != null) {
                 Class<?> type = field.getType();
@@ -254,6 +258,8 @@ public class Utils {
                 xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}").append(cwc.expression()).append("]]></textFieldExpression>");
                 xmlDetail.append("</textField>");
                 x += width;
+            } else if (field.getAnnotation(javax.persistence.EmbeddedId.class) != null) {
+                toJasper(field.getType(), field.getName());
             }
         }
         xmlColumnHeader.append("</band>");
@@ -277,7 +283,7 @@ public class Utils {
         xmlJasper.append(" topMargin=\"0\" ");
         xmlJasper.append(" bottomMargin=\"0\"");
         xmlJasper.append(" isIgnorePagination=\"true\"");
-        xmlJasper.append(">");        
+        xmlJasper.append(">");
         xmlJasper.append("<property name=\"ireport.zoom\" value=\"1.0\"/>");
         xmlJasper.append("<property name=\"ireport.x\" value=\"0\"/>");
         xmlJasper.append("<property name=\"ireport.y\" value=\"0\"/>");
@@ -390,11 +396,11 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param fileName
      * @return
      * @throws FileNotFoundException
-     * @throws IOException 
+     * @throws IOException
      */
     public static Long lineCount(final String fileName) throws FileNotFoundException, IOException {
         Long count = 0L;
@@ -426,7 +432,4 @@ public class Utils {
         bf.close();
         return rs;
     }
-    
-    
-   
 }
