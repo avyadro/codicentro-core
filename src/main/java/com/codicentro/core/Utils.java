@@ -46,8 +46,8 @@ public class Utils {
      * @return
      */
     public static String makeId(EncrypType et) {
-        String result = null;
-        Encryption encryption = null;
+        String result;
+        Encryption encryption;
         Random random = new Random(1000000);
         switch (et) {
             case SHA1:
@@ -96,7 +96,7 @@ public class Utils {
      * @return The last business day
      */
     public static int getLastBusinessDayOfMonth(final int month, final int year, final List<Date> holidays) {
-        int day = -1;
+        int day;
         Calendar calendar = Calendar.getInstance();
         calendar.set(Calendar.MONTH, month);
         calendar.set(Calendar.YEAR, year);
