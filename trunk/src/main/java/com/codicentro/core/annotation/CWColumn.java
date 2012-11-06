@@ -23,27 +23,64 @@ import java.lang.annotation.Target;
 @Retention(value = RetentionPolicy.RUNTIME)
 public @interface CWColumn {
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper
+     */
     public String name() default "";
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper
+     */
     public double width() default 1.0;
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper.
+     */
     public String format() default "";
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper.
+     */
     public String header() default "";
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper.
+     */
     public String headerAlign() default "center";
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper.
+     */
     public String summaryType() default "";
 
+    /**
+     * Support: Ext.grid.ColumnModel.
+     */
     public String summaryRenderer() default "";
 
+    /**
+     * Support: Ext.grid.ColumnModel.
+     */
     public String renderer() default "";
 
+    /**
+     * Support: Jasper.
+     */
     public String backcolor() default "#CCCCCC";
 
+    /**
+     * Support: Jasper.
+     */
     public String expression() default "";
 
+    /**
+     * Support: Ext.ux.grid.GridFilters.
+     */
     public boolean filter() default false;
 
+    /**
+     * Support: Ext.grid.ColumnModel, Jasper.
+     */
     public String align() default "left";
+        
 }

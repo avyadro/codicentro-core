@@ -25,6 +25,7 @@ import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
+import org.apache.commons.lang.ArrayUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -206,25 +207,20 @@ public class Utils {
         return result;
     }
 
-    public static <TEntity> String toJasper(Class<TEntity> clazz) {
+    public static <TEntity> String toJasper(Class<TEntity> clazz, String[] excludeFields) {
 
         StringBuilder xmlField = new StringBuilder();
-
-        StringBuilder xmlColumnHeader = new StringBuilder();
-        xmlColumnHeader.append("<columnHeader>");
-        xmlColumnHeader.append("<band height=\"20\">");
-
-        StringBuilder xmlDetail = new StringBuilder();
-        xmlDetail.append("<detail>");
-        xmlDetail.append("<band height=\"15\">");
-
+        StringBuilder xmlVariable = null;
+        StringBuilder xmlColumnHeader = new StringBuilder("<columnHeader><band height=\"20\">");
+        StringBuilder xmlDetail = new StringBuilder("<detail><band height=\"15\">");
+        StringBuilder xmlSummary = null;
         Long x = 0L;
         for (Field field : clazz.getDeclaredFields()) {
             /**
              * FIELDS
              */
             CWColumn cwc = field.getAnnotation(CWColumn.class);
-            if (cwc != null) {
+            if (cwc != null && (excludeFields == null || excludeFields.length < 1 || !ArrayUtils.contains(excludeFields, field.getName()))) {
                 Class<?> type = field.getType();
                 xmlField.append("<field name=\"").append(field.getName()).append("\" class=\"").append(type.getName()).append("\"/>");
                 Long width = TypeCast.toLong(cwc.width() * 100);
@@ -240,7 +236,8 @@ public class Utils {
                  */
                 xmlColumnHeader.append("<staticText>");
                 xmlColumnHeader.append("<reportElement mode=\"Opaque\" x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"20\" backcolor=\"").append(cwc.backcolor()).append("\"/>");
-                xmlColumnHeader.append("<textElement textAlignment=\"Center\" verticalAlignment=\"Middle\">");
+
+                xmlColumnHeader.append("<textElement textAlignment=\"").append(TypeCast.isBlank(cwc.headerAlign()) ? "Center" : TypeCast.toFirtUpperCase(cwc.headerAlign())).append("\" verticalAlignment=\"Middle\">");
                 xmlColumnHeader.append("<font isBold=\"true\"/>");
                 xmlColumnHeader.append("</textElement>");
                 xmlColumnHeader.append("<text><![CDATA[").append(header).append("]]></text>");
@@ -250,17 +247,37 @@ public class Utils {
                  */
                 xmlDetail.append("<textField").append(TypeCast.isBlank(cwc.format()) ? "" : " pattern=\"" + cwc.format() + "\"").append(" isBlankWhenNull=\"true\">");
                 xmlDetail.append("<reportElement x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"15\"/>");
-                xmlDetail.append("<textElement/>");
+                xmlDetail.append("<textElement textAlignment=\"").append(TypeCast.isBlank(cwc.align()) ? "Left" : TypeCast.toFirtUpperCase(cwc.align())).append("\">");
+                xmlDetail.append("</textElement>");
                 xmlDetail.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$F{").append(field.getName()).append("}").append(cwc.expression()).append("]]></textFieldExpression>");
                 xmlDetail.append("</textField>");
+
+                if (!TypeCast.isBlank(cwc.summaryType())) {
+                    if (xmlVariable == null) {
+                        xmlVariable = new StringBuilder();
+                    }
+                    xmlVariable.append("<variable name=\"var_").append(field.getName()).append("\" class=\"").append(type.getName()).append("\" calculation=\"").append(TypeCast.toFirtUpperCase(cwc.summaryType())).append("\">");
+                    xmlVariable.append("<variableExpression><![CDATA[$F{").append(field.getName()).append("}]]></variableExpression>");
+                    xmlVariable.append("</variable>");
+                    if (xmlSummary == null) {
+                        xmlSummary = new StringBuilder("<summary><band height=\"20\">");
+                    }
+                    xmlSummary.append("<textField").append(TypeCast.isBlank(cwc.format()) ? "" : " pattern=\"" + cwc.format() + "\"").append(" isBlankWhenNull=\"true\">");
+                    xmlSummary.append("<reportElement x=\"").append(x).append("\" y=\"0\" width=\"").append(width).append("\" height=\"15\"/>");
+                    xmlSummary.append("<textElement textAlignment=\"").append(TypeCast.isBlank(cwc.align()) ? "Left" : TypeCast.toFirtUpperCase(cwc.align())).append("\">");
+                    xmlSummary.append("<font isBold=\"true\"/>");
+                    xmlSummary.append("</textElement>");
+                    xmlSummary.append("<textFieldExpression class=\"").append(type.getName()).append("\"><![CDATA[$V{var_").append(field.getName()).append("}").append(cwc.expression()).append("]]></textFieldExpression>");
+                    xmlSummary.append("</textField>");
+                }
                 x += width;
             }
         }
-        xmlColumnHeader.append("</band>");
-        xmlColumnHeader.append("</columnHeader>");
-
-        xmlDetail.append("</band>");
-        xmlDetail.append("</detail>");
+        xmlColumnHeader.append("</band></columnHeader>");
+        xmlDetail.append("</band></detail>");
+        if (xmlSummary != null) {
+            xmlSummary.append("</band></summary>");
+        }
 
         StringBuilder xmlJasper = new StringBuilder("<?xml version='1.0' encoding='UTF-8'?>");
         xmlJasper.append("<jasperReport");
@@ -286,6 +303,9 @@ public class Utils {
          *
          */
         xmlJasper.append(xmlField);
+        if (xmlVariable != null) {
+            xmlJasper.append(xmlVariable);
+        }
 
         CWColumn cwcTitle = clazz.getAnnotation(CWColumn.class);
         if (cwcTitle != null) {
@@ -308,13 +328,23 @@ public class Utils {
          *
          */
         xmlJasper.append(xmlColumnHeader);
+
+
         /**
          *
          */
         xmlJasper.append(xmlDetail);
 
+        if (xmlSummary != null) {
+            xmlJasper.append(xmlSummary);
+        }
+
         xmlJasper.append("</jasperReport>");
         return xmlJasper.toString();
+    }
+
+    public static <TEntity> String toJasper(Class<TEntity> clazz) {
+        return toJasper(clazz, null);
     }
 
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
