@@ -41,7 +41,7 @@ public class JSONObject implements Serializable {
      */
     public void put(String key, Object o) throws CDCException {
         if (o == null) {
-            json.put(key, "null");
+            json.put(key, null);
         } else if (TypeCast.ifNumber(o) || (o instanceof Boolean)) {
             json.put(key, o);
         } else {
@@ -115,6 +115,14 @@ public class JSONObject implements Serializable {
         }
         sb.append('"');
         return sb.toString();
+    }
+
+    public Map<String, Object> getJson() {
+        return json;
+    }
+
+    public void setJson(Map<String, Object> json) {
+        this.json = json;
     }
 
     /**
