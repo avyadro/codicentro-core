@@ -17,16 +17,16 @@
     </properties>
     <distributionManagement>
         <repository>
-            <id>internal</id>
-            <name>Archiva Managed Internal Repository</name>
+            <id>releases</id>
+            <name>Nexus Managed Releases Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://221.211.12.44/archiva/repository/internal/</url>
+            <url>http://221.211.12.44/nexus/content/repositories/releases/</url>
         </repository>
         <snapshotRepository>
             <uniqueVersion>true</uniqueVersion>
             <id>snapshots</id>
-            <name>Archiva Managed Snapshot Repository</name>
-            <url>http://221.211.12.44/archiva/repository/snapshots/</url>
+            <name>Nexus Managed Snapshot Repository</name>
+            <url>http://221.211.12.44/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <build>
