@@ -17,7 +17,6 @@ package com.codicentro.core;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.InetSocketAddress;
-import java.net.NoRouteToHostException;
 import java.net.Socket;
 import java.net.SocketAddress;
 import java.net.SocketException;
@@ -28,15 +27,17 @@ public class ClamavScan {
 
     private Logger logger = LoggerFactory.getLogger(ClamavScan.class);
     private String host;
-    private int port = 3310;
-    private byte[] toScan;
-    private Socket protocol = null;
-    private Socket data = null;
-    private String virus = "";
-    private int connectionTimeout = 90;
+    private int port = 3310;    
+    private String virus;
+    private int timeout = 90;
 
     public ClamavScan(String host) {
         this.host = host;
+    }
+
+    public ClamavScan(String host, int port) {
+        this.host = host;
+        this.port = port;
     }
 
     public int getPort() {
@@ -58,40 +59,35 @@ public class ClamavScan {
      */
     public boolean doScan(InputStream is) throws CDCException {
         try {
-            toScan = is.toString().getBytes();
-            protocol = new Socket();
+            virus = "";
+            byte[] toScan = is.toString().getBytes();
+            Socket protocol = new Socket();
             SocketAddress sockaddr = new InetSocketAddress(host, port);
-            protocol.setSoTimeout(connectionTimeout * 1000);
-            String responseValue = "";
-
-            //First, try to connect to the clamd
-            protocol.connect(sockaddr);
+            protocol.setSoTimeout(timeout * 1000);
+            protocol.connect(sockaddr);// First, try to connect to the clamd
             byte[] b = {'S', 'T', 'R', 'E', 'A', 'M', '\n'};
-            protocol.getOutputStream().write(b); // Write the initialisation command
-            // Now, read byte per byte until we find a LF.
+            protocol.getOutputStream().write(b); // Write the initialisation command            
             byte[] rec = new byte[1];
-            while (true) {
+            while (true) {// Now, read byte per byte until we find a LF.
                 protocol.getInputStream().read(rec);
                 if (rec[0] == '\n') {
                     break;
                 }
-                responseValue += new String(rec);
+                virus += new String(rec);
             }
-            logger.debug("response: " + responseValue);
-            // In the response value, there's an integer. It's the TCP port that the clamd has allocated for us for data stream.
+            logger.debug("Response: " + virus);// In the response value, there's an integer. It's the TCP port that the clamd has allocated for us for data stream.
             int dataPort = -1;
-            if (responseValue.contains(" ")) {
-                dataPort = Integer.parseInt(responseValue.split(" ")[1]);
+            if (virus.contains(" ")) {
+                dataPort = Integer.parseInt(virus.split(" ")[1]);
             }
-
             // Now, we connect to the data port obtained before.
-            data = new Socket();
+            Socket data = new Socket();
             SocketAddress sockaddrData = new InetSocketAddress(host, dataPort);
-            data.setSoTimeout(connectionTimeout * 1000); // we leave 1m30 before closing connection is clamd does not issue a response.
+            data.setSoTimeout(timeout * 1000); // we leave 1m30 before closing connection is clamd does not issue a response.
             data.connect(sockaddrData);
             data.getOutputStream().write(toScan); // We write to the data stream the content of the file
             data.close(); // Then close the stream, so that clamd knows it's the end of the stream.
-            responseValue = "";
+            virus = "";
             while (true) {
                 try {
                     protocol.getInputStream().read(rec);
@@ -101,27 +97,26 @@ public class ClamavScan {
                 if (rec[0] == '\n') {
                     break;
                 }
-                responseValue += new String(rec);
+                virus += new String(rec);
             }
-            logger.debug("response: " + responseValue);
+            logger.debug("Response: " + virus);
             if (data != null) {
                 data.close();
             }
             if (protocol != null) {
                 protocol.close();
             }
-            if (responseValue == null) {
-                logger.error("response is null. Passing the file anyway...");
+            if (TypeCast.isBlank(virus)) {
+                logger.error("Response is blank or null. Passing the file anyway...");
                 return true;
             }
-            if (responseValue.contains("ERROR")) {
-                logger.error("response is erroneous (" + responseValue
-                        + "). Passing the file anyway...");
+            if (virus.contains("ERROR")) {
+                logger.error("Response is erroneous (" + virus + "). Passing the file anyway...");
             }
-            if (responseValue.equals("stream: OK")) { // clamd writes this if the stream we sent does not contains viruses.            
+            if (virus.equals("stream: OK")) { // clamd writes this if the stream we sent does not contains viruses.            
                 return true;
             }
-            virus = responseValue; // Else there is an error, the response contains the name of the identified virus
+            // Else there is an error, the response contains the name of the identified virus
             return false;
         } catch (SocketException e) {
             throw new CDCException("Codicentro-ClamavScan: " + e.getMessage() + " " + host + ":" + port, e);
