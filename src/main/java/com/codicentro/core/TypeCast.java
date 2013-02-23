@@ -942,8 +942,10 @@ public class TypeCast {
      * @param file
      * @return
      */
-    public static InputStream toInputStream(File file) throws FileNotFoundException {
-        return new FileInputStream(file);
+    public static InputStream toInputStream(File file) throws FileNotFoundException, IOException {
+        InputStream is = new FileInputStream(file);
+        is.close();
+        return is;
     }
 
     public static InputStream toInputStream(String str) throws FileNotFoundException {
@@ -1116,11 +1118,9 @@ public class TypeCast {
     }
 
     public static byte[] toBytes(InputStream is) throws IOException {
-
         int len;
         int size = 1024;
         byte[] buf;
-
         if (is instanceof ByteArrayInputStream) {
             size = is.available();
             buf = new byte[size];
