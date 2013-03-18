@@ -456,4 +456,52 @@ public class Utils {
         bf.close();
         return rs;
     }
+
+    public static Object searchSet(Set ss, Object searchFor) {
+        Iterator it = ss.iterator();
+        while (it.hasNext()) {
+            Object s = it.next();
+            if (s != null && s.equals(searchFor)) {
+                return s;
+            }
+        }
+        return null;
+    }
+
+    public static <T> T getElement(Set<T> set, T element) {
+        T result = null;
+        if (set instanceof TreeSet<?>) {
+            T floor = ((TreeSet<T>) set).floor(element);
+            if (floor != null && floor.equals(element)) {
+                result = floor;
+            }
+        } else {
+            boolean found = false;
+            for (Iterator<T> it = set.iterator(); !found && it.hasNext();) {
+                if (true) {
+                    T current = it.next();
+                    if (current.equals(element)) {
+                        result = current;
+                        found = true;
+                    }
+                }
+            }
+        }
+        return result;
+    }
+
+    public static <T> T getElement(Collection<T> collection, T element) {
+        T result = null;
+        boolean found = false;
+        for (Iterator<T> it = collection.iterator(); !found && it.hasNext();) {
+            if (true) {
+                T current = it.next();
+                if (current.equals(element)) {
+                    result = current;
+                    found = true;
+                }
+            }
+        }
+        return result;
+    }
 }
