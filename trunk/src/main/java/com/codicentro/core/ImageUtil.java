@@ -15,7 +15,9 @@
 package com.codicentro.core;
 
 import com.sun.media.jai.codec.*;
+import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
 import java.awt.image.BufferedImage;
 import java.awt.image.PixelGrabber;
@@ -147,9 +149,9 @@ public class ImageUtil implements Serializable {
         // int COMP_JPEG_TTN2 = 7;
 
         SeekableStream stream = new ByteArraySeekableStream(data);
-        TIFFDirectory tdir = new TIFFDirectory(stream, 0);
+        
+        TIFFDirectory tdir = new TIFFDirectory(stream, 0);       
         int compression = tdir.getField(TAG_COMPRESSION).getAsInt(0);
-
         String decoder2use = ImageCodec.getDecoderNames(stream)[0];
         if (compression == COMP_JPEG_OLD) {
             // Special handling for old/unsupported JPEG-in-TIFF format:
@@ -161,6 +163,24 @@ public class ImageUtil implements Serializable {
         ImageDecoder dec = ImageCodec.createImageDecoder(decoder2use, stream, null);
         RenderedImage img = dec.decodeAsRenderedImage();
         image = PlanarImage.wrapRenderedImage(img).getAsBufferedImage();
+    }
+
+    public Image getImage() {
+        return image;
+    }
+
+    /**
+     *
+     * @param angle - an angle, in degrees
+     */
+    public void rotate(Double angle) {
+        int height = image.getHeight(null);
+        BufferedImage bi = toBufferedImage();
+        Graphics2D g2 = bi.createGraphics();
+        g2.rotate(Math.toRadians(angle), height / 2, height / 2);
+        g2.drawImage(image, 0, 0, Color.WHITE, null);
+        g2.dispose();
+        image = bi;
     }
 
     /**
@@ -184,8 +204,7 @@ public class ImageUtil implements Serializable {
     /**
      * Determines if an image has an alpha channel.
      *
-     * @param image the
-     * <code>Image</code>
+     * @param image the <code>Image</code>
      * @return true if the image has an alpha channel
      */
     private boolean hasAlpha() {
