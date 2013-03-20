@@ -149,8 +149,8 @@ public class ImageUtil implements Serializable {
         // int COMP_JPEG_TTN2 = 7;
 
         SeekableStream stream = new ByteArraySeekableStream(data);
-        
-        TIFFDirectory tdir = new TIFFDirectory(stream, 0);       
+
+        TIFFDirectory tdir = new TIFFDirectory(stream, 0);
         int compression = tdir.getField(TAG_COMPRESSION).getAsInt(0);
         String decoder2use = ImageCodec.getDecoderNames(stream)[0];
         if (compression == COMP_JPEG_OLD) {
@@ -163,6 +163,14 @@ public class ImageUtil implements Serializable {
         ImageDecoder dec = ImageCodec.createImageDecoder(decoder2use, stream, null);
         RenderedImage img = dec.decodeAsRenderedImage();
         image = PlanarImage.wrapRenderedImage(img).getAsBufferedImage();
+    }
+
+    public static BufferedImage toBufferedImage(byte[] image) throws IOException {
+        SeekableStream stream = new ByteArraySeekableStream(image);
+        String decoder2use = ImageCodec.getDecoderNames(stream)[0];
+        ImageDecoder dec = ImageCodec.createImageDecoder(decoder2use, stream, null);
+        RenderedImage img = dec.decodeAsRenderedImage();
+        return PlanarImage.wrapRenderedImage(img).getAsBufferedImage();
     }
 
     public Image getImage() {
