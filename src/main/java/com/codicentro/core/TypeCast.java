@@ -1135,4 +1135,8 @@ public class TypeCast {
         }
         return buf;
     }
+
+    public static InputStream toInputStream(byte[] bs) {
+        return new ByteArrayInputStream(bs);
+    }
 }
