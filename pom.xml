@@ -98,11 +98,21 @@
             <version>1.1</version>
         </dependency -->
         <dependency>
-	<groupId>commons-io</groupId>
-	<artifactId>commons-io</artifactId>
-	<version>2.0.1</version>
-</dependency>
-            
+            <groupId>commons-io</groupId>
+            <artifactId>commons-io</artifactId>
+            <version>2.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>com.sun.jna</groupId>
+            <artifactId>jna</artifactId>
+            <version>3.0.9</version>
+            <type>jar</type>
+        </dependency>    
+        <dependency>
+            <groupId>org.ghost4j</groupId>
+            <artifactId>ghost4j</artifactId>
+            <version>0.5.0</version>
+        </dependency>
         <dependency>
             <groupId>com.sun.media</groupId>
             <artifactId>jai-codec</artifactId>
@@ -134,5 +144,23 @@
             <version>2.6</version>
             <type>jar</type>
         </dependency>
+        <dependency>
+            <groupId>javax.media</groupId>
+            <artifactId>jai_imageio</artifactId>
+            <version>1.1</version>
+            <type>jar</type>
+        </dependency>
     </dependencies>
+    <repositories>	
+        <repository>
+            <id>org.ghost4j.repository.releases</id>
+            <name>Ghost4J releases</name>
+            <url>http://repo.ghost4j.org/maven2/releases</url>
+        </repository>
+        <repository>
+            <id>org.ghost4j.repository.snapshots</id>
+            <name>Ghost4J snapshots</name>
+            <url>http://repo.ghost4j.org/maven2/snapshots</url>
+        </repository>	
+    </repositories>
 </project>
