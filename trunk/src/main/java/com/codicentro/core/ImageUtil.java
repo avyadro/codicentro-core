@@ -172,6 +172,7 @@ public class ImageUtil implements Serializable {
         RenderedImage img = dec.decodeAsRenderedImage();
         return PlanarImage.wrapRenderedImage(img).getAsBufferedImage();
     }
+  
 
     public Image getImage() {
         return image;
