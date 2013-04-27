@@ -468,6 +468,19 @@ public class Utils {
         return null;
     }
 
+    public static <K, V> K getKey(Map<K, V> mp, V value) {
+        K rs = null;
+        for (Iterator<K> it = mp.keySet().iterator(); rs == null && it.hasNext();) {
+            if (true) {
+                K current = it.next();
+                if (mp.get(current).equals(value)) {
+                    rs = current;
+                }
+            }
+        }
+        return rs;
+    }
+
     public static <T> T getElement(Set<T> set, T element) {
         T result = null;
         if (set instanceof TreeSet<?>) {

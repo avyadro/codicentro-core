@@ -181,6 +181,14 @@ public class TypeCast {
         }
     }
 
+    public static Double toDouble(Object o) {
+        try {
+            return new Double(toString(o));
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
     /**
      *
      * @param o
@@ -835,18 +843,25 @@ public class TypeCast {
         return s.charAt(0);
     }
 
-    public static Method getMethod(Class c, String n, Class p) {
-        try {
-            if (p == null) {
-                return c.getMethod(n);
-            } else {
-                return c.getMethod(n, p);
-            }
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
+//    /**
+//     * 
+//     * @param c
+//     * @param n
+//     * @param p
+//     * @return 
+//     * @deprecated
+//     */
+//    public static Method getMethod(Class c, String n, Class p) {
+//        try {
+//            if (p == null) {
+//                return c.getMethod(n);
+//            } else {
+//                return c.getMethod(n, p);
+//            }
+//        } catch (Exception ex) {
+//            return null;
+//        }
+//    }
     public static String toString(BigDecimal n, String f) {
         try {
             DecimalFormat df = new DecimalFormat(f.trim());
@@ -1138,5 +1153,17 @@ public class TypeCast {
 
     public static InputStream toInputStream(byte[] bs) {
         return new ByteArrayInputStream(bs);
+    }
+
+    public static String toString(File textfile) throws FileNotFoundException, IOException {
+        StringBuilder rs = new StringBuilder();
+        FileReader fr = new FileReader(textfile);
+        BufferedReader br = new BufferedReader(fr);
+        String ln;
+        while ((ln = br.readLine()) != null) {
+            rs.append(ln);
+        }
+        fr.close();
+        return rs.toString();
     }
 }
