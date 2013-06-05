@@ -70,7 +70,7 @@ public class Tesseract {
     /**
      * Private constructor.
      */
-    private Tesseract() {
+    private Tesseract() throws java.lang.UnsatisfiedLinkError{
         System.setProperty("jna.encoding", "UTF8");
         api = (TessAPI) Native.loadLibrary(TessAPI.WINDOWS ? TessAPI.LIB_NAME : TessAPI.LIB_NAME_NON_WIN, TessAPI.class);
     }
