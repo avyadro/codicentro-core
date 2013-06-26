@@ -114,7 +114,7 @@ public class TreeGrid implements Serializable {
             /**
              * * LEAF **
              */
-            if (!TypeCast.isNullOrEmpty(leafExpression)) {
+            if (!TypeCast.isBlank(leafExpression)) {
                 Object expValue = TypeCast.GN(entity, expName[0]);
                 if (expValue != null) {
                     for (int i = 1; i < expName.length; i++) {
@@ -204,9 +204,9 @@ public class TreeGrid implements Serializable {
         String tk = "equal";
         leafExpression = leafExpression.replaceAll("==", "equal");
         expOperator = Tree.TOperator.EQ;
-        if (leafExpression.indexOf("isNullOrEmpty") != -1) {
+        if (leafExpression.indexOf("isBlank") != -1) {
             expOperator = Tree.TOperator.ISNULLOREMPTY;
-            tk = "isNullOrEmpty";
+            tk = "isBlank";
         } else if (leafExpression.indexOf("isNull") != -1) {
             expOperator = Tree.TOperator.ISNULL;
             tk = "isNull";

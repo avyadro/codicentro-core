@@ -161,7 +161,7 @@ public class FileTools {
          * * ALIGMENT **
          */
         String alignment = (column.getAttribute("alignment") == null) ? null : column.getAttribute("alignment").getValue();
-        if (!TypeCast.isNullOrEmpty(alignment)) {
+        if (!TypeCast.isBlank(alignment)) {
             if (alignment.equals("alCenter")) {
                 style.setAlignment(XSSFCellStyle.ALIGN_CENTER);
             } else if (alignment.equals("alCenterSelection")) {
@@ -183,7 +183,7 @@ public class FileTools {
          * * VERTICAL ALIGMENT **
          */
         String valignment = (column.getAttribute("valignment") == null) ? null : column.getAttribute("valignment").getValue();
-        if (!TypeCast.isNullOrEmpty(valignment)) {
+        if (!TypeCast.isBlank(valignment)) {
             if (valignment.equals("alBottom")) {
                 style.setVerticalAlignment(XSSFCellStyle.VERTICAL_BOTTOM);
             } else if (valignment.equals("alCenter")) {
@@ -211,7 +211,7 @@ public class FileTools {
          * * BACKGROUND **
          */
         String background = (column.getAttribute("background") == null) ? null : column.getAttribute("background").getValue();
-        if (!TypeCast.isNullOrEmpty(background)) {
+        if (!TypeCast.isBlank(background)) {
             style.setFillPattern(FillPatternType.SOLID_FOREGROUND);
             if (TypeCast.toShortD(background) != null) {
                 style.setFillForegroundColor(TypeCast.toShortD(background));
@@ -289,7 +289,7 @@ public class FileTools {
             return fm;
         }
         String str = fm.substring(posCol + 4, posKey);
-        if (TypeCast.isNullOrEmpty(str)) {
+        if (TypeCast.isBlank(str)) {
             return fm;
         }
         int count = 0;
@@ -506,14 +506,14 @@ public class FileTools {
                  * * SHEET NAME **
                  */
                 String sheetname = (header.getAttribute("sheetname") == null) ? null : header.getAttribute("sheetname").getValue();
-                sheet = (TypeCast.isNullOrEmpty(sheetname)) ? book.createSheet() : book.createSheet(sheetname);
+                sheet = (TypeCast.isBlank(sheetname)) ? book.createSheet() : book.createSheet(sheetname);
                 row = sheet.createRow(idxRow);
                 /**
                  * * ROW SIZE **
                  */
                 String frdata = (header.getAttribute("frdata") == null) ? null : header.getAttribute("frdata").getValue();
 
-                if (!TypeCast.isNullOrEmpty(frdata)) {
+                if (!TypeCast.isBlank(frdata)) {
                     logger.info("First row data: " + frdata);
                     while (idxRow + 1 < TypeCast.toInt(frdata)) {
                         idxRow++;
@@ -721,7 +721,7 @@ public class FileTools {
         //
         byte[] bbuf = new byte[1024];
         DataInputStream in = new DataInputStream(new FileInputStream(f));
-        while ((in != null) && ((length = in.read(bbuf)) != -1)) {
+        while ((length = in.read(bbuf)) != -1) {
             op.write(bbuf, 0, length);
         }
         in.close();

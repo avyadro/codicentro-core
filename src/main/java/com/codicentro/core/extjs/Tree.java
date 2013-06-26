@@ -119,7 +119,7 @@ public class Tree implements Serializable {
             entity = iTree.next();
             switch (rt) {
                 case EXTJS_TREE:
-                    if (!TypeCast.isNullOrEmpty(leafExpression)) {
+                    if (!TypeCast.isBlank(leafExpression)) {
                         Object expValue = TypeCast.GN(entity, expName[0]);
                         if (expValue != null) {
                             for (int i = 1; i < expName.length; i++) {
@@ -217,7 +217,7 @@ public class Tree implements Serializable {
             }
             /** **/
             entityValue = json.toJSON(entity);
-            if (!TypeCast.isNullOrEmpty(entityValue)) {
+            if (!TypeCast.isBlank(entityValue)) {
                 item.append(",").append(entityValue);
             }
             if (properties != null) {
@@ -354,9 +354,9 @@ public class Tree implements Serializable {
         String tk = "equal";
         leafExpression = leafExpression.replaceAll("==", "equal");
         expOperator = TOperator.EQ;
-        if (leafExpression.indexOf("isNullOrEmpty") != -1) {
+        if (leafExpression.indexOf("isBlank") != -1) {
             expOperator = TOperator.ISNULLOREMPTY;
-            tk = "isNullOrEmpty";
+            tk = "isBlank";
         } else if (leafExpression.indexOf("isNull") != -1) {
             expOperator = TOperator.ISNULL;
             tk = "isNull";

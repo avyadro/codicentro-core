@@ -18,6 +18,7 @@ import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;
 import com.sun.media.jai.codec.ImageDecoder;
 import com.sun.media.jai.codec.SeekableStream;
+import com.sun.media.jai.codec.TIFFDirectory;
 import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
@@ -37,7 +38,11 @@ import sun.misc.BASE64Encoder;
 public class ImageUtil implements Serializable {
 
     private static Logger logger = LoggerFactory.getLogger(ImageUtil.class);
-    private Image image = null;
+    public final static int TAG_COMPRESSION = 259;
+    public final static int TAG_JPEG_INTERCHANGE_FORMAT = 513;
+    public final static int COMP_JPEG_OLD = 6;
+    public final static int COMP_JPEG_TTN2 = 7;
+    private Image image;
 
     public enum Type {
 
@@ -146,23 +151,18 @@ public class ImageUtil implements Serializable {
      * @throws Exception
      */
     private void load(byte[] data) throws Exception {
-//        int TAG_COMPRESSION = 259;
-//        int TAG_JPEG_INTERCHANGE_FORMAT = 513;
-//        int COMP_JPEG_OLD = 6;
-//        // int COMP_JPEG_TTN2 = 7;
-//
         SeekableStream stream = new ByteArraySeekableStream(data);
-//
-//        TIFFDirectory tdir = new TIFFDirectory(stream, 0);
-//        int compression = tdir.getField(TAG_COMPRESSION).getAsInt(0);
         String decoder2use = ImageCodec.getDecoderNames(stream)[0];
-//        if (compression == COMP_JPEG_OLD) {
+        if (!TypeCast.isBlank(decoder2use) && decoder2use.equals("tiff")) {
+            TIFFDirectory tdir = new TIFFDirectory(stream, 0);
+            int compression = tdir.getField(TAG_COMPRESSION).getAsInt(0);
+            if (compression == COMP_JPEG_OLD) {
 //            // Special handling for old/unsupported JPEG-in-TIFF format:
 //            // {@link: http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=4929147 }
-//            stream.seek(tdir.getField(TAG_JPEG_INTERCHANGE_FORMAT).getAsLong(0));
-//            decoder2use = "jpeg";
-//        }
-//
+                stream.seek(tdir.getField(TAG_JPEG_INTERCHANGE_FORMAT).getAsLong(0));
+                decoder2use = "jpeg";
+            }
+        }
         ImageDecoder dec = ImageCodec.createImageDecoder(decoder2use, stream, null);
         RenderedImage img = dec.decodeAsRenderedImage();
         image = PlanarImage.wrapRenderedImage(img).getAsBufferedImage();

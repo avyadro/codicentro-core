@@ -1,9 +1,13 @@
-/**
- * @author: Alexander Villalobos Yadró @user: avillalobos @email:
- * avyadro@yahoo.com.mx @created: 18/02/2011 at 09:10:54 AM @place: Toluca,
- * Estado de México, México @company: AdeA México S.A. de C.V. @web:
- * http://www.adea.com.mx @className: JSONSerializer.java @purpose: Revisions:
- * Ver Date Author Description --------- ---------------
+/*
+ * @author: Alexander Villalobos Yadró
+ * @user: avillalobos
+ * @email: avyadro@yahoo.com.mx
+ * @created: 18/02/2011 at 09:10:54 AM
+ * @place: Toluca, Estado de México, México
+ * @company: AdeA México S.A. de C.V.
+ * @web: http://www.adea.com.mx
+ * @className: JSONSerializer.java
+ * @purpose: Revisions: Ver Date Author Description --------- ---------------
  * ----------------------------------- ------------------------------------
  *
  */
@@ -37,7 +41,7 @@ public class JSONSerializer implements Serializable {
         for (TEntity entity : entities) {
             sb.append(",{").append(toJSON(entity)).append("}");
         }
-        if (TypeCast.isNullOrEmpty(sb.toString())) {
+        if (TypeCast.isBlank(sb.toString())) {
             return "[]";
         } else {
             return "[" + sb.toString().substring(1) + "]";
