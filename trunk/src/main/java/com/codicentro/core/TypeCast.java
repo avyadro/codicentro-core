@@ -40,16 +40,6 @@ public class TypeCast {
         return !isNull(o);
     }
 
-    /**
-     *
-     * @param s
-     * @return
-     * @deprecated Used isBlank
-     */
-    public static boolean isNullOrEmpty(String s) {
-        return ((s == null) || (s.trim().equals("")));
-    }
-
     public static boolean isBlank(String s) {
         return (s == null || s.trim().equals(""));
     }
@@ -252,6 +242,10 @@ public class TypeCast {
         }
     }
 
+    public static String toString(int i) {
+        return String.valueOf(i);
+    }
+
     /**
      * Converts Object Type to String Type and Replace value r if value is null
      *
@@ -349,10 +343,6 @@ public class TypeCast {
         } catch (Exception ex) {
             return null;
         }
-    }
-
-    public static String toString(int i) {
-        return String.valueOf(i);
     }
 
     public static String EMPTY(String o, String r) {
@@ -863,6 +853,15 @@ public class TypeCast {
 //        }
 //    }
     public static String toString(BigDecimal n, String f) {
+        try {
+            DecimalFormat df = new DecimalFormat(f.trim());
+            return df.format(n);
+        } catch (Exception e) {
+            return null;
+        }
+    }
+
+    public static String toString(Double n, String f) {
         try {
             DecimalFormat df = new DecimalFormat(f.trim());
             return df.format(n);

@@ -1,9 +1,13 @@
-/**
- * @author: Alexander Villalobos Yadró @user: avillalobos @email:
- * avyadro@yahoo.com.mx @created: 15/12/2010 at 10:13:20 AM @place: Toluca,
- * Estado de México, México @company: AdeA México S.A. de C.V. @web:
- * http://www.adea.com.mx @className: CCell.java @purpose: Revisions: Ver Date
- * Author Description --------- ---------------
+/*
+ * @author: Alexander Villalobos Yadró
+ * @user: avillalobos
+ * @email: avyadro@yahoo.com.mx
+ * @created: 15/12/2010 at 10:13:20 AM
+ * @place: Toluca, Estado de México, México
+ * @company: AdeA México S.A. de C.V.
+ * @web: http://www.adea.com.mx
+ * @className: CCell.java
+ * @purpose: Revisions: Ver Date Author Description --------- ---------------
  * ----------------------------------- ------------------------------------
  *
  */
@@ -200,7 +204,7 @@ public class CCell {
 
     public void setBeanFormula(String beanFormula) {
         this.beanFormula = beanFormula;
-        if (!TypeCast.isNullOrEmpty(beanFormula)) {
+        if (!TypeCast.isBlank(beanFormula)) {
             beanFormulaNames = new HashMap<String, String>();
             String[] tks = beanFormula.split("}");
             for (String tk : tks) {
