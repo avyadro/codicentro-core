@@ -5,7 +5,7 @@
     <groupId>com.codicentro</groupId>
     <artifactId>codicentro-core</artifactId>
     <packaging>jar</packaging>
-    <version>1.2-SNAPSHOT</version>
+    <version>1.2</version>
     <name>codicentro-core</name>
     <url>http://maven.apache.org</url>
     <properties>
