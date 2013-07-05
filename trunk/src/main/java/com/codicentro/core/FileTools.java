@@ -21,6 +21,7 @@ import java.net.URL;
 import java.util.*;
 import javax.servlet.ServletContext;
 import javax.servlet.ServletOutputStream;
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.apache.poi.ss.usermodel.FillPatternType;
@@ -684,6 +685,9 @@ public class FileTools {
         response.setHeader("Content-disposition", "attachment;filename=\"" + filename + ".xls\"");
         response.setHeader("Pragma", "public");
         response.setContentType("application/vnd.ms-excel");
+        Cookie ck = new Cookie("fileDownloadStatus", "complete");
+        ck.setPath("/");
+        response.addCookie(ck);
         OutputStream out = response.getOutputStream();
         book.write(out);
         out.close();
