@@ -29,13 +29,25 @@ import java.util.*;
 public class TypeCast {
 
     public static Object ifNull(Object o, Object r) {
-        return ((o == null) ? r : o);
+        return o == null ? r : o;
     }
 
+    /**
+     *
+     * @param o
+     * @return
+     * @deprecated
+     */
     public static boolean isNull(Object o) {
         return o == null ? true : false;
     }
 
+    /**
+     *
+     * @param o
+     * @return
+     * @deprecated
+     */
     public static boolean isNotNull(Object o) {
         return !isNull(o);
     }
@@ -1165,4 +1177,6 @@ public class TypeCast {
         fr.close();
         return rs.toString();
     }
+    
+    
 }

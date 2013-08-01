@@ -26,7 +26,6 @@ import javax.xml.bind.JAXBException;
 import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.lang.ArrayUtils;
-import org.apache.commons.lang.StringEscapeUtils;
 import org.dom4j.Document;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
@@ -206,6 +205,23 @@ public class Utils {
             throw new RuntimeException(e);
         }
         return result;
+    }
+
+    public static <TEntity> Map<String, Object> toMap(TEntity source) {
+        Map<String, Object> rs = new HashMap<String, Object>();
+        try {
+            for (Field field : source.getClass().getDeclaredFields()) {
+                Boolean accessible = field.isAccessible();
+                field.setAccessible(true);
+                rs.put(field.getName(), field.get(source));
+                field.setAccessible(accessible);
+            }
+        } catch (IllegalAccessException e) {
+            throw new RuntimeException(e);
+        } catch (IllegalArgumentException e) {
+            throw new RuntimeException(e);
+        }
+        return rs;
     }
 
     public static <TEntity> String toJasper(Class<TEntity> clazz, String[] excludeFields) {
@@ -518,5 +534,4 @@ public class Utils {
         }
         return result;
     }
-    
 }
