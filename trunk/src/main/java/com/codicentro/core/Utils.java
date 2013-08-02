@@ -366,9 +366,13 @@ public class Utils {
 
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
         try {
-            JAXBContext context = JAXBContext.newInstance(type);
-            Unmarshaller unmarshaller = context.createUnmarshaller();
-            return type.cast(unmarshaller.unmarshal(new StringReader(xml)));
+            if (TypeCast.isBlank(xml)) {
+                return null;
+            } else {
+                JAXBContext context = JAXBContext.newInstance(type);
+                Unmarshaller unmarshaller = context.createUnmarshaller();
+                return type.cast(unmarshaller.unmarshal(new StringReader(xml)));
+            }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
         }
