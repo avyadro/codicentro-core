@@ -1,9 +1,14 @@
-/**
- * @author: Alexander Villalobos Yadró @user: avillalobos @email:
- * avyadro@yahoo.com.mx @created: Jan 24, 2012 at 4:22:04 PM @place: Toluca,
- * Estado de México, México @company: AdeA México S.A. de C.V. @web:
- * http://www.adea.com.mx @className: TreeGrid.java @purpose: Revisions: Ver
- * Date Author Description --------- ---------------
+/*
+ * @author: Alexander Villalobos Yadró
+ * @user: avillalobos
+ * @email: avyadro@yahoo.com.mx
+ * @created: Jan 24, 2012 at 4:22:04 PM
+ * @place: Toluca, Estado de México, México
+ * @company: AdeA México S.A. de C.V.
+ * @web: http://www.adea.com.mx
+ * @className: TreeGrid.java
+ * @purpose: Revisions: 
+ * Ver Date Author Description 
  * ----------------------------------- ------------------------------------
  *
  */

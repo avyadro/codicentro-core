@@ -224,7 +224,7 @@ public class TypeCast {
         BigDecimal rs = null;
         try {
             String value = toString(o);
-            if (value != null) {
+            if (!isBlank(value)) {
                 rs = new BigDecimal(value.trim());
             }
         } catch (Exception ex) {
@@ -234,7 +234,13 @@ public class TypeCast {
 
     public static Long toLong(Object o) {
         try {
-            return toBigDecimal(o).longValue();
+            String v = toString(o);
+            if (isBlank(v)) {
+                return null;
+            } else {
+                v = v.replaceFirst("^0*", "");
+                return new Long(v);
+            }
         } catch (Exception e) {
             return null;
         }
@@ -988,12 +994,18 @@ public class TypeCast {
     }
 
     public static ByteArrayOutputStream toByteArrayOutputStream(File file) throws IOException {
+        return toByteArrayOutputStream(new FileInputStream(file));
+    }
+
+    public static ByteArrayOutputStream toByteArrayOutputStream(byte[] bs) throws IOException {
+        return toByteArrayOutputStream(toInputStream(bs));
+    }
+
+    public static ByteArrayOutputStream toByteArrayOutputStream(InputStream ios) throws IOException {
         ByteArrayOutputStream baos = null;
-        InputStream ios = null;
         try {
             byte[] buffer = new byte[4096];
             baos = new ByteArrayOutputStream();
-            ios = new FileInputStream(file);
             int read = 0;
             while ((read = ios.read(buffer)) != -1) {
                 baos.write(buffer, 0, read);
@@ -1177,6 +1189,4 @@ public class TypeCast {
         fr.close();
         return rs.toString();
     }
-    
-    
 }
