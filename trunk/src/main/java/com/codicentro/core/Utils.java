@@ -152,6 +152,16 @@ public class Utils {
 
     /**
      *
+     * @param begin
+     * @param end
+     * @return
+     */
+    public static Long days(Date begin, Date end) {
+        return ((end.getTime() - begin.getTime()) / (1000 * 60 * 60 * 24));
+    }
+
+    /**
+     *
      * @param date
      * @param amount
      * @return

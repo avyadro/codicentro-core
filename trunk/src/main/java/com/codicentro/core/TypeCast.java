@@ -239,7 +239,7 @@ public class TypeCast {
                 return null;
             } else {
                 v = v.replaceFirst("^0*", "");
-                return new Long(v);
+                return new Long(isBlank(v) ? "0" : v);
             }
         } catch (Exception e) {
             return null;
