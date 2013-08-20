@@ -176,19 +176,13 @@ public class TypeCast {
     }
 
     public static Integer toInteger(String str) {
-        try {
-            return Integer.valueOf(str);
-        } catch (Exception ex) {
-            return null;
-        }
+        BigDecimal v = toNumeric(str);
+        return v == null ? null : new Integer(v.intValue());
     }
 
     public static Double toDouble(Object o) {
-        try {
-            return new Double(toString(o));
-        } catch (NumberFormatException ex) {
-            return null;
-        }
+        BigDecimal v = toNumeric(o);
+        return v == null ? null : new Double(v.doubleValue());
     }
 
     /**
@@ -197,11 +191,8 @@ public class TypeCast {
      * @return
      */
     public static BigInteger toBigInteger(Object o) {
-        try {
-            return new BigInteger(toString(o));
-        } catch (Exception ex) {
-            return null;
-        }
+        BigDecimal v = toNumeric(o);
+        return v == null ? null : BigInteger.valueOf(v.longValue());
     }
 
     /**
@@ -221,29 +212,26 @@ public class TypeCast {
      * @return
      */
     public static BigDecimal toBigDecimal(Object o) {
-        BigDecimal rs = null;
-        try {
-            String value = toString(o);
-            if (!isBlank(value)) {
-                rs = new BigDecimal(value.trim());
-            }
-        } catch (Exception ex) {
-        }
-        return rs;
+        return toNumeric(o);
     }
 
-    public static Long toLong(Object o) {
+    private static BigDecimal toNumeric(Object o) {
         try {
             String v = toString(o);
             if (isBlank(v)) {
                 return null;
             } else {
                 v = v.replaceFirst("^0*", "");
-                return new Long(isBlank(v) ? "0" : v);
+                return new BigDecimal(isBlank(v) ? "0" : v);
             }
-        } catch (Exception e) {
+        } catch (NumberFormatException ex) {
             return null;
         }
+    }
+
+    public static Long toLong(Object o) {
+        BigDecimal v = toNumeric(o);
+        return v == null ? null : new Long(v.longValue());
     }
 
     /**
@@ -298,31 +286,8 @@ public class TypeCast {
     }
 
     public static Integer toInteger(Object o) {
-        try {
-            return Integer.valueOf(toInt(o));
-        } catch (Exception ex) {
-            return null;
-        }
-    }
-
-    public static BigDecimal toNumber(String s) throws CDCException {
-        BigDecimal result = null;
-        try {
-            result = new BigDecimal(NVL(s, "0"));
-        } catch (Exception ex) {
-            throw new CDCException(ex);
-        }
-        return result;
-    }
-
-    public static BigDecimal toNumber(Object o) throws CDCException {
-        BigDecimal result = null;
-        try {
-            result = toNumber(toString(o));
-        } catch (Exception ex) {
-            throw new CDCException(ex);
-        }
-        return result;
+        BigDecimal v = toNumeric(o);
+        return v == null ? null : new Integer(v.intValue());
     }
 
     /**
@@ -332,11 +297,8 @@ public class TypeCast {
      * @throws CDCException
      */
     public static Short toShort(Object o) {
-        try {
-            return toBigDecimal(o).shortValue();
-        } catch (Exception ex) {
-            return null;
-        }
+        BigDecimal v = toNumeric(o);
+        return v == null ? null : new Short(v.shortValue());
     }
 
     /**
@@ -1145,13 +1107,13 @@ public class TypeCast {
 
     public static Object cast(Class<?> type, Object value) {
         if (type.getSimpleName().equals("BigInteger")) {
-            return TypeCast.toBigInteger(value);
+            return toBigInteger(value);
         } else if (type.getSimpleName().equals("BigDecimal")) {
-            return TypeCast.toBigDecimal(value);
+            return toBigDecimal(value);
         } else if (type.getSimpleName().equals("Long")) {
-            return TypeCast.toLong(value);
+            return toLong(value);
         } else {
-            return TypeCast.toString(value);
+            return toString(value);
         }
     }
 
