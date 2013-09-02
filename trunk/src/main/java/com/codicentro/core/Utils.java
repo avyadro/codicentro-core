@@ -266,8 +266,7 @@ public class Utils {
 
                 xmlColumnHeader.append("<textElement textAlignment=\"").append(TypeCast.isBlank(cwc.headerAlign()) ? "Center" : TypeCast.toFirtUpperCase(cwc.headerAlign())).append("\" verticalAlignment=\"Middle\">");
                 xmlColumnHeader.append("<font isBold=\"true\"/>");
-                xmlColumnHeader.append("</textElement>")
-                        ;
+                xmlColumnHeader.append("</textElement>");
                 xmlColumnHeader.append("<text><![CDATA[").append(header).append("]]></text>");
                 xmlColumnHeader.append("</staticText>");
                 /**
