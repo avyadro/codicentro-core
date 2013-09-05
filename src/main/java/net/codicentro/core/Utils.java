@@ -3,8 +3,8 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Mar 09, 2009, 03:08:26 AM
  * Place: Monterrey, Nuevo León, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: FileTools.java
  * Purpose:
  * Revisions:
@@ -12,11 +12,11 @@
  * ---------  ---------------  -----------------------------------  ------------------------------------
  * 1.0        Mar 09, 2006           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
-import com.codicentro.core.Types.EncrypType;
-import com.codicentro.core.annotation.CWColumn;
-import com.codicentro.core.security.Encryption;
+import net.codicentro.core.Types.EncrypType;
+import net.codicentro.core.annotation.CWColumn;
+import net.codicentro.core.security.Encryption;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.text.SimpleDateFormat;
@@ -413,8 +413,8 @@ public class Utils {
         StringBuilder out = new StringBuilder();
         out.append("<header name=\"").append(c.getSimpleName()).append("\" sheetname=\"Hoja 1\">");
         for (Field field : c.getDeclaredFields()) {
-            if (field.getAnnotation(com.codicentro.core.annotation.CWColumn.class) != null) {
-                com.codicentro.core.annotation.CWColumn obj = field.getAnnotation(com.codicentro.core.annotation.CWColumn.class);
+            if (field.getAnnotation(net.codicentro.core.annotation.CWColumn.class) != null) {
+                net.codicentro.core.annotation.CWColumn obj = field.getAnnotation(net.codicentro.core.annotation.CWColumn.class);
                 out.append("<column");
                 /**
                  * * ATRIBUTOS DE LA ETIQUETA COLUMN **
@@ -447,7 +447,7 @@ public class Utils {
         out.append("</header>");
 
 
-        return com.codicentro.core.Utils.xmlPrettyFormat(out.toString());
+        return net.codicentro.core.Utils.xmlPrettyFormat(out.toString());
     }
 
     /**

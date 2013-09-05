@@ -3,16 +3,16 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Dec 23, 2008, 10:27:26 AM
  * Place: Monterrey, Nuevo Leon, Mexico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: TransportContext.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0.0       Dec 23, 2008           Alexander Villalobos Yadr�      New class.
+ * 1.0.0       Dec 23, 2008           Alexander Villalobos Yadró      New class.
  **/
-package com.codicentro.core.security;
+package net.codicentro.core.security;
 
 import javax.servlet.ServletContext;
 import javax.servlet.http.HttpServletRequest;

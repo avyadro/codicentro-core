@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 22/08/2011 at 10:12:41 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: ClamavScan.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.io.IOException;
 import java.io.InputStream;

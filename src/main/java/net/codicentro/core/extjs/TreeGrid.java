@@ -4,19 +4,19 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Jan 24, 2012 at 4:22:04 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: TreeGrid.java
  * @purpose: Revisions: 
  * Ver Date Author Description 
  * ----------------------------------- ------------------------------------
  *
  */
-package com.codicentro.core.extjs;
+package net.codicentro.core.extjs;
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.json.JSONSerializer;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.json.JSONSerializer;
 import java.io.Serializable;
 import java.util.*;
 

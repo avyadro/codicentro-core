@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 8/03/2011 at 08:50:17 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: Captcha.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import com.sun.image.codec.jpeg.JPEGCodec;
 import java.awt.Color;

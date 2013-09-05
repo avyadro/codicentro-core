@@ -1,18 +1,18 @@
 /*
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: ResourceBundleHandler.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0        May 19, 2008           Alexander Villalobos Yadr�           1. New class.
+ * 1.0        May 19, 2008           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.util.ResourceBundle;
 

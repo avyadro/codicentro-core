@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Oct 12, 2011 at 3:51:09 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: SplitCollection.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.util.AbstractList;
 import java.util.List;

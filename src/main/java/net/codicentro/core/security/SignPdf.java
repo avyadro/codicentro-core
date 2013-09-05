@@ -4,17 +4,17 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 28/04/2011 at 01:10:52 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: SignPdf.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core.security;
+package net.codicentro.core.security;
 
-import com.codicentro.core.TypeCast;
+import net.codicentro.core.TypeCast;
 import com.lowagie.text.Rectangle;
 import com.lowagie.text.pdf.PdfReader;
 import com.lowagie.text.pdf.PdfSignatureAppearance;

@@ -1,20 +1,20 @@
 /*
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Jun 11, 2006, 12:07:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: FileTools.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0        Jun 11, 2006           Alexander Villalobos Yadr�           1. New class.
+ * 1.0        Jun 11, 2006           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
-import com.codicentro.core.model.CCell;
+import net.codicentro.core.model.CCell;
 import java.io.*;
 import java.math.BigDecimal;
 import java.net.URL;

@@ -3,8 +3,8 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on 22/07/2009, 03:24:13 PM
  * Place: Monterrey, Nuevo León, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: Tree.java
  * Purpose:
  * Revisions:
@@ -12,12 +12,12 @@
  * ---------  ---------------  -----------------------------------  ------------------------------------
  * 1.0.0      22/07/2009           Alexander Villalobos Yadró           New class.
  **/
-package com.codicentro.core.extjs;
+package net.codicentro.core.extjs;
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.Types.RenderType;
-import com.codicentro.core.json.JSONSerializer;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.Types.RenderType;
+import net.codicentro.core.json.JSONSerializer;
 import java.io.Serializable;
 import java.util.Collection;
 import java.util.Iterator;

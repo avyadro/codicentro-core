@@ -1,22 +1,22 @@
 /**
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Oct 23, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: Column.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0.0       Oct 23, 2008           Alexander Villalobos Yadr�      New class.
+ * 1.0.0       Oct 23, 2008           Alexander Villalobos Yadró      New class.
  **/
-package com.codicentro.core.model;
+package net.codicentro.core.model;
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.Types.XLSDataType;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.Types.XLSDataType;
 
 
 

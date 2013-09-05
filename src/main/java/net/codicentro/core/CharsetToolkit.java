@@ -30,7 +30,7 @@
  *
  * @author Guillaume LAFORGE
  */
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.io.File;
 import java.io.FileInputStream;

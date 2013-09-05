@@ -3,8 +3,8 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Sep 20, 2005, 10:27:26 AM
  * Place: Querétaro, Querétaro, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: Table.java
  * Purpose:
  * Revisions:
@@ -12,13 +12,13 @@
  * ---------  ---------------  -----------------------------------  ------------------------------------
  * 1.0        Sep 20, 2005           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core.model;
+package net.codicentro.core.model;
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.Types.SQLType;
-import com.codicentro.core.Types.TableType;
-import com.codicentro.core.Types.XLSDataType;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.Types.SQLType;
+import net.codicentro.core.Types.TableType;
+import net.codicentro.core.Types.XLSDataType;
 import java.io.Serializable;
 import java.io.StringReader;
 import java.math.BigDecimal;
@@ -232,7 +232,7 @@ public class Table implements Serializable {
      * @param rs
      * @param tt
      *            Table Type
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public Table(ResultSet rs, TableType tt) throws CDCException {
         tableType = tt;
@@ -327,7 +327,7 @@ public class Table implements Serializable {
     /**
      *
      * @param rs
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void TableJSON(ResultSet rs) throws CDCException {
         try {
@@ -362,7 +362,7 @@ public class Table implements Serializable {
     /**
      *
      * @param sheet
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void TableJSON(HSSFSheet sheet) throws CDCException {
         try {
@@ -403,7 +403,7 @@ public class Table implements Serializable {
     /**
      *
      * @param sheet
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void TableARRAY(HSSFSheet sheet) throws CDCException {
         try {
@@ -435,7 +435,7 @@ public class Table implements Serializable {
     /**
      *
      * @param rs
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     /*  private void TableNORMAL(ResultSet rs) throws CDCException {
     if (rs != null) {
@@ -446,7 +446,7 @@ public class Table implements Serializable {
     /**
      *
      * @param sheet
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void TableNORMAL(HSSFSheet sheet) throws CDCException {
         if (sheet != null) {
@@ -460,7 +460,7 @@ public class Table implements Serializable {
     /**
      *
      * @param l
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public Table(List l) throws CDCException {
         table = new ArrayList();
@@ -472,7 +472,7 @@ public class Table implements Serializable {
      * @param xml
      * @param elementNameByNs
      * @param nameSpaces
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public Table(String xml, String[] elementNameByNs, String[] nameSpaces) throws CDCException {
         try {
@@ -495,7 +495,7 @@ public class Table implements Serializable {
     /**
      *
      * @param l
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void setValues(List l) throws CDCException {
         HashMap hm = null;
@@ -529,7 +529,7 @@ public class Table implements Serializable {
     /**
      *
      * @param columns
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public void setColumns(ArrayList columns) throws CDCException {
         try {
@@ -543,7 +543,7 @@ public class Table implements Serializable {
      *
      * @param rs Result
      * @param crs Close result set
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void setColumns(ResultSet rs, ArrayList cl, boolean crs) throws CDCException {
         columns = new ArrayList();
@@ -585,7 +585,7 @@ public class Table implements Serializable {
     /**
      *
      * @param c
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public void setColumns(Column[] c) throws CDCException {
         columns = new ArrayList();
@@ -602,7 +602,7 @@ public class Table implements Serializable {
     /**
      *
      * @param firstRow
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void setColumns(HSSFRow firstRow) throws CDCException {
         columns = new ArrayList();
@@ -997,7 +997,7 @@ public class Table implements Serializable {
     /**
      *
      * @param value
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public void addValue(HashMap value) throws CDCException {
         try {
@@ -1010,7 +1010,7 @@ public class Table implements Serializable {
     /**
      *
      * @param value
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public void addValue(Object value) throws CDCException {
         try {
@@ -1023,7 +1023,7 @@ public class Table implements Serializable {
     /**
      *
      * @param table
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     public void setValues(ArrayList table) throws CDCException {
         try {
@@ -1037,7 +1037,7 @@ public class Table implements Serializable {
      * 
      * @param rs Result
      * @param crs Close result set
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void setValues(ResultSet rs, boolean crs) throws CDCException {
         table = new ArrayList();
@@ -1067,7 +1067,7 @@ public class Table implements Serializable {
     /**
      *
      * @param sheet
-     * @throws com.codicentro.tls.CDCException
+     * @throws net.codicentro.tls.CDCException
      */
     private void setValues(HSSFSheet sheet) throws CDCException {
         Iterator e;

@@ -4,17 +4,17 @@
  * @email: avyadro@yahoo.com.mx
  * @created: May 3, 2011 at 02:44:11 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: CWorkbook.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
-import com.codicentro.core.model.CCell;
+import net.codicentro.core.model.CCell;
 import java.io.*;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -680,5 +680,4 @@ public class CWorkbook implements Serializable {
     public void setLogger(Logger logger) {
         this.logger = logger;
     }
-
 }

@@ -1,22 +1,22 @@
 /**
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: DataSourceConnection.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0.0       May 19, 2008           Alexander Villalobos Yadr�      New class.
+ * 1.0.0       May 19, 2008           Alexander Villalobos Yadró      New class.
  **/
-package com.codicentro.core.model;
+package net.codicentro.core.model;
 
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.ResourceBundleHandler;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.ResourceBundleHandler;
 import java.sql.CallableStatement;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
