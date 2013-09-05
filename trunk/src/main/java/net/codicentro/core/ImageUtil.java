@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 20/04/2011 at 10:38:19 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: ImageUtil.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import com.sun.media.jai.codec.ByteArraySeekableStream;
 import com.sun.media.jai.codec.ImageCodec;

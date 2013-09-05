@@ -4,17 +4,17 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 18/02/2011 at 09:10:54 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: JSONSerializer.java
  * @purpose: Revisions: Ver Date Author Description --------- ---------------
  * ----------------------------------- ------------------------------------
  *
  */
-package com.codicentro.core.json;
+package net.codicentro.core.json;
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;

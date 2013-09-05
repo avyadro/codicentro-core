@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Apr 10, 2012 at 12:59:38 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: CWColumn.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core.annotation;
+package net.codicentro.core.annotation;
 
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;

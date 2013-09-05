@@ -1,25 +1,25 @@
 /**
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Apr 23, 2006, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: ParamsDB.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0.0      Apr 23, 2006      Alexander Villalobos Yadr�          New class.
- * 1.0.1      May 28, 2008      Alexander Villalobos Yadr�          Add new 2 constructors
+ * 1.0.0      Apr 23, 2006      Alexander Villalobos Yadró          New class.
+ * 1.0.1      May 28, 2008      Alexander Villalobos Yadró          Add new 2 constructors
  **/
-package com.codicentro.core.model;
+package net.codicentro.core.model;
 
 
-import com.codicentro.core.CDCException;
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.Types.SQLType;
-import com.codicentro.core.Types.TableType;
+import net.codicentro.core.CDCException;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.Types.SQLType;
+import net.codicentro.core.Types.TableType;
 import java.math.BigDecimal;
 import java.sql.Date;
 import java.util.ArrayList;

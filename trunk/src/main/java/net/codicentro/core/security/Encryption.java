@@ -3,8 +3,8 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Mar 09, 2009, 03:08:26 AM
  * Place: Monterrey, Nuevo León, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: Encryption.java
  * Purpose:
  * Revisions:
@@ -12,10 +12,10 @@
  * ---------  ---------------  -----------------------------------  ------------------------------------
  * 1.0        Mar 09, 2006           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core.security;
+package net.codicentro.core.security;
 
 
-import com.codicentro.core.TypeCast;
+import net.codicentro.core.TypeCast;
 import java.security.MessageDigest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

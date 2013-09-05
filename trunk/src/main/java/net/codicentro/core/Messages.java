@@ -3,8 +3,8 @@
  * E-Mail: avyadro@yahoo.com.mx
  * Created on Apr 06, 2009, 11:01:56 AM
  * Place: Monterrey, Nuevo León, México.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: CDCException.java
  * Purpose:
  * Revisions:
@@ -12,7 +12,7 @@
  * ---------  ---------------  -----------------------------------  ------------------------------------
  * 1.0        Apr 06, 2009      Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.util.ArrayList;
 import java.util.StringTokenizer;

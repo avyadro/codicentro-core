@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Jul 4, 2011 at 3:05:19 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: FileUtils.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.io.File;
 import org.slf4j.Logger;

@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Sep 2, 2013, 5:08:22 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: SwingUtils.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.util.Vector;
 import javax.swing.table.DefaultTableModel;

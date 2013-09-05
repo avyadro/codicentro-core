@@ -4,18 +4,18 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Oct 31, 2012 at 8:15:46 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: Utils.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core.extjs;
+package net.codicentro.core.extjs;
 
-import com.codicentro.core.TypeCast;
-import com.codicentro.core.annotation.CWColumn;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.annotation.CWColumn;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
@@ -45,7 +45,7 @@ public class Utils {
                     header = (clmn != null) ? clmn.name() : field.getName();
                     header = WordUtils.capitalizeFully(header).replace("_", " ");
                 }
-                write.get("column").append("this.cm").append(TypeCast.toFirtUpperCase(field.getName())).append("={\n");                
+                write.get("column").append("this.cm").append(TypeCast.toFirtUpperCase(field.getName())).append("={\n");
                 write.get("column").append("header:'").append(header).append("',\n");
                 write.get("column").append("headerAlign:'").append(cwc.headerAlign()).append("',\n");
                 write.get("column").append("align:'").append(cwc.align()).append("',\n");

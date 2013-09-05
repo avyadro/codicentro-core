@@ -1,17 +1,17 @@
 /*
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: Types.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 public class Types {
 

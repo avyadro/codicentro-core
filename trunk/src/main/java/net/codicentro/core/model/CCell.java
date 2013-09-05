@@ -4,16 +4,16 @@
  * @email: avyadro@yahoo.com.mx
  * @created: 15/12/2010 at 10:13:20 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: CCell.java
  * @purpose: Revisions: Ver Date Author Description --------- ---------------
  * ----------------------------------- ------------------------------------
  *
  */
-package com.codicentro.core.model;
+package net.codicentro.core.model;
 
-import com.codicentro.core.TypeCast;
+import net.codicentro.core.TypeCast;
 import java.util.HashMap;
 import java.util.Map;
 import org.apache.poi.ss.usermodel.Cell;

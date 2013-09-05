@@ -1,21 +1,21 @@
 /*
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: TypeCast.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0        May 19, 2008           Alexander Villalobos Yadr�           1. New class.
+ * 1.0        May 19, 2008           Alexander Villalobos Yadró           1. New class.
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
-//import com.codicentro.model.Column;
-//import com.codicentro.model.Table;
+//import net.codicentro.model.Column;
+//import net.codicentro.model.Table;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -532,10 +532,10 @@ public class TypeCast {
 //
 //                    for (int k = 0; k < table.getColumns().size(); ++k) {
 //                        ct = "";
-//                        if (!(((com.codicentro.model.Column) table.getColumns().get(k)).getTypeName().equals("int4"))) {
+//                        if (!(((net.codicentro.model.Column) table.getColumns().get(k)).getTypeName().equals("int4"))) {
 //                            ct = "'";
 //                        }
-//                        key = toString(((com.codicentro.model.Column) table.getColumns().get(k)).getName());
+//                        key = toString(((net.codicentro.model.Column) table.getColumns().get(k)).getName());
 //                        String o = toString(table.getValue(i).get(key)).trim();
 //                        key = "\"" + key + "\":";
 //                        str = str + ((str.equals("")) ? key + ct + o + ct : new StringBuilder().append(",").append(key).append(ct).append(o).append(ct).toString());

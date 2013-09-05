@@ -1,18 +1,18 @@
-/**
+/*
  * @author: Alexander Villalobos Yadró
  * @user: avillalobos
  * @email: avyadro@yahoo.com.mx
  * @created: 18/02/2011 at 10:14:19 AM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: TInclude.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core.json;
+package net.codicentro.core.json;
 
 public class TInclude {
 

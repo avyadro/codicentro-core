@@ -1,19 +1,19 @@
 /*
- * Author: Alexander Villalobos Yadr�
+ * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 22, 2008, 10:27:26 AM
- * Place: Quer�taro, Quer�taro, M�xico.
- * Company: Codicentro
- * Web: http://www.codicentro.com
+ * Place: Querétaro, Querétaro, México.
+ * Company: Codicentro©
+ * Web: http://www.codicentro.net
  * Class Name: CDCException.java
  * Purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
- * 1.0        May 22, 2008      Alexander Villalobos Yadr�           1. New class.
- * 1.0.1      Jul 16, 2008      Alexander Villalobos Yadr�           2. Add property code  
+ * 1.0        May 22, 2008      Alexander Villalobos Yadró           1. New class.
+ * 1.0.1      Jul 16, 2008      Alexander Villalobos Yadró           2. Add property code  
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.io.Serializable;
 import java.sql.SQLException;

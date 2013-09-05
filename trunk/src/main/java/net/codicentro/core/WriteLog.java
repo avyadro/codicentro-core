@@ -4,15 +4,15 @@
  * @email: avyadro@yahoo.com.mx
  * @created: Apr 25, 2012 at 3:58:47 PM
  * @place: Toluca, Estado de México, México
- * @company: AdeA México S.A. de C.V.
- * @web: http://www.adea.com.mx
+ * @company: Codicentro©
+ * @web: http://www.codicentro.net
  * @className: WriteLog.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
  * ---------  ---------------  -----------------------------------  ------------------------------------
  **/
-package com.codicentro.core;
+package net.codicentro.core;
 
 import java.io.File;
 import java.io.FileWriter;
@@ -21,7 +21,7 @@ import java.util.logging.Level;
 import java.util.logging.Logger;
 
 /**
- * 
+ *
  * @author avillalobos
  * @deprecated Used http://logging.apache.org/log4j
  */
