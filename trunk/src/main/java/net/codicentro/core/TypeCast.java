@@ -808,9 +808,13 @@ public class TypeCast {
         }
     }
 
-    public static char toChar(String s) {
-        s = (isBlank(s)) ? " " : s;
-        return s.charAt(0);
+    public static char toChar(Object c) {
+        return toCharacter(c);
+    }
+
+    public static java.lang.Character toCharacter(Object c) {
+        String rs = toString(c);
+        return isBlank(rs) ? null : rs.charAt(0);
     }
 
 //    /**
