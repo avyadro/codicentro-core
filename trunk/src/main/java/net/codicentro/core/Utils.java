@@ -548,4 +548,52 @@ public class Utils {
         }
         return result;
     }
+
+    /**
+     *
+     * @param <T>
+     * @param collection
+     * @param element
+     * @param field
+     * @return
+     */
+    public static <T> T getElement(Collection<T> collection, Object value, String key) throws CDCException {
+        if (collection == null || collection.isEmpty()) {
+            throw new CDCException("Collection is null or empty.");
+        }
+        if (TypeCast.isBlank(key)) {
+            throw new CDCException("The key is null or empty.");
+        }
+        String[] keys = key.split("\\.");
+        T result = null;
+        boolean found = false;
+        for (Iterator<T> it = collection.iterator(); !found && it.hasNext();) {
+            if (true) {
+                T current = it.next();
+                result = current;
+                try {
+                    for (String fieldName : keys) {
+                        Field field = result.getClass().getDeclaredField(fieldName);
+                        Boolean accessible = field.isAccessible();
+                        field.setAccessible(true);
+                        result = (T) field.get(result);
+                        field.setAccessible(accessible);
+                    }
+                } catch (NoSuchFieldException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IllegalArgumentException ex) {
+                    throw new RuntimeException(ex);
+                } catch (IllegalAccessException ex) {
+                    throw new RuntimeException(ex);
+                }
+                if (result != null && result.equals(value)) {
+                    result = current;
+                    found = true;
+                } else {
+                    result = null;
+                }
+            }
+        }
+        return result;
+    }
 }
