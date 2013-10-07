@@ -374,6 +374,14 @@ public class Utils {
         return toJasper(clazz, null);
     }
 
+    /**
+     * 
+     * @param <TEntity>
+     * @param xml
+     * @param type
+     * @return 
+     * @deprecated Used to class... types
+     */
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
         try {
             if (TypeCast.isBlank(xml)) {
@@ -382,6 +390,20 @@ public class Utils {
                 JAXBContext context = JAXBContext.newInstance(type);
                 Unmarshaller unmarshaller = context.createUnmarshaller();
                 return type.cast(unmarshaller.unmarshal(new StringReader(xml)));
+            }
+        } catch (JAXBException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static <TEntity> TEntity convertToEntity(String xml, Class... types) {
+        try {
+            if (TypeCast.isBlank(xml)) {
+                return null;
+            } else {
+                JAXBContext context = JAXBContext.newInstance(types);
+                Unmarshaller unmarshaller = context.createUnmarshaller();
+                return (TEntity) unmarshaller.unmarshal(new StringReader(xml));
             }
         } catch (JAXBException e) {
             throw new RuntimeException(e);
