@@ -356,7 +356,6 @@ public class Utils {
          */
         xmlJasper.append(xmlColumnHeader);
 
-
         /**
          *
          */
@@ -375,11 +374,11 @@ public class Utils {
     }
 
     /**
-     * 
+     *
      * @param <TEntity>
      * @param xml
      * @param type
-     * @return 
+     * @return
      * @deprecated Used to class... types
      */
     public static <TEntity> TEntity convertToEntity(String xml, Class<TEntity> type) {
@@ -468,7 +467,6 @@ public class Utils {
         }
         out.append("</header>");
 
-
         return net.codicentro.core.Utils.xmlPrettyFormat(out.toString());
     }
 
@@ -480,8 +478,12 @@ public class Utils {
      * @throws IOException
      */
     public static Long lineCount(final String fileName) throws FileNotFoundException, IOException {
+        return lineCount(new File(fileName));
+    }
+
+    public static Long lineCount(final File file) throws FileNotFoundException, IOException {
         Long count = 0L;
-        FileReader fr = new FileReader(fileName);
+        FileReader fr = new FileReader(file);
         BufferedReader bf = new BufferedReader(fr);
         while (bf.ready()) {
             bf.readLine();

@@ -44,25 +44,31 @@ public class Tree implements Serializable {
     private String separatorField = null;
     private List<?> tree = null;
     private JSONSerializer json = null;
-    private boolean leaf = true;
+    private Boolean _leaf;
     private String leafExpression = null;
     private StringBuilder properties = null;
 
     public Tree(String id, String parentId, String textField) {
 
-        /*** ID ***/
+        /**
+         * * ID **
+         */
         String[] idField = id.split("\\.");
         idName = new String[idField.length];
         for (int i = 0; i < idField.length; i++) {
             idName[i] = "get" + TypeCast.toFirtUpperCase(idField[i]);
         }
-        /*** PARENT ID ***/
+        /**
+         * * PARENT ID **
+         */
         String[] parentIdField = parentId.split("\\.");
         parentIdName = new String[parentIdField.length];
         for (int i = 0; i < parentIdField.length; i++) {
             parentIdName[i] = "get" + TypeCast.toFirtUpperCase(parentIdField[i]);
         }
-        /*** ***/
+        /**
+         * * **
+         */
         json = new JSONSerializer();
         json.include(textField, "text");
     }
@@ -89,19 +95,22 @@ public class Tree implements Serializable {
     }
 
     /**
-     * 
-     * @return
-     * @throws CDCException
+     *
+     * @return @throws CDCException
      */
     private String make(RenderType rt) throws CDCException {
         if (tree == null) {
             return "[]";
         }
         String result;
-        /** **/
+        /**
+         * *
+         */
         String childEmpty = "";
         String itemName = "";
-        /*** INIT SERIALIZER ***/
+        /**
+         * * INIT SERIALIZER **
+         */
         StringBuilder sb = new StringBuilder();
         StringBuilder item;
         int idx;
@@ -110,12 +119,14 @@ public class Tree implements Serializable {
         Object idValue;
         Object parentValue;
         Object value;
-        /** OPTIONAL **/        
-        String handlerName = (handlerField == null) ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
+        /**
+         * OPTIONAL *
+         */
+        String handlerName = handlerField == null ? null : "get" + TypeCast.toFirtUpperCase(handlerField);
         Iterator<?> iTree = tree.iterator();
         Object entity;
         String entityValue;
-        while (iTree.hasNext()) {            
+        while (iTree.hasNext()) {
             entity = iTree.next();
             switch (rt) {
                 case EXTJS_TREE:
@@ -126,15 +137,16 @@ public class Tree implements Serializable {
                                 expValue = TypeCast.GN(expValue, expName[i]);
                             }
                         }
+                        Boolean leaf;
                         if (expValue == null) {
                             leaf = false;
                         } else {
                             switch (expOperator) {
                                 case ISNULL:
-                                    leaf = (expValue == null);
+                                    leaf = false;
                                     break;
                                 case ISNULLOREMPTY:
-                                    leaf = ((expValue == null) || (((Collection) expValue).isEmpty()));
+                                    leaf = ((Collection) expValue).isEmpty();
                                     break;
                                 case ISTRUE:
                                     leaf = TypeCast.toBoolean(expValue);
@@ -159,13 +171,16 @@ public class Tree implements Serializable {
                     break;
             }
 
-
-            /*** ***/
+            /**
+             * * **
+             */
             idValue = TypeCast.GN(entity, idName[0]);
             for (int i = 1; i < idName.length; i++) {
                 idValue = TypeCast.GN(idValue, idName[i]);
             }
-            /*** ***/
+            /**
+             * * **
+             */
             parentValue = TypeCast.GN(entity, parentIdName[0]);
             if (parentValue != null) {
                 for (int i = 1; i < parentIdName.length; i++) {
@@ -175,7 +190,9 @@ public class Tree implements Serializable {
                 parentValue = idValue;
             }
 
-            /*** ***/
+            /**
+             * * **
+             */
             item = new StringBuilder();
             if (getSeparatorField() != null) {
                 value = TypeCast.GN(entity, "get" + TypeCast.toFirtUpperCase(getSeparatorField()));
@@ -199,23 +216,25 @@ public class Tree implements Serializable {
 
 
                     /*   scriptName = menu.getStringValue("SCRIPT_NAME", "");
-                    scriptPath = menu.getStringValue("SCRIPT_PATH", "");
-                    params = menu.getStringValue("PARAMS", "");
-                    script = menu.getStringValue("SCRIPT", "");
-                    script = script.replaceAll("\n", "");
-                    if ((!scriptName.equals("")) || (!scriptPath.equals("")) || (!script.equals(""))) {
-                    item.append(",handler:function(){");
-                    item.append("ctrlWaitingStart();");
-                    item.append(script);
-                    if (!scriptName.equals("")) {
-                    item.append("new File({url:\"").append(scriptPath).append(scriptName).append(".js\",method:\"include\"});");
-                    item.append(TypeCast.toFirtLowerCase(scriptName)).append("=new ").append(scriptName).append("(").append(params).append(");");
-                    }
-                    item.append("}");
-                    } */
+                     scriptPath = menu.getStringValue("SCRIPT_PATH", "");
+                     params = menu.getStringValue("PARAMS", "");
+                     script = menu.getStringValue("SCRIPT", "");
+                     script = script.replaceAll("\n", "");
+                     if ((!scriptName.equals("")) || (!scriptPath.equals("")) || (!script.equals(""))) {
+                     item.append(",handler:function(){");
+                     item.append("ctrlWaitingStart();");
+                     item.append(script);
+                     if (!scriptName.equals("")) {
+                     item.append("new File({url:\"").append(scriptPath).append(scriptName).append(".js\",method:\"include\"});");
+                     item.append(TypeCast.toFirtLowerCase(scriptName)).append("=new ").append(scriptName).append("(").append(params).append(");");
+                     }
+                     item.append("}");
+                     } */
                     break;
             }
-            /** **/
+            /**
+             * *
+             */
             entityValue = json.toJSON(entity);
             if (!TypeCast.isBlank(entityValue)) {
                 item.append(",").append(entityValue);
@@ -228,7 +247,9 @@ public class Tree implements Serializable {
              */
             item.append("}");
 
-            /*** ***/
+            /**
+             * * **
+             */
             idx = sb.indexOf("id:\"" + parentValue + "\",");
             if ((idx == -1) || (idValue.equals(parentValue))) {
                 if (sb.toString().equals("")) {
@@ -251,16 +272,16 @@ public class Tree implements Serializable {
         switch (rt) {
             case EXTJS_TREE:
                 /**
-                 * 
+                 *
                  */
                 childEmpty = "children:\\[],leaf:true";
-                result = result.replaceAll(childEmpty, "leaf:true");
+                result = result.replaceAll(childEmpty, "leaf:" + (_leaf != null ? _leaf : true));
                 childEmpty = "children:\\[],leaf:default";
-                result = result.replaceAll(childEmpty, "leaf:true");
+                result = result.replaceAll(childEmpty, "leaf:" + (_leaf != null ? _leaf : true));
                 childEmpty = "leaf:default";
-                result = result.replaceAll(childEmpty, "leaf:false");
+                result = result.replaceAll(childEmpty, "leaf:" + (_leaf != null ? _leaf : false));
                 childEmpty = "children:\\[],leaf:false";
-                result = result.replaceAll(childEmpty, "leaf:false");
+                result = result.replaceAll(childEmpty, "leaf:" + (_leaf != null ? _leaf : false));
                 return "[" + result + "]";
             case EXTJS_MENU:
                 result = result.replaceAll(Pattern.quote(childEmpty), "submenu:false");
@@ -330,14 +351,11 @@ public class Tree implements Serializable {
      * @return the leaf
      */
     public boolean isLeaf() {
-        return leaf;
+        return _leaf;
     }
 
-    /**
-     * @param leaf the leaf to set
-     */
-    public void setLeaf(boolean leaf) {
-        this.leaf = leaf;
+    public void setLeaf(boolean _leaf) {
+        this._leaf = _leaf;
     }
 
     /**
@@ -380,10 +398,10 @@ public class Tree implements Serializable {
     }
 
     /**
-     * 
+     *
      * @param key
      * @param value
-     * @throws CDCException 
+     * @throws CDCException
      */
     public void addProperty(String key, Object value) throws CDCException {
         if (properties == null) {

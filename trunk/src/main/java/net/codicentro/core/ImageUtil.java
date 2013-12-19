@@ -31,9 +31,9 @@ import javax.imageio.ImageIO;
 import javax.imageio.stream.ImageOutputStream;
 import javax.media.jai.PlanarImage;
 import javax.swing.ImageIcon;
+import org.apache.commons.codec.binary.Base64;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import sun.misc.BASE64Encoder;
 
 public class ImageUtil implements Serializable {
 
@@ -138,11 +138,11 @@ public class ImageUtil implements Serializable {
      * @throws IOException
      */
     public String toBASE64Encoder(Type type) throws IOException {
-        BASE64Encoder e64Encoder = new BASE64Encoder();
+        Base64 e64Encoder = new Base64();
         ByteArrayOutputStream out = new ByteArrayOutputStream();
         write(type, out);
         out.close();
-        return e64Encoder.encode(out.toByteArray());
+        return e64Encoder.encodeAsString(out.toByteArray());
     }
 
     /**

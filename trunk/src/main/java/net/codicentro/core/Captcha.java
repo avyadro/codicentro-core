@@ -14,7 +14,6 @@
  **/
 package net.codicentro.core;
 
-import com.sun.image.codec.jpeg.JPEGCodec;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
@@ -22,12 +21,13 @@ import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.Serializable;
-import sun.misc.BASE64Encoder;
+import javax.imageio.ImageIO;
+import org.apache.commons.codec.binary.Base64;
 
 public class Captcha implements Serializable {
 
-    private int width = 50;
-    private int height = 25;
+    private final int width = 50;
+    private final int height = 25;
     private Object value = null;
     private Color background = null;
     private Font font = null;
@@ -62,8 +62,9 @@ public class Captcha implements Serializable {
         g.drawString(TypeCast.toString(value), 5, font.getSize());
         g.setColor(background);
         ByteArrayOutputStream out = new ByteArrayOutputStream();
-        JPEGCodec.createJPEGEncoder(out).encode(image);
+        ImageIO.write(image, "jpeg", out);
+        out.flush();
         out.close();
-        return new BASE64Encoder().encode(out.toByteArray());
+        return new Base64().encodeAsString(out.toByteArray());
     }
 }
