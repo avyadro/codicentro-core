@@ -20,13 +20,13 @@
             <id>nexus-deploy</id>
             <name>Nexus Managed Releases Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://beethoven.adea.com.mx/nexus/content/repositories/releases/</url>            
+            <url>http://10.75.12.66:8081/nexus/content/repositories/releases/</url>            
         </repository>
         <snapshotRepository>
             <id>nexus-deploy</id>
             <uniqueVersion>true</uniqueVersion>            
             <name>Nexus Managed Snapshot Repository</name>
-            <url>http://beethoven.adea.com.mx/nexus/content/repositories/snapshots/</url>
+            <url>http://10.75.12.66:8081/nexus/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <build>
@@ -119,12 +119,12 @@
             <version>3.0.9</version>
             <scope>provided</scope>
         </dependency>    
-        <dependency>
+        <!-- dependency>
             <groupId>org.ghost4j</groupId>
             <artifactId>ghost4j</artifactId>
             <version>0.5.0</version>
             <scope>provided</scope>
-        </dependency>
+        </dependency -->
         <dependency>
             <groupId>com.sun.media</groupId>
             <artifactId>jai-codec</artifactId>
@@ -170,7 +170,7 @@
             <scope>compile</scope>
         </dependency>
     </dependencies>
-    <repositories>	
+    <!-- repositories>	
         <repository>
             <id>org.ghost4j.repository.releases</id>
             <name>Ghost4J releases</name>
@@ -181,5 +181,5 @@
             <name>Ghost4J snapshots</name>
             <url>http://repo.ghost4j.org/maven2/snapshots</url>
         </repository>	
-    </repositories>
+    </repositories -->
 </project>
