@@ -21,10 +21,13 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import java.nio.charset.Charset;
 import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 public class TypeCast {
 
@@ -1154,5 +1157,13 @@ public class TypeCast {
         }
         fr.close();
         return rs.toString();
+    }
+
+    public static String encodeUTF8(String s) {
+        try {
+            return isBlank(s) ? null : new String(s.getBytes("ISO-8859-1"), Charset.forName("UTF-8"));
+        } catch (UnsupportedEncodingException ex) {
+            return null;
+        }
     }
 }
