@@ -20,13 +20,13 @@
             <id>nexus-deploy</id>
             <name>Nexus Managed Releases Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://10.75.12.66:8081/nexus/content/repositories/releases/</url>            
+            <url>http://201.157.37.214/arm-planetmedia/content/repositories/releases/</url>            
         </repository>
         <snapshotRepository>
             <id>nexus-deploy</id>
             <uniqueVersion>true</uniqueVersion>            
             <name>Nexus Managed Snapshot Repository</name>
-            <url>http://10.75.12.66:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://201.157.37.214/arm-planetmedia/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <build>
