@@ -20,13 +20,13 @@
             <id>nexus-deploy</id>
             <name>Nexus Managed Releases Repository</name>
             <uniqueVersion>false</uniqueVersion>
-            <url>http://localhost:8081/nexus/content/repositories/releases/</url>            
+            <url>http://201.157.37.214/arm-planetmedia/content/repositories/releases/</url>            
         </repository>
         <snapshotRepository>
             <id>nexus-deploy</id>
-            <uniqueVersion>true</uniqueVersion>            
+            <uniqueVersion>false</uniqueVersion>            
             <name>Nexus Managed Snapshot Repository</name>
-            <url>http://localhost:8081/nexus/content/repositories/snapshots/</url>
+            <url>http://201.157.37.214/arm-planetmedia/content/repositories/snapshots/</url>
         </snapshotRepository>
     </distributionManagement>
     <build>
@@ -40,6 +40,20 @@
                     <target>1.6</target>
                     <encoding>${project.build.sourceEncoding}</encoding>
                 </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>2.4</version>
+                <!-- configuration>               
+                    <archive>
+                        <manifest>
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>${main.class}</mainClass>
+                        </manifest>
+                    </archive>
+                </configuration -->
             </plugin>
         </plugins>
     </build>

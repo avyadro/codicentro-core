@@ -250,7 +250,7 @@ public class Utils {
             if (cwc != null && (excludeFields == null || excludeFields.length < 1 || !ArrayUtils.contains(excludeFields, field.getName()))) {
                 Class<?> type = field.getType();
                 xmlField.append("<field name=\"").append(field.getName()).append("\" class=\"").append(type.getName()).append("\"/>");
-                Long width = TypeCast.toLong(cwc.width() * 100);
+                Long width = TypeCast.toLong(cwc.width() * 96.0000000000011);// 1 inch [in] = 96.0000000000011 pixel (X or Y)
                 String header;
                 if (!TypeCast.isBlank(cwc.header())) {
                     header = cwc.header();
