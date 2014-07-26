@@ -26,8 +26,6 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 public class TypeCast {
 
@@ -789,6 +787,15 @@ public class TypeCast {
         }
     }
 
+    /**
+     * 
+     * @param o Object
+     * @param m Method name
+     * @param types Class type params
+     * @param args Params
+     * @return
+     * @throws CDCException 
+     */
     public static Object invoke(Object o, String m, Class[] types, Object[] args) throws CDCException {
         try {
             if ((types == null) && (args == null)) {
