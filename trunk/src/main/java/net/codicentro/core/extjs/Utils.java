@@ -14,12 +14,13 @@
  **/
 package net.codicentro.core.extjs;
 
-import net.codicentro.core.TypeCast;
-import net.codicentro.core.annotation.CWColumn;
 import java.lang.reflect.Field;
 import java.util.HashMap;
 import java.util.Map;
-import org.apache.commons.lang.WordUtils;
+import net.codicentro.core.TypeCast;
+import net.codicentro.core.annotation.CWColumn;
+import org.apache.commons.lang3.text.WordUtils;
+
 
 public class Utils {
 

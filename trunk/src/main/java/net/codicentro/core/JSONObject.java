@@ -42,7 +42,7 @@ public class JSONObject implements Serializable {
     public void put(String key, Object o) throws CDCException {
         if (o == null) {
             json.put(key, null);
-        } else if (TypeCast.ifNumber(o) || (o instanceof Boolean)) {
+        } else if (TypeCast.ifNumber(o) || o instanceof Boolean) {
             json.put(key, o);
         } else {
             json.put(key, quote(TypeCast.toString(o)));
@@ -73,13 +73,13 @@ public class JSONObject implements Serializable {
      * @return
      */
     private String quote(String string) {
-        if ((string == null) || (string.length() == 0)) {
+        if (string == null || string.length() == 0) {
             return "\"\"";
         }
 
         int len = string.length();
         StringBuilder sb = new StringBuilder(len + 4);
-        sb.append('"');
+      //  sb.append('"');
         for (int i = 0; i < len; ++i) {
             char c = string.charAt(i);
             switch (c) {
@@ -105,7 +105,7 @@ public class JSONObject implements Serializable {
                     sb.append("\\r");
                     break;
                 default:
-                    if ((c < ' ') || (c >= 128)) {
+                    if (c < ' ' || c >= 128) {
                         String t = "000" + Integer.toHexString(c);
                         sb.append("\\u").append(t.substring(t.length() - 4));
                     } else {
@@ -113,7 +113,7 @@ public class JSONObject implements Serializable {
                     }
             }
         }
-        sb.append('"');
+     //   sb.append('"');
         return sb.toString();
     }
 
