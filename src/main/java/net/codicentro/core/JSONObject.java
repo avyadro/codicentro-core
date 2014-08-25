@@ -37,7 +37,8 @@ public class JSONObject implements Serializable {
     /**
      *
      * @param key
-     * @param i
+     * @param o
+     * @throws CDCException
      */
     public void put(String key, Object o) throws CDCException {
         if (o == null) {
@@ -46,6 +47,16 @@ public class JSONObject implements Serializable {
             json.put(key, o);
         } else {
             json.put(key, quote(TypeCast.toString(o)));
+        }
+    }
+
+    public static String encodeValue(Object value) throws CDCException {
+        if (value == null) {
+            return null;
+        } else if (TypeCast.ifNumber(value) || value instanceof Boolean) {
+            return TypeCast.toString(value);
+        } else {
+            return "\""+ quote(TypeCast.toString(value))+"\"";
         }
     }
 
@@ -72,14 +83,14 @@ public class JSONObject implements Serializable {
      * @param string
      * @return
      */
-    private String quote(String string) {
+    private static String quote(String string) {
         if (string == null || string.length() == 0) {
             return "\"\"";
         }
 
         int len = string.length();
         StringBuilder sb = new StringBuilder(len + 4);
-      //  sb.append('"');
+        //  sb.append('"');
         for (int i = 0; i < len; ++i) {
             char c = string.charAt(i);
             switch (c) {
@@ -113,7 +124,7 @@ public class JSONObject implements Serializable {
                     }
             }
         }
-     //   sb.append('"');
+        //   sb.append('"');
         return sb.toString();
     }
 
@@ -133,7 +144,7 @@ public class JSONObject implements Serializable {
     public String toString() {
         Iterator<String> keys = json.keySet().iterator();
         StringBuilder sb = null;
-        String key = null;
+        String key;
         while (keys.hasNext()) {
             key = keys.next();
             if (sb == null) {
@@ -143,8 +154,12 @@ public class JSONObject implements Serializable {
                 sb.append(",").append(key).append(":").append(json.get(key));
             }
         }
-        sb.append("}");
-        return charSpecial(sb.toString());
+        if (sb == null) {
+            return null;
+        } else {
+            sb.append("}");
+            return charSpecial(sb.toString());
+        }
     }
 
     @Override
