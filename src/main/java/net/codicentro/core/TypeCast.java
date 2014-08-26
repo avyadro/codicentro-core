@@ -646,8 +646,8 @@ public class TypeCast {
     /**
      * Get Object by name, used reflections for find method
      *
-     * @param o
-     * @param n
+     * @param o Instance of the class represented by this object
+     * @param n Method name
      * @return
      */
     public static Object GN(Object o, String n) throws CDCException {
@@ -665,8 +665,8 @@ public class TypeCast {
     /**
      * Get Field Value by Name, used reflections for find field
      *
-     * @param o
-     * @param n
+     * @param o Instance of the class represented by this object
+     * @param n Field name
      * @return
      * @throws CDCException
      */
@@ -682,6 +682,13 @@ public class TypeCast {
         }
     }
 
+    /**
+     * 
+     * @param className
+     * @param n
+     * @return
+     * @throws CDCException 
+     */
     public static Object GF(String className, String n) throws CDCException {
         if (className == null) {
             throw new CDCException("core.typecast.gf.msg.error.objectisnull(\"" + n + "\")");
