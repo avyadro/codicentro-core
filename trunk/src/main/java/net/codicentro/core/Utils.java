@@ -27,6 +27,7 @@ import javax.xml.bind.Marshaller;
 import javax.xml.bind.Unmarshaller;
 import org.apache.commons.lang3.ArrayUtils;
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.DocumentHelper;
 import org.dom4j.io.OutputFormat;
 import org.dom4j.io.XMLWriter;
@@ -186,6 +187,24 @@ public class Utils {
             xw.write(doc);
             return sw.toString();
         } catch (Exception e) {
+            throw new RuntimeException(e); // simple exception handling, please review it
+        }
+    }
+
+    public static String xmlFormat(final Boolean pretty, String xml) {
+        try {
+            if (TypeCast.isBlank(xml)) {
+                return xml;
+            }
+            Document doc = DocumentHelper.parseText(xml);
+            StringWriter sw = new StringWriter();
+            OutputFormat format = pretty ? OutputFormat.createPrettyPrint() : OutputFormat.createCompactFormat();
+            XMLWriter xw = new XMLWriter(sw, format);
+            xw.write(doc);
+            return sw.toString();
+        } catch (DocumentException e) {
+            throw new RuntimeException(e); // simple exception handling, please review it
+        } catch (IOException e) {
             throw new RuntimeException(e); // simple exception handling, please review it
         }
     }

@@ -905,7 +905,7 @@ public class TypeCast {
         try {
             Double.parseDouble(toString(o));
             return true;
-        } catch (Exception ex) {
+        } catch (NumberFormatException ex) {
             return false;
         }
     }
