@@ -16,6 +16,7 @@ package net.codicentro.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.util.Iterator;
 import net.codicentro.core.exceptions.FileUtilException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
@@ -47,7 +48,27 @@ public class FileUtils {
     }
     private final static Character CSV_SEPARATOR = ',';
 
+    /**
+     *
+     * @param input
+     * @param output
+     * @throws FileUtilException
+     */
     public static void excelToCSV(File input, File output) throws FileUtilException {
+        try {
+            excelToCSV(TypeCast.toInputStream(input), output);
+        } catch (IOException ex) {
+            throw new FileUtilException(ex);
+        }
+    }
+
+    /**
+     *
+     * @param input
+     * @param output
+     * @throws FileUtilException
+     */
+    public static void excelToCSV(InputStream input, File output) throws FileUtilException {
         try {
             org.apache.poi.ss.usermodel.Workbook workbook = org.apache.poi.ss.usermodel.WorkbookFactory.create(input);
             org.apache.poi.ss.usermodel.Sheet sheet = workbook.getSheetAt(0);
