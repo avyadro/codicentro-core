@@ -6,7 +6,7 @@
  * @place: Ciudad de México, México
  * @company: Codicentro
  * @web: http://www.codicentro.net
- * @className: FileUtilException.java
+ * @className: CsvException.java
  * @purpose:
  * Revisions:
  * Ver        Date               Author                                      Description
@@ -14,24 +14,24 @@
  **/
 package net.codicentro.core.exceptions;
 
-public class FileUtilException extends Exception {
+public class CsvException extends Exception {
 
-    public FileUtilException() {
+    public CsvException() {
     }
 
-    public FileUtilException(String message) {
+    public CsvException(String message) {
         super(message);
     }
 
-    public FileUtilException(String message, Throwable cause) {
+    public CsvException(String message, Throwable cause) {
         super(message, cause);
     }
 
-    public FileUtilException(Throwable cause) {
+    public CsvException(Throwable cause) {
         super(cause);
     }
 
-    public FileUtilException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
+    public CsvException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
         super(message, cause, enableSuppression, writableStackTrace);
     }
 
