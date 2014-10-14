@@ -683,11 +683,11 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param className
      * @param n
      * @return
-     * @throws CDCException 
+     * @throws CDCException
      */
     public static Object GF(String className, String n) throws CDCException {
         if (className == null) {
@@ -795,13 +795,13 @@ public class TypeCast {
     }
 
     /**
-     * 
+     *
      * @param o Object
      * @param m Method name
      * @param types Class type params
      * @param args Params
      * @return
-     * @throws CDCException 
+     * @throws CDCException
      */
     public static Object invoke(Object o, String m, Class[] types, Object[] args) throws CDCException {
         try {
@@ -1180,4 +1180,13 @@ public class TypeCast {
             return null;
         }
     }
+
+    public static Long[] toLongArray(String[] numbers) {
+        List<Long> rs = new ArrayList<Long>();
+        for (String number : numbers) {
+            rs.add(toLong(number));
+        }
+        return rs.toArray(new Long[]{});
+    }
+
 }
