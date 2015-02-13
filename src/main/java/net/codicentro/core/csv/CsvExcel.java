@@ -14,30 +14,45 @@
  **/
 package net.codicentro.core.csv;
 
+import java.io.BufferedInputStream;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Iterator;
+import net.codicentro.core.TypeCast;
 import net.codicentro.core.exceptions.CsvException;
 import org.apache.poi.openxml4j.exceptions.InvalidFormatException;
+import org.apache.poi.ss.usermodel.DateUtil;
 
 public class CsvExcel {
 
     private final static Character FIELD_DELIMITER = ',';
     private final static Character TEXT_DELIMITER = '"';
+    private String dateFormat = "dd/MM/yyyy";
+    private final int BUFFER_SIZE = 1024;
     private InputStream excel;
 
     public CsvExcel(InputStream excel) throws CsvException {
-        this.excel = excel;
+        this.excel = new BufferedInputStream(excel, BUFFER_SIZE);
+    }
+
+    public CsvExcel(InputStream excel, String dateFormat) throws CsvException {
+        this(excel);
+        this.dateFormat = dateFormat;
     }
 
     public CsvExcel(File excel) throws CsvException {
         try {
-            this.excel = new FileInputStream(excel);
+            this.excel = new BufferedInputStream(new FileInputStream(excel), BUFFER_SIZE);
         } catch (IOException ex) {
             throw new CsvException(ex);
         }
+    }
+
+    public CsvExcel(File excel, String dateFormat) throws CsvException {
+        this(excel);
+        this.dateFormat = dateFormat;
     }
 
     public void excelToCsv(File output) throws CsvException {
@@ -61,7 +76,20 @@ public class CsvExcel {
                             csv.append(cell.getBooleanCellValue());
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-                            csv.append(cell.getNumericCellValue());
+                            String _value;
+                            if (DateUtil.isCellDateFormatted(cell)) {
+                                _value = TypeCast.toString(cell.getDateCellValue(), dateFormat);
+                            } else {
+                                String[] _cellValue = TypeCast.toString(cell.getNumericCellValue()).split("\\.");
+                                Long integerPart = TypeCast.toLong(_cellValue[0]);
+                                Long decimalPart = _cellValue.length > 1 ? TypeCast.toLong(_cellValue[1]) : 0L;
+                                if (decimalPart > 0) {
+                                    _value = integerPart + "." + decimalPart;
+                                } else {
+                                    _value = "" + integerPart;
+                                }
+                            }
+                            csv.append(_value);
                             break;
                         case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING:
                             csv.append(TEXT_DELIMITER).append(cell.getStringCellValue().replaceAll("\n", " ")).append(TEXT_DELIMITER);
