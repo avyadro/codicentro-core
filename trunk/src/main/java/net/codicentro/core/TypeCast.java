@@ -902,12 +902,10 @@ public class TypeCast {
     }
 
     public static boolean isNumber(Object o) {
-        try {
-            Double.parseDouble(toString(o));
-            return true;
-        } catch (NumberFormatException ex) {
+        if (isBlank(toString(o))) {
             return false;
         }
+        return toString(o).matches("[-+]?\\d*\\.?\\d+");
     }
 
     public static String toSoutFormat(String s) {
@@ -1173,6 +1171,26 @@ public class TypeCast {
         return rs.toString();
     }
 
+//    public static String toString(org.apache.poi.ss.usermodel.Cell cell) {
+//        String rs;
+//        switch (cell.getCellType()) {
+//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
+//                rs = "" + cell.getBooleanCellValue();
+//                break;
+//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
+//                rs = toString(cell.getNumericCellValue());
+//                break;
+//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING:
+//                rs = cell.getStringCellValue();
+//                break;
+//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
+//                rs = "";
+//                break;
+//            default:
+//                rs = "" + cell;
+//        }// Switch
+//        return rs;
+//    }
     public static String encodeUTF8(String s) {
         try {
             return isBlank(s) ? null : new String(s.getBytes("ISO-8859-1"), Charset.forName("UTF-8"));

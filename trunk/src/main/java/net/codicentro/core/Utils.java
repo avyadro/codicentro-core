@@ -501,9 +501,12 @@ public class Utils {
     }
 
     public static Long lineCount(final File file) throws FileNotFoundException, IOException {
+        return lineCount(new FileInputStream(file));
+    }
+
+    public static Long lineCount(final InputStream input) throws FileNotFoundException, IOException {
         Long count = 0L;
-        FileReader fr = new FileReader(file);
-        BufferedReader bf = new BufferedReader(fr);
+        BufferedReader bf = new BufferedReader(new InputStreamReader(input));
         while (bf.ready()) {
             bf.readLine();
             count++;
