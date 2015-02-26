@@ -821,7 +821,7 @@ public class TypeCast {
      * @param n, value numeric
      * @param f, numeric format
      * @param d, default value when n is null
-     * @return 
+     * @return
      */
     public static String toString(BigDecimal n, String f, BigDecimal d) {
         try {
@@ -947,13 +947,26 @@ public class TypeCast {
     /**
      * Gets the exception stack trace as a string.
      *
-     * @param exception
+     * @param ex
      * @return
      */
-    public static String toString(Throwable exception) {
-        StringWriter sw = new StringWriter();
-        exception.printStackTrace(new PrintWriter(sw));
-        return sw.toString();
+    public static String toString(Throwable ex) {
+        if (ex == null) {
+            return "";
+        }
+        StringWriter str = new StringWriter();
+        PrintWriter writer = new PrintWriter(str);
+        try {
+            ex.printStackTrace(writer);
+            return str.getBuffer().toString();
+        } finally {
+            try {
+                str.close();
+                writer.close();
+            } catch (IOException e) {
+                //ignore
+            }
+        }
     }
 
     /**
