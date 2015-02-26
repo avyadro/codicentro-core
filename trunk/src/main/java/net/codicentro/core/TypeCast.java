@@ -18,6 +18,7 @@ package net.codicentro.core;
 //import net.codicentro.model.Table;
 import java.io.*;
 import java.lang.reflect.Field;
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.math.BigInteger;
@@ -31,26 +32,6 @@ public class TypeCast {
 
     public static Object ifNull(Object o, Object r) {
         return o == null ? r : o;
-    }
-
-    /**
-     *
-     * @param o
-     * @return
-     * @deprecated
-     */
-    public static boolean isNull(Object o) {
-        return o == null ? true : false;
-    }
-
-    /**
-     *
-     * @param o
-     * @return
-     * @deprecated
-     */
-    public static boolean isNotNull(Object o) {
-        return !isNull(o);
     }
 
     public static boolean isBlank(String s) {
@@ -82,6 +63,7 @@ public class TypeCast {
      * @param s
      * @param r
      * @param size
+     * @param at
      * @return
      */
     public static String CompleteString(String s, String r, int size, Types.AlignmentType at) {
@@ -153,7 +135,7 @@ public class TypeCast {
     }
 
     public static Integer OnlyNumber(String s) throws CDCException {
-        Integer result = new Integer(0);
+        Integer result = 0;
         try {
             result = Integer.valueOf(s.replaceAll("[^0-9]", ""));
         } catch (Exception ex) {
@@ -173,17 +155,17 @@ public class TypeCast {
     }
 
     public static Integer toInteger(int pInt) {
-        return new Integer(pInt);
+        return pInt;
     }
 
     public static Integer toInteger(String str) {
         BigDecimal v = toNumeric(str);
-        return v == null ? null : new Integer(v.intValue());
+        return v == null ? null : v.intValue();
     }
 
     public static Double toDouble(Object o) {
         BigDecimal v = toNumeric(o);
-        return v == null ? null : new Double(v.doubleValue());
+        return v == null ? null : v.doubleValue();
     }
 
     /**
@@ -232,7 +214,7 @@ public class TypeCast {
 
     public static Long toLong(Object o) {
         BigDecimal v = toNumeric(o);
-        return v == null ? null : new Long(v.longValue());
+        return v == null ? null : v.longValue();
     }
 
     /**
@@ -257,6 +239,7 @@ public class TypeCast {
      * Converts Object Type to String Type and Replace value r if value is null
      *
      * @param o
+     * @param r
      * @return
      */
     public static String toString(Object o, String r) {
@@ -288,18 +271,17 @@ public class TypeCast {
 
     public static Integer toInteger(Object o) {
         BigDecimal v = toNumeric(o);
-        return v == null ? null : new Integer(v.intValue());
+        return v == null ? null : v.intValue();
     }
 
     /**
      *
      * @param o
      * @return
-     * @throws CDCException
      */
     public static Short toShort(Object o) {
         BigDecimal v = toNumeric(o);
-        return v == null ? null : new Short(v.shortValue());
+        return v == null ? null : v.shortValue();
     }
 
     /**
@@ -498,16 +480,13 @@ public class TypeCast {
     public static Object[] toArray(String s, String r, String e, String o) throws CDCException {
         StringTokenizer idx = new StringTokenizer(s, r);
         ArrayList rs = (idx.hasMoreTokens()) ? new ArrayList() : null;
-        StringTokenizer cm = null;
-        StringTokenizer tp = null;
-        HashMap hm = null;
-        String k = null;// Key
+        String k = null;//Key
         String v = null;// Value
         while (idx.hasMoreTokens()) {
-            hm = new HashMap();
-            cm = new StringTokenizer(idx.nextToken(), e);
+            HashMap hm = new HashMap();
+            StringTokenizer cm = new StringTokenizer(idx.nextToken(), e);
             while (cm.hasMoreTokens()) {
-                tp = new StringTokenizer(cm.nextToken(), o);
+                StringTokenizer tp = new StringTokenizer(cm.nextToken(), o);
                 if (tp.hasMoreTokens()) {
                     k = tp.nextToken();
                     v = (tp.hasMoreTokens()) ? tp.nextToken() : "";
@@ -521,35 +500,6 @@ public class TypeCast {
         return rs.toArray();
     }
 
-//    public static ArrayList toJSON(Table table) throws CDCException {
-//        ArrayList nt = new ArrayList();
-//        try {
-//            if (table != null) {
-//                String ct = "";
-//                String key = "";
-//                for (int i = 0; i < table.getValues().size(); ++i) {
-//                    String str = "";
-//                    key = "";
-//
-//                    for (int k = 0; k < table.getColumns().size(); ++k) {
-//                        ct = "";
-//                        if (!(((net.codicentro.model.Column) table.getColumns().get(k)).getTypeName().equals("int4"))) {
-//                            ct = "'";
-//                        }
-//                        key = toString(((net.codicentro.model.Column) table.getColumns().get(k)).getName());
-//                        String o = toString(table.getValue(i).get(key)).trim();
-//                        key = "\"" + key + "\":";
-//                        str = str + ((str.equals("")) ? key + ct + o + ct : new StringBuilder().append(",").append(key).append(ct).append(o).append(ct).toString());
-//                    }
-//
-//                    nt.add("{" + str + "}");
-//                }
-//            }
-//        } catch (Exception ex) {
-//            throw new CDCException(ex);
-//        }
-//        return nt;
-//    }
     /**
      *
      * @param c
@@ -649,6 +599,7 @@ public class TypeCast {
      * @param o Instance of the class represented by this object
      * @param n Method name
      * @return
+     * @throws net.codicentro.core.CDCException
      */
     public static Object GN(Object o, String n) throws CDCException {
         if (o == null) {
@@ -677,8 +628,14 @@ public class TypeCast {
         try {
             Field f = o.getClass().getField(n);
             return f.get(o);
-        } catch (Exception ex) {
-            throw new CDCException("core.typecast.gf.msg.error.fieldnotfound(\"" + n + "\")");
+        } catch (IllegalAccessException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.IllegalAccessException(\"" + n + "\")");
+        } catch (IllegalArgumentException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.IllegalArgumentException(\"" + n + "\")");
+        } catch (NoSuchFieldException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.NoSuchFieldException(\"" + n + "\")");
+        } catch (SecurityException ex) {
+            throw new CDCException("core.typecast.gf.msg.error.SecurityException(\"" + n + "\")");
         }
     }
 
@@ -696,11 +653,11 @@ public class TypeCast {
         try {
             return GF(Class.forName(className).newInstance(), n);
         } catch (ClassNotFoundException ex) {
-            throw new CDCException("core.typecast.gf.msg.error.classnotfound(\"" + className + "\")");
+            throw new CDCException("core.typecast.gf.msg.error.ClassNotFoundException(\"" + className + "\")");
         } catch (InstantiationException ex) {
-            throw new CDCException("core.typecast.gf.msg.error.instantiation(\"" + className + "\")");
+            throw new CDCException("core.typecast.gf.msg.error.InstantiationException(\"" + className + "\")");
         } catch (IllegalAccessException ex) {
-            throw new CDCException("core.typecast.gf.msg.error.illegalaccess(\"" + className + "\")");
+            throw new CDCException("core.typecast.gf.msg.error.IllegalAccessException(\"" + className + "\")");
         }
     }
 
@@ -709,6 +666,7 @@ public class TypeCast {
      *
      * @param o, Object
      * @param n, Method name
+     * @param value
      * @throws CDCException
      */
     public static void SN(Object o, String n, Object value) throws CDCException {
@@ -726,6 +684,7 @@ public class TypeCast {
      * @param n, Public method name
      * @param parameterTypes,
      * @return
+     * @throws net.codicentro.core.CDCException
      */
     public static Method getMethod(Class c, String n, Class<?>... parameterTypes) throws CDCException {
         try {
@@ -734,7 +693,9 @@ public class TypeCast {
             } else {
                 return c.getMethod(n, parameterTypes);
             }
-        } catch (Exception ex) {
+        } catch (NoSuchMethodException ex) {
+            throw new CDCException(ex);
+        } catch (SecurityException ex) {
             throw new CDCException(ex);
         }
     }
@@ -750,7 +711,9 @@ public class TypeCast {
     public static Field getField(Class c, String n) throws CDCException {
         try {
             return c.getField(n);
-        } catch (Exception ex) {
+        } catch (NoSuchFieldException ex) {
+            throw new CDCException(ex);
+        } catch (SecurityException ex) {
             throw new CDCException(ex);
         }
     }
@@ -761,6 +724,7 @@ public class TypeCast {
      * @param o
      * @param p, Parameters, set null for optional param
      * @return
+     * @throws net.codicentro.core.CDCException
      * @deprecated
      */
     public static Object invoke(Method m, Object o, Object p) throws CDCException {
@@ -770,27 +734,12 @@ public class TypeCast {
             } else {
                 return m.invoke(o, p);
             }
-        } catch (Exception ex) {
+        } catch (IllegalAccessException ex) {
             throw new CDCException(ex);
-        }
-    }
-
-    /**
-     * @deprecated
-     */
-    public static Object invoke(Object o, String m, Object[] args) throws CDCException {
-        try {
-            if (args != null) {
-                Class[] pTypes = new Class[args.length];
-                for (int i = 0; i < args.length; i++) {
-                    pTypes[i] = args[i].getClass();
-                }
-                return o.getClass().getMethod(m, pTypes).invoke(o, args);
-            } else {
-                return o.getClass().getMethod(m).invoke(o);
-            }
-        } catch (Exception ex) {
-            throw new CDCException("Method: " + m, ex);
+        } catch (IllegalArgumentException ex) {
+            throw new CDCException(ex);
+        } catch (InvocationTargetException ex) {
+            throw new CDCException(ex);
         }
     }
 
@@ -834,25 +783,6 @@ public class TypeCast {
         return isBlank(rs) ? null : rs.charAt(0);
     }
 
-//    /**
-//     * 
-//     * @param c
-//     * @param n
-//     * @param p
-//     * @return 
-//     * @deprecated
-//     */
-//    public static Method getMethod(Class c, String n, Class p) {
-//        try {
-//            if (p == null) {
-//                return c.getMethod(n);
-//            } else {
-//                return c.getMethod(n, p);
-//            }
-//        } catch (Exception ex) {
-//            return null;
-//        }
-//    }
     public static String toString(BigDecimal n, String f) {
         try {
             DecimalFormat df = new DecimalFormat(f.trim());
@@ -891,6 +821,7 @@ public class TypeCast {
      * @param n, value numeric
      * @param f, numeric format
      * @param d, default value when n is null
+     * @return 
      */
     public static String toString(BigDecimal n, String f, BigDecimal d) {
         try {
@@ -934,6 +865,8 @@ public class TypeCast {
      * Customized format
      *
      * @param prefix
+     * @param complete
+     * @param count
      * @param v
      * @return
      */
@@ -954,6 +887,7 @@ public class TypeCast {
      *
      * @param file
      * @return
+     * @throws java.io.FileNotFoundException
      */
     public static InputStream toInputStream(File file) throws FileNotFoundException, IOException {
         InputStream is = new FileInputStream(file);
@@ -1171,26 +1105,6 @@ public class TypeCast {
         return rs.toString();
     }
 
-//    public static String toString(org.apache.poi.ss.usermodel.Cell cell) {
-//        String rs;
-//        switch (cell.getCellType()) {
-//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BOOLEAN:
-//                rs = "" + cell.getBooleanCellValue();
-//                break;
-//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_NUMERIC:
-//                rs = toString(cell.getNumericCellValue());
-//                break;
-//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_STRING:
-//                rs = cell.getStringCellValue();
-//                break;
-//            case org.apache.poi.ss.usermodel.Cell.CELL_TYPE_BLANK:
-//                rs = "";
-//                break;
-//            default:
-//                rs = "" + cell;
-//        }// Switch
-//        return rs;
-//    }
     public static String encodeUTF8(String s) {
         try {
             return isBlank(s) ? null : new String(s.getBytes("ISO-8859-1"), Charset.forName("UTF-8"));
