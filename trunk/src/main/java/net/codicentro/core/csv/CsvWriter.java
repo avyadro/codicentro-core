@@ -486,8 +486,10 @@ public class CsvWriter {
     /**
      *
      */
-    protected void finalize() {
+    @Override
+    protected void finalize() throws Throwable {
         close(false);
+        super.finalize();
     }
 
     private class Letters {
