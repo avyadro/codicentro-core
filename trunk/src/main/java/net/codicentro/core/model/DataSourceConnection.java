@@ -66,12 +66,11 @@ public class DataSourceConnection {
             }
             DataSource ds = (DataSource) ctx.lookup("java:comp/env/" + resourceBundleHandler.getValue(new StringBuilder().append(prefix).append(".DSLookUp").toString()));
             connection = ds != null ? ds.getConnection() : null;
+            return isOpen();
         } catch (NamingException e) {
             throw new CDCException(e);
         } catch (SQLException e) {
             throw new CDCException(e);
-        } finally {
-            return isOpen();
         }
     }
 
