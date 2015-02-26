@@ -1,4 +1,4 @@
-/**
+/*
  * Author: Alexander Villalobos Yadró
  * E-Mail: avyadro@yahoo.com.mx
  * Created on May 19, 2008, 10:27:26 AM
@@ -14,7 +14,6 @@
  **/
 package net.codicentro.core.model;
 
-
 import net.codicentro.core.CDCException;
 import net.codicentro.core.ResourceBundleHandler;
 import java.sql.CallableStatement;
@@ -24,6 +23,7 @@ import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
+import javax.naming.NamingException;
 import javax.sql.DataSource;
 
 public class DataSourceConnection {
@@ -53,7 +53,7 @@ public class DataSourceConnection {
             } else {
                 throw new CDCException("Connection is close.");
             }
-        } catch (Exception e) {
+        } catch (SQLException e) {
             throw new CDCException(e);
         }
     }
@@ -65,8 +65,10 @@ public class DataSourceConnection {
                 throw new CDCException("lng.msg.error.openconnection");
             }
             DataSource ds = (DataSource) ctx.lookup("java:comp/env/" + resourceBundleHandler.getValue(new StringBuilder().append(prefix).append(".DSLookUp").toString()));
-            connection = ((ds != null) ? ds.getConnection() : null);
-        } catch (Exception e) {
+            connection = ds != null ? ds.getConnection() : null;
+        } catch (NamingException e) {
+            throw new CDCException(e);
+        } catch (SQLException e) {
             throw new CDCException(e);
         } finally {
             return isOpen();
@@ -75,7 +77,7 @@ public class DataSourceConnection {
 
     public boolean isOpen() throws CDCException {
         try {
-            return (connection != null) && (!connection.isClosed());
+            return connection != null && !connection.isClosed();
         } catch (SQLException ex) {
             throw new CDCException(ex);
         }
