@@ -187,7 +187,7 @@ import java.util.Map;
  */
 public class JSONSerializer {
 
-    public final static char[] HEX = "0123456789ABCDEF".toCharArray();
+    
     private TypeTransformerMap typeTransformerMap = new TypeTransformerMap(TransformerUtil.getDefaultTypeTransformers());
     private Map<Path, Transformer> pathTransformerMap = new HashMap<Path, Transformer>();
     private List<PathExpression> pathExpressions = new ArrayList<PathExpression>();

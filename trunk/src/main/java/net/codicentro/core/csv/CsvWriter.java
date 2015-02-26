@@ -22,6 +22,8 @@ package net.codicentro.core.csv;
 
 import java.io.*;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 /**
  * A stream based writer for writing delimited text data to a file or a stream.
@@ -441,8 +443,10 @@ public class CsvWriter {
 
     /**
      * Closes and releases all related resources.
+     *
+     * @throws java.io.IOException
      */
-    public void close() {
+    public void close() throws IOException {
         if (!closed) {
             close(true);
 
@@ -453,18 +457,14 @@ public class CsvWriter {
     /**
      *
      */
-    private void close(boolean closing) {
+    private void close(boolean closing) throws IOException {
         if (!closed) {
             if (closing) {
                 charset = null;
             }
 
-            try {
-                if (initialized) {
-                    outputStream.close();
-                }
-            } catch (Exception e) {
-                // just eat the exception
+            if (initialized) {
+                outputStream.close();
             }
 
             outputStream = null;
@@ -485,11 +485,12 @@ public class CsvWriter {
 
     /**
      *
+     * @throws java.io.IOException
      */
     @Override
-    protected void finalize() throws Throwable {
+    protected void finalize() throws IOException  {
         close(false);
-        super.finalize();
+       
     }
 
     private class Letters {

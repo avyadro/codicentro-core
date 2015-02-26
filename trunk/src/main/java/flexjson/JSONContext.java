@@ -24,7 +24,7 @@ import java.lang.reflect.Modifier;
 import java.util.*;
 
 public class JSONContext {
-
+private final static char[] HEX = "0123456789ABCDEF".toCharArray();
     private static ThreadLocal<JSONContext> context = new ThreadLocal<JSONContext>() {
 
         @Override
@@ -308,7 +308,7 @@ public class JSONContext {
         int n = c;
         for (int i = 0; i < 4; ++i) {
             int digit = (n & 0xf000) >> 12;
-            out.write(String.valueOf(JSONSerializer.HEX[digit]));
+            out.write(String.valueOf(HEX[digit]));
             n <<= 4;
         }
     }
