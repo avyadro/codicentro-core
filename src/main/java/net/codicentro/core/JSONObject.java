@@ -163,6 +163,13 @@ public class JSONObject implements Serializable {
     }
 
     @Override
+    public int hashCode() {
+        int hash = 5;
+        hash = 17 * hash + (this.json != null ? this.json.hashCode() : 0);
+        return hash;
+    }
+
+    @Override
     public boolean equals(Object obj) {
         if (obj == null) {
             return false;
@@ -177,10 +184,5 @@ public class JSONObject implements Serializable {
         return true;
     }
 
-    @Override
-    public int hashCode() {
-        int hash = 5;
-        hash = 41 * hash + (this.json != null ? this.json.hashCode() : 0);
-        return hash;
-    }
+   
 }

@@ -950,7 +950,7 @@ public class TypeCast {
      * @param exception
      * @return
      */
-    public static String toString(Exception exception) {
+    public static String toString(Throwable exception) {
         StringWriter sw = new StringWriter();
         exception.printStackTrace(new PrintWriter(sw));
         return sw.toString();
