@@ -19,7 +19,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.PrintStream;
-import java.util.Date;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -410,8 +409,8 @@ public class XLSX2CSV {
         try {
             logger.info("Initiates the processing of the XLS workbook file to CSV");
             totalRowProcess = 0L;
-            ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(this.pkg);
-            XSSFReader xssfReader = new XSSFReader(this.pkg);
+            ReadOnlySharedStringsTable strings = new ReadOnlySharedStringsTable(pkg);
+            XSSFReader xssfReader = new XSSFReader(pkg);
             StylesTable styles = xssfReader.getStylesTable();
             XSSFReader.SheetIterator iter = (XSSFReader.SheetIterator) xssfReader.getSheetsData();
             while (iter.hasNext()) {
@@ -420,7 +419,6 @@ public class XLSX2CSV {
                 stream.close();
             }
             logger.info("Finalize the processing of the XLS workbook file to CSV, " + totalRowProcess + " row(s) process");
-
         } catch (IOException ex) {
             throw new CsvException(ex);
         } catch (SAXException ex) {

@@ -26,8 +26,8 @@ import org.apache.commons.codec.binary.Base64;
 
 public class Captcha implements Serializable {
 
-    private final int width = 50;
-    private final int height = 25;
+    private int width = 50;
+    private int height = 25;
     private Object value = null;
     private Color background = null;
     private Font font = null;
@@ -49,6 +49,8 @@ public class Captcha implements Serializable {
 
     public Captcha(Object value, int width, int height) {
         this();
+        this.width = width;
+        this.height = height;
         this.value = value;
     }
 
