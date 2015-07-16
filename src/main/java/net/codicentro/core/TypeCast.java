@@ -27,6 +27,10 @@ import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import javax.xml.datatype.DatatypeConfigurationException;
+import javax.xml.datatype.DatatypeConstants;
+import javax.xml.datatype.DatatypeFactory;
+import javax.xml.datatype.XMLGregorianCalendar;
 
 public class TypeCast {
 
@@ -1132,6 +1136,61 @@ public class TypeCast {
             rs.add(toLong(number));
         }
         return rs.toArray(new Long[]{});
+    }
+
+    private enum TXMLGregorianCalendar {
+
+        DEFAULT, DATE, TIME
+    };
+
+    private static XMLGregorianCalendar _toXMLGregorianCalendar(Date date, TXMLGregorianCalendar type) {
+        GregorianCalendar calendar = new GregorianCalendar();
+        if (date != null) {
+            calendar.setTime(date);
+        }
+        try {
+            switch (type) {
+                case DATE:
+                    return DatatypeFactory.newInstance().newXMLGregorianCalendarDate(calendar.get(Calendar.YEAR),
+                            calendar.get(Calendar.MONTH) + 1,
+                            calendar.get(Calendar.DAY_OF_MONTH),
+                            DatatypeConstants.FIELD_UNDEFINED);
+                case TIME:
+                    return DatatypeFactory.newInstance()
+                            .newXMLGregorianCalendarTime(calendar.get(Calendar.HOUR_OF_DAY),
+                                    calendar.get(Calendar.MINUTE),
+                                    calendar.get(Calendar.SECOND),
+                                    DatatypeConstants.FIELD_UNDEFINED);
+                default:
+                    return DatatypeFactory.newInstance().newXMLGregorianCalendar(calendar);
+            }
+        } catch (DatatypeConfigurationException ex) {
+            return null;
+        }
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar() {
+        return _toXMLGregorianCalendar(null, TXMLGregorianCalendar.DEFAULT);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendar(Date date) {
+        return _toXMLGregorianCalendar(date, TXMLGregorianCalendar.DEFAULT);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendarDate() {
+        return _toXMLGregorianCalendar(null, TXMLGregorianCalendar.DATE);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendarDate(Date date) {
+        return _toXMLGregorianCalendar(date, TXMLGregorianCalendar.DATE);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendarTime() {
+        return _toXMLGregorianCalendar(null, TXMLGregorianCalendar.TIME);
+    }
+
+    public static XMLGregorianCalendar toXMLGregorianCalendarTime(Date date) {
+        return _toXMLGregorianCalendar(date, TXMLGregorianCalendar.TIME);
     }
 
 }
